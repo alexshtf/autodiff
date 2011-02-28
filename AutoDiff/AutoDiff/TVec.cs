@@ -18,7 +18,7 @@ namespace AutoDiff
         public TVec(IEnumerable<Term> terms)
         {
             Contract.Requires(terms != null);
-            Contract.Requires(!terms.IsEmpty());
+            Contract.Requires(!terms.IsEmptyEnumerable());
 
             this.terms = terms.ToArray();
         }

@@ -8,7 +8,7 @@ namespace AutoDiff
 {
     public static class EnumerableExtensions
     {
-        [Pure] public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+        [Pure] public static bool IsEmptyEnumerable<T>(this IEnumerable<T> enumerable)
         {
             Contract.Requires(enumerable != null);
 
