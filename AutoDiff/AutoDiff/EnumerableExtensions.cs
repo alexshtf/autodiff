@@ -12,7 +12,7 @@ namespace AutoDiff
         {
             Contract.Requires(enumerable != null);
 
-            return enumerable.GetEnumerator().MoveNext();
+            return !enumerable.GetEnumerator().MoveNext();
         }
     }
 }
