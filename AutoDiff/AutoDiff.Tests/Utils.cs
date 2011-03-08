@@ -11,5 +11,10 @@ namespace AutoDiff.Tests
         {
             return items;
         }
+
+        public static double[] Vector(params double[] items)
+        {
+            return Array(items);
+        }
     }
 }

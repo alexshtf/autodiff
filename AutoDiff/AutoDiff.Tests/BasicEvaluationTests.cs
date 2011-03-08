@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace AutoDiff.Tests
 {
     [TestClass]
-    public class EvaluationTests
+    public class BasicEvaluationTests
     {
         private static readonly Variable[] NoVars = new Variable[0];
         private static readonly double[] NoVals = new double[0];
