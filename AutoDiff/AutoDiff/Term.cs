@@ -58,7 +58,7 @@ namespace AutoDiff
     }
 
     [ContractClassFor(typeof(Term))]
-    class TermContacts : Term
+    abstract class TermContacts : Term
     {
         public override void Accept(ITermVisitor visitor)
         {
