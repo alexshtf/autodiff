@@ -12,9 +12,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{D10A6773-BE15-4A1F-97BD-8B3DCDB82846}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloAutoDiff", "Samples\HelloAutoDiff\HelloAutoDiff.csproj", "{2127FB51-C9DC-4093-844E-E86130D48B45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewtonRaphsonSample", "NewtonRaphsonSample\NewtonRaphsonSample.csproj", "{73354289-B1A6-4BD1-B2A0-C29F1426C721}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs15
 		SccLocalPath0 = .
@@ -24,6 +30,14 @@ Global
 		SccProjectUniqueName2 = AutoDiff.Tests\\AutoDiff.Tests.csproj
 		SccProjectName2 = AutoDiff.Tests
 		SccLocalPath2 = AutoDiff.Tests
+		SccProjectUniqueName3 = Samples\\HelloAutoDiff\\HelloAutoDiff.csproj
+		SccProjectTopLevelParentUniqueName3 = AutoDiff.sln
+		SccProjectName3 = Samples/HelloAutoDiff
+		SccLocalPath3 = Samples\\HelloAutoDiff
+		SccProjectUniqueName4 = NewtonRaphsonSample\\NewtonRaphsonSample.csproj
+		SccProjectTopLevelParentUniqueName4 = AutoDiff.sln
+		SccProjectName4 = NewtonRaphsonSample
+		SccLocalPath4 = NewtonRaphsonSample
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoDiff.vsmdi
@@ -57,8 +71,32 @@ Global
 		{9FF7AEC5-8033-49FC-BF15-1F89DA356407}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9FF7AEC5-8033-49FC-BF15-1F89DA356407}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9FF7AEC5-8033-49FC-BF15-1F89DA356407}.Release|x86.ActiveCfg = Release|Any CPU
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Debug|x86.ActiveCfg = Debug|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Debug|x86.Build.0 = Debug|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Release|Any CPU.ActiveCfg = Release|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Release|Mixed Platforms.Build.0 = Release|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Release|x86.ActiveCfg = Release|x86
+		{2127FB51-C9DC-4093-844E-E86130D48B45}.Release|x86.Build.0 = Release|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Debug|x86.ActiveCfg = Debug|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Debug|x86.Build.0 = Debug|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|Any CPU.ActiveCfg = Release|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|Mixed Platforms.Build.0 = Release|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|x86.ActiveCfg = Release|x86
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2127FB51-C9DC-4093-844E-E86130D48B45} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
+		{73354289-B1A6-4BD1-B2A0-C29F1426C721} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 	EndGlobalSection
 EndGlobal

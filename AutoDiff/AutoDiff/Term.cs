@@ -51,9 +51,25 @@ namespace AutoDiff
             return TermBuilder.Product(left, right);
         }
 
+        /// <summary>
+        /// Constructs a difference of the two given terms.
+        /// </summary>
+        /// <param name="left">The first term in the difference</param>
+        /// <param name="right">The second term in the difference.</param>
+        /// <returns>A term representing <paramref name="left"/> - <paramref name="right"/>.</returns>
         public static Term operator-(Term left, Term right)
         {
             return left + (-1) * right;
+        }
+
+        /// <summary>
+        /// Constructs a negated term
+        /// </summary>
+        /// <param name="term">The term to negate</param>
+        /// <returns>A term representing <c>-term</c>.</returns>
+        public static Term operator-(Term term)
+        {
+            return (-1) * term;
         }
     }
 

@@ -119,5 +119,18 @@ namespace AutoDiff.Tests
             var grad2 = Differentiator.Differentiate(func, Utils.Array(x, y), Utils.Vector(-6, 4));
             CollectionAssert.AreEqual(Utils.Vector(-11, -26), grad2);
         }
+
+        [TestMethod]
+        public void DiffExp()
+        {
+            var x = new Variable();
+            var func = TermBuilder.Exp(x);
+
+            var grad1 = Differentiator.Differentiate(func, Utils.Array(x), Utils.Vector(1));
+            var grad2 = Differentiator.Differentiate(func, Utils.Array(x), Utils.Vector(-2));
+
+            CollectionAssert.AreEqual(Utils.Vector(Math.Exp(1)), grad1);
+            CollectionAssert.AreEqual(Utils.Vector(Math.Exp(-2)), grad2);
+        }
     }
 }

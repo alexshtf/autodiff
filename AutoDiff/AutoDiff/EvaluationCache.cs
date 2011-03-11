@@ -99,7 +99,7 @@ namespace AutoDiff
                 var arg = exp.Arg;
                 arg.Accept(this);
 
-                cache[exp] = Math.Log(cache[arg]);
+                cache[exp] = Math.Exp(cache[arg]);
             }
 
 
