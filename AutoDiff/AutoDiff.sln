@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{D10A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloAutoDiff", "Samples\HelloAutoDiff\HelloAutoDiff.csproj", "{2127FB51-C9DC-4093-844E-E86130D48B45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewtonRaphsonSample", "NewtonRaphsonSample\NewtonRaphsonSample.csproj", "{73354289-B1A6-4BD1-B2A0-C29F1426C721}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewtonRaphsonSample", "Samples\NewtonRaphsonSample\NewtonRaphsonSample.csproj", "{73354289-B1A6-4BD1-B2A0-C29F1426C721}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -34,10 +34,10 @@ Global
 		SccProjectTopLevelParentUniqueName3 = AutoDiff.sln
 		SccProjectName3 = Samples/HelloAutoDiff
 		SccLocalPath3 = Samples\\HelloAutoDiff
-		SccProjectUniqueName4 = NewtonRaphsonSample\\NewtonRaphsonSample.csproj
+		SccProjectUniqueName4 = Samples\\NewtonRaphsonSample\\NewtonRaphsonSample.csproj
 		SccProjectTopLevelParentUniqueName4 = AutoDiff.sln
-		SccProjectName4 = NewtonRaphsonSample
-		SccLocalPath4 = NewtonRaphsonSample
+		SccProjectName4 = Samples/NewtonRaphsonSample
+		SccLocalPath4 = Samples\\NewtonRaphsonSample
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoDiff.vsmdi

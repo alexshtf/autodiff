@@ -52,7 +52,7 @@
     <Compile Include="RootFinder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoDiff\AutoDiff.csproj">
+    <ProjectReference Include="..\..\AutoDiff\AutoDiff.csproj">
       <Project>{62551FD3-C21F-4E16-A7FC-6A017508809C}</Project>
       <Name>AutoDiff</Name>
     </ProjectReference>
