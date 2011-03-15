@@ -128,7 +128,7 @@ namespace AutoDiff
         public static Term Piecewise(IEnumerable<Tuple<Inequality, Term>> pieces)
         {
             Contract.Requires(pieces != null);
-            Contract.Requires(!pieces.IsEmptyEnumerable());
+            Contract.Requires(pieces.Any());
             Contract.Requires(Contract.ForAll(pieces, piece => piece != null && piece.Item1 != null && piece.Item2 != null));
             Contract.Ensures(Contract.Result<Term>() != null);
 

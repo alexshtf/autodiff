@@ -23,7 +23,7 @@ namespace AutoDiff
         {
             Contract.Requires(terms != null);
             Contract.Requires(Contract.ForAll(terms, term => term != null));
-            Contract.Requires(!terms.IsEmptyEnumerable());
+            Contract.Requires(terms.Any());
 
             this.terms = terms.ToArray();
         }

@@ -18,9 +18,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloAutoDiff", "Samples\He
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewtonRaphsonSample", "Samples\NewtonRaphsonSample\NewtonRaphsonSample.csproj", "{73354289-B1A6-4BD1-B2A0-C29F1426C721}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworkSample", "Samples\NeuralNetworkSample\NeuralNetworkSample.csproj", "{9CFE554C-A2EC-4EEF-A914-6F00F429F996}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs15
 		SccLocalPath0 = .
@@ -38,6 +40,10 @@ Global
 		SccProjectTopLevelParentUniqueName4 = AutoDiff.sln
 		SccProjectName4 = Samples/NewtonRaphsonSample
 		SccLocalPath4 = Samples\\NewtonRaphsonSample
+		SccProjectUniqueName5 = Samples\\NeuralNetworkSample\\NeuralNetworkSample.csproj
+		SccProjectTopLevelParentUniqueName5 = AutoDiff.sln
+		SccProjectName5 = Samples/NeuralNetworkSample
+		SccLocalPath5 = Samples\\NeuralNetworkSample
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoDiff.vsmdi
@@ -91,6 +97,16 @@ Global
 		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|Mixed Platforms.Build.0 = Release|x86
 		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|x86.ActiveCfg = Release|x86
 		{73354289-B1A6-4BD1-B2A0-C29F1426C721}.Release|x86.Build.0 = Release|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Debug|x86.ActiveCfg = Debug|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Debug|x86.Build.0 = Debug|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|Any CPU.ActiveCfg = Release|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|Mixed Platforms.Build.0 = Release|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|x86.ActiveCfg = Release|x86
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,5 +114,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2127FB51-C9DC-4093-844E-E86130D48B45} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 		{73354289-B1A6-4BD1-B2A0-C29F1426C721} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
+		{9CFE554C-A2EC-4EEF-A914-6F00F429F996} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 	EndGlobalSection
 EndGlobal
