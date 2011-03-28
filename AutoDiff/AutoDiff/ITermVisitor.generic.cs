@@ -6,71 +6,72 @@ using System.Text;
 namespace AutoDiff
 {
     /// <summary>
-    /// Visitor for terms that has no result from its computations.
+    /// A visitor for the terms that has a result from its computations
     /// </summary>
-    public interface ITermVisitor
+    /// <typeparam name="TResult">The type of the computation results</typeparam>
+    public interface ITermVisitor<TResult>
     {
         /// <summary>
-        /// Performs an action for a constant term.
+        /// Computes a value for a constant term.
         /// </summary>
         /// <param name="constant">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(Constant constant);
+        TResult Visit(Constant constant);
 
         /// <summary>
-        /// Performs an action for a zero term.
+        /// Computes a value for a zero term.
         /// </summary>
         /// <param name="zero">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(Zero zero);
+        TResult Visit(Zero zero);
 
         /// <summary>
-        /// Performs an action for a power term.
+        /// Computes a value for a power term.
         /// </summary>
         /// <param name="intPower">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(IntPower intPower);
+        TResult Visit(IntPower intPower);
 
         /// <summary>
-        /// Performs an action for a product term.
+        /// Computes a value for a product term.
         /// </summary>
         /// <param name="product">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(Product product);
+        TResult Visit(Product product);
 
         /// <summary>
-        /// Performs an action for a sum term.
+        /// Computes a value for a sum term.
         /// </summary>
         /// <param name="sum">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(Sum sum);
+        TResult Visit(Sum sum);
 
         /// <summary>
-        /// Performs an action for a variable term.
+        /// Computes a value for a variable term.
         /// </summary>
         /// <param name="variable">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(Variable variable);
+        TResult Visit(Variable variable);
 
         /// <summary>
-        /// Performs an action for a logarithm term.
+        /// Computes a value for a logarithm term.
         /// </summary>
         /// <param name="log">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(Log log);
+        TResult Visit(Log log);
 
         /// <summary>
-        /// Performs an action for an exponential function term.
+        /// Computes a value for an exponential function term.
         /// </summary>
         /// <param name="exp">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(Exp exp);
+        TResult Visit(Exp exp);
 
         /// <summary>
-        /// Performs an action for a piecewise defined term.
+        /// Computes a value for a piecewise defined term.
         /// </summary>
         /// <param name="piecewiseTerm">The input term.</param>
         /// <returns>The result of the computation.</returns>
-        void Visit(PiecewiseTerm piecewiseTerm);
+        TResult Visit(PiecewiseTerm piecewiseTerm);
     }
 }

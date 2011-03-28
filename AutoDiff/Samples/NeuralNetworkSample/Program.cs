@@ -47,6 +47,8 @@ namespace NeuralNetworkSample
                     }
                 }
             }
+
+            throw new NotSupportedException();
         }
 
         private static void ToTerms(double[,] input, int x, int y, Term[,] output)

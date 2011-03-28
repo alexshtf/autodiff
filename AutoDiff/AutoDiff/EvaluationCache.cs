@@ -26,7 +26,7 @@ namespace AutoDiff
 
         #region CacheConstructorVisitor class
 
-        private class CacheConstructorVisitor : ITermVisitor
+        private class CacheConstructorVisitor : ITermVisitor<double>
         {
             private readonly Dictionary<Term, double> cache;
             private readonly IDictionary<Variable, double> values;
@@ -37,84 +37,79 @@ namespace AutoDiff
                 this.values = values;
             }
 
-            public void Visit(Constant constant)
+            public double Visit(Constant constant)
             {
                 cache[constant] = constant.Value;
+                return constant.Value;
             }
 
-            public void Visit(Zero zero)
+            public double Visit(Zero zero)
             {
                 cache[zero] = 0;
+                return 0;
             }
 
-            public void Visit(IntPower intPower)
+            public double Visit(IntPower intPower)
             {
-                var powerBase = intPower.Base;
-                powerBase.Accept(this);
-
-                cache[intPower] = Math.Pow(cache[powerBase], intPower.Exponent);
+                var result = Math.Pow(intPower.Base.Accept(this), intPower.Exponent);
+                cache[intPower] = result;
+                return result;
             }
 
-            public void Visit(Product product)
+            public double Visit(Product product)
             {
-                var left = product.Left;
-                var right = product.Right;
-
-                left.Accept(this);
-                right.Accept(this);
-
-                cache[product] = cache[left] * cache[right];
+                var result = product.Left.Accept(this) * product.Right.Accept(this);
+                cache[product] = result;
+                return result;
             }
 
-            public void Visit(Sum sum)
+            public double Visit(Sum sum)
             {
+                double result = 0;
                 foreach (var term in sum.Terms)
-                    term.Accept(this);
-
-                var sumValues = from term in sum.Terms
-                                select cache[term];
-
-                cache[sum] = sumValues.Sum();
+                    result += term.Accept(this);
+                cache[sum] = result;
+                return result;
             }
 
-            public void Visit(Variable variable)
+            public double Visit(Variable variable)
             {
                 double value;
                 if (values.TryGetValue(variable, out value))
+                {
                     cache[variable] = value;
+                    return value;
+                }
                 else
                     throw new InvalidOperationException("A variable is missing a value");
             }
 
-            public void Visit(Log log)
+            public double Visit(Log log)
             {
-                var arg = log.Arg;
-                arg.Accept(this);
-
-                cache[log] = Math.Log(cache[arg]);
+                var result = Math.Log(log.Arg.Accept(this));
+                cache[log] = result;
+                return result;
             }
 
-            public void Visit(Exp exp)
+            public double Visit(Exp exp)
             {
-                var arg = exp.Arg;
-                arg.Accept(this);
-
-                cache[exp] = Math.Exp(cache[arg]);
+                var result = Math.Exp(exp.Arg.Accept(this));
+                cache[exp] = result;
+                return result;
             }
 
-
-            public void Visit(PiecewiseTerm piecewiseTerm)
+            public double Visit(PiecewiseTerm piecewiseTerm)
             {
                 foreach (var pair in piecewiseTerm.Pieces)
                 {
                     var inequalityTerm = pair.Item1.Term;
-                    var valueTerm = pair.Item2;
-                    inequalityTerm.Accept(this);
-                    if (cache[inequalityTerm] <= 0)
+                    var inequalityResult = inequalityTerm.Accept(this);
+                    if (inequalityResult <= 0)
                     {
-                        valueTerm.Accept(this);
-                        cache[piecewiseTerm] = cache[valueTerm];
-                        return;
+                        var valueTerm = pair.Item2;
+                        var result = valueTerm.Accept(this);
+                        cache[piecewiseTerm] = result;
+                        return result;
                     }
                 }
 

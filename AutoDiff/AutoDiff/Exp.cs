@@ -33,5 +33,18 @@ namespace AutoDiff
         {
             visitor.Visit(this);
         }
+
+        /// <summary>
+        /// Accepts a term visitor with a generic result
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result from the visitor's function</typeparam>
+        /// <param name="visitor">The visitor to accept</param>
+        /// <returns>
+        /// The result from the visitor's visit function.
+        /// </returns>
+        public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 }

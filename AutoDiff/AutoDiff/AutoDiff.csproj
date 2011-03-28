@@ -100,6 +100,7 @@
     <Compile Include="InequalityExtensions.cs" />
     <Compile Include="IntPower.cs" />
     <Compile Include="ITermVisitor.cs" />
+    <Compile Include="ITermVisitor.generic.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="PiecewiseTerm.cs" />
     <Compile Include="Product.cs" />

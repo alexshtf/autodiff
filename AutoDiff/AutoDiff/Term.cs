@@ -20,6 +20,14 @@ namespace AutoDiff
         public abstract void Accept(ITermVisitor visitor);
 
         /// <summary>
+        /// Accepts a term visitor with a generic result
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result from the visitor's function</typeparam>
+        /// <param name="visitor">The visitor to accept</param>
+        /// <returns>The result from the visitor's visit function.</returns>
+        public abstract TResult Accept<TResult>(ITermVisitor<TResult> visitor);
+
+        /// <summary>
         /// Converts a floating point constant to a constant term.
         /// </summary>
         /// <param name="value">The floating point constnat</param>
@@ -79,6 +87,12 @@ namespace AutoDiff
         public override void Accept(ITermVisitor visitor)
         {
             Contract.Requires(visitor != null);
+        }
+
+        public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
+        {
+            Contract.Requires(visitor != null);
+            return default(TResult);
         }
     }
 
