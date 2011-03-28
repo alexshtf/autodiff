@@ -20,9 +20,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewtonRaphsonSample", "Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworkSample", "Samples\NeuralNetworkSample\NeuralNetworkSample.csproj", "{9CFE554C-A2EC-4EEF-A914-6F00F429F996}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff.PerfTest", "AutoDiff.PerfTest\AutoDiff.PerfTest.csproj", "{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs15
 		SccLocalPath0 = .
@@ -44,6 +46,9 @@ Global
 		SccProjectTopLevelParentUniqueName5 = AutoDiff.sln
 		SccProjectName5 = Samples/NeuralNetworkSample
 		SccLocalPath5 = Samples\\NeuralNetworkSample
+		SccProjectUniqueName6 = AutoDiff.PerfTest\\AutoDiff.PerfTest.csproj
+		SccProjectName6 = AutoDiff.PerfTest
+		SccLocalPath6 = AutoDiff.PerfTest
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoDiff.vsmdi
@@ -107,6 +112,16 @@ Global
 		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|x86.ActiveCfg = Release|x86
 		{9CFE554C-A2EC-4EEF-A914-6F00F429F996}.Release|x86.Build.0 = Release|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Debug|x86.ActiveCfg = Debug|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Debug|x86.Build.0 = Debug|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|Any CPU.ActiveCfg = Release|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|x86.ActiveCfg = Release|x86
+		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
