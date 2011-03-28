@@ -45,10 +45,12 @@ namespace AutoDiff.PerfTest
 
         public void Run()
         {
+            var diff = new CompiledDifferentiator(term, variables);
             double sum = 0;
             for (int i = 0; i < NUM_OF_RUNS; ++i)
             {
-                var grad = Differentiator.Differentiate(term, variables, values[i]);
+                var diffResult = diff.Calculate(values[i]);
+                var grad = diffResult.Item1;
                 sum += grad.Sum();
             }
             Debug.WriteLine(sum);

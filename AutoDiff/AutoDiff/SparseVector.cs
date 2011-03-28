@@ -39,11 +39,7 @@ namespace AutoDiff
         private void AddTuple(Tuple<int, double> tuple)
         {
             if (nonZeros.Length == count)
-            {
-                var newNonZeros = new Tuple<int, double>[2 * nonZeros.Length + 1];
-                Array.Copy(nonZeros, 0, newNonZeros, 0, count);
-                nonZeros = newNonZeros;
-            }
+                Array.Resize(ref nonZeros, 2 * count + 1);
 
             UnsafeAdd(tuple);
         }
@@ -74,6 +70,8 @@ namespace AutoDiff
         {
             if (scale == 0)
                 return new SparseVector();
+            else if (scale == 1)
+                return v;
             else
             {
                 var result = new SparseVector(v.nonZeros.Length);
