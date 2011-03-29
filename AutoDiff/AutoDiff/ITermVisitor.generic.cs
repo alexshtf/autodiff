@@ -66,12 +66,5 @@ namespace AutoDiff
         /// <param name="exp">The input term.</param>
         /// <returns>The result of the computation.</returns>
         TResult Visit(Exp exp);
-
-        /// <summary>
-        /// Computes a value for a piecewise defined term.
-        /// </summary>
-        /// <param name="piecewiseTerm">The input term.</param>
-        /// <returns>The result of the computation.</returns>
-        TResult Visit(PiecewiseTerm piecewiseTerm);
     }
 }

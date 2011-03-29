@@ -123,11 +123,6 @@ namespace AutoDiff
                     });
             }
 
-            public int Visit(PiecewiseTerm piecewiseTerm)
-            {
-                throw new NotImplementedException();
-            }
-
             private int Compile(Term term, Func<CompileResult> compiler)
             {
                 int index;

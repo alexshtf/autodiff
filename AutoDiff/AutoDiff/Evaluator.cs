@@ -34,11 +34,8 @@ namespace AutoDiff
             Contract.Requires(variables.Length == values.Length);
             Contract.Requires(Contract.ForAll(variables, variable => variable != null));
 
-            var dictionary = new Dictionary<Variable, double>();
-            for (int i = 0; i < variables.Length; ++i)
-                dictionary.Add(variables[i], values[i]);
-
-            return Evaluate(term, dictionary);
+            var compiled = new CompiledDifferentiator(term, variables);
+            return compiled.Eval(values);
         }
 
         /// <summary>
@@ -53,109 +50,16 @@ namespace AutoDiff
         /// in <paramref name="term."/>
         /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown when a variable is used in <paramref name="term"/> but
-        /// does not appear in <paramref name="variables"/>.</exception>
-        public static double Evaluate(Term term, IDictionary<Variable, double> values)
+        /// does not appear in <paramref name="variablesWithValues"/>.</exception>
+        public static double Evaluate(Term term, IDictionary<Variable, double> variablesWithValues)
         {
             Contract.Requires(term != null);
-            Contract.Requires(values != null);
-            Contract.Requires(Contract.ForAll(values, kvPair => kvPair.Key != null));
+            Contract.Requires(variablesWithValues != null);
+            Contract.Requires(Contract.ForAll(variablesWithValues, kvPair => kvPair.Key != null));
 
-            var evaluator = new EvalVisitor(values);
-            term.Accept(evaluator);
-            return evaluator.Result;
+            var variables = variablesWithValues.Select(x => x.Key).ToArray();
+            var vals = variablesWithValues.Select(x => x.Value).ToArray();
+            return Evaluate(term, variables, vals);
         }
-
-        private class EvalVisitor : ITermVisitor
-        {
-            private readonly IDictionary<Variable, double> values;
-
-            public EvalVisitor(IDictionary<Variable, double> values)
-            {
-                this.values = values;
-            }
-
-            public double Result { get; private set; }
-
-            public void Visit(Constant constant)
-            {
-                Result = constant.Value;
-            }
-
-            public void Visit(Zero zero)
-            {
-                Result = 0;
-            }
-
-            public void Visit(IntPower intPower)
-            {
-                intPower.Base.Accept(this);
-                Result = Math.Pow(Result, intPower.Exponent);
-            }
-
-            public void Visit(Product product)
-            {
-                product.Left.Accept(this);
-                var left = Result;
-                
-                product.Right.Accept(this);
-                var right = Result;
-
-                Result = left * right;
-            }
-
-            public void Visit(Sum sum)
-            {
-                double temp = 0;
-                foreach (var term in sum.Terms)
-                {
-                    term.Accept(this);
-                    temp += Result;
-                }
-
-                Result = temp;
-            }
-
-            public void Visit(Variable variable)
-            {
-                double value;
-                if (values.TryGetValue(variable, out value))
-                    Result = value;
-                else
-                    throw new InvalidOperationException("A variable has no value");
-            }
-
-
-            public void Visit(Log log)
-            {
-                log.Arg.Accept(this);
-                Result = Math.Log(Result);
-            }
-
-            public void Visit(Exp exp)
-            {
-                exp.Arg.Accept(this);
-                Result = Math.Exp(Result);
-            }
-
-
-            public void Visit(PiecewiseTerm piecewiseTerm)
-            {
-                foreach (var pair in piecewiseTerm.Pieces)
-                {
-                    var inequalityTerm = pair.Item1.Term;
-                    inequalityTerm.Accept(this);
-                    if (Result <= 0) // we found a piece that satisfies its inequality.
-                    {
-                        var valueTerm = pair.Item2;
-                        valueTerm.Accept(this);
-                        return;
-                    }
-                }
-
-                // if we reached here it means we didn't return in the above loop --> no piece satisfies the conditions.
-                throw new InvalidOperationException("Piecewise evaluation failed. No piece satisfies the conditions");
-            }
-        }
-
     }
 }

@@ -121,36 +121,6 @@ namespace AutoDiff
         }
 
         /// <summary>
-        /// Construct a piece-wise defined function term.
-        /// </summary>
-        /// <param name="pieces">The pieces of the piece-wise definition.</param>
-        /// <returns>A term representing the piecewise function defined by <paramref name="pieces"/>.</returns>
-        public static Term Piecewise(IEnumerable<Tuple<Inequality, Term>> pieces)
-        {
-            Contract.Requires(pieces != null);
-            Contract.Requires(pieces.Any());
-            Contract.Requires(Contract.ForAll(pieces, piece => piece != null && piece.Item1 != null && piece.Item2 != null));
-            Contract.Ensures(Contract.Result<Term>() != null);
-
-            return new PiecewiseTerm(pieces);
-        }
-
-        /// <summary>
-        /// Construct a piece-wise defined function term.
-        /// </summary>
-        /// <param name="pieces">The pieces of the piece-wise definition.</param>
-        /// <returns>A term representing the piecewise function defined by <paramref name="pieces"/>.</returns>
-        public static Term Piecewise(params Tuple<Inequality, Term>[] pieces)
-        {
-            Contract.Requires(pieces != null);
-            Contract.Requires(pieces.Length > 0);
-            Contract.Requires(Contract.ForAll(pieces, piece => piece != null && piece.Item1 != null && piece.Item2 != null));
-            Contract.Ensures(Contract.Result<Term>() != null);
-
-            return Piecewise(pieces as IEnumerable<Tuple<Inequality, Term>>);
-        }
-
-        /// <summary>
         /// Constructs a 2D quadratic form given the vector components x1, x2 and the matrix coefficients a11, a12, a21, a22.
         /// </summary>
         /// <param name="x1">First vector component</param>

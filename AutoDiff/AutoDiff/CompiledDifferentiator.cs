@@ -35,6 +35,14 @@ namespace AutoDiff
 
         public int Dimension { get; private set; }
 
+        public double Eval(double[] arg)
+        {
+            Contract.Requires(arg != null);
+            Contract.Requires(arg.Length == Dimension);
+            EvaluateTape(arg);
+            return tape.Last().Value;
+        }
+
         public Tuple<double[], double> Calculate(double[] arg)
         {
             Contract.Requires(arg != null);
