@@ -5,10 +5,12 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class TapeElement
+    abstract class TapeElement
     {
         public double Value;
         public double Derivative;
         public InputConnection[] InputOf;
+
+        public abstract void Accept(ITapeVisitor visitor);
     }
 }

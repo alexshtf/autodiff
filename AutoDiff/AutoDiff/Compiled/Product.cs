@@ -9,5 +9,10 @@ namespace AutoDiff.Compiled
     {
         public int Left;
         public int Right;
+
+        public override void Accept(ITapeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
 	}
 }

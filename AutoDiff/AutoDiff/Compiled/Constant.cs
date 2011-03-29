@@ -12,5 +12,10 @@ namespace AutoDiff.Compiled
             Value = value;
             Derivative = 0;
         }
-	}
+
+        public override void Accept(ITapeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+    }
 }

@@ -7,5 +7,9 @@ namespace AutoDiff.Compiled
 {
 	class Variable : TapeElement
 	{
+        public override void Accept(ITapeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
 	}
 }

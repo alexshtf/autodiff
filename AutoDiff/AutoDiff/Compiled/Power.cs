@@ -9,5 +9,10 @@ namespace AutoDiff.Compiled
     {
         public int Base;
         public double Exponent;
+
+        public override void Accept(ITapeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }
