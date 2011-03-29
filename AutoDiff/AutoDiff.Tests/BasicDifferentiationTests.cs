@@ -121,6 +121,50 @@ namespace AutoDiff.Tests
         }
 
         [TestMethod]
+        public void DiffPolynomial1()
+        {
+            var x = new Variable();
+            var y = new Variable();
+            var z = new Variable();
+
+            // f(x,y,z) = 2(x-y)² + 5xy - 3y²
+            var func = 2 * TermBuilder.Power(x - y, 2) + 5 * x * y - 3 * TermBuilder.Power(y, 2);
+            var diff = new CompiledDifferentiator(func, Utils.Array(x, y, z));
+
+            var result = diff.Calculate(Utils.Vector(1, 2, -3));
+            CollectionAssert.AreEqual(Utils.Vector(6, -3, 0), result.Item1);
+            Assert.AreEqual(0, result.Item2);
+        }
+
+        [TestMethod]
+        public void DiffPolynomial2()
+        {
+            var x = new Variable();
+            var y = new Variable();
+            var z = new Variable();
+
+            var terms = new Term[] 
+                { 
+                    x + 2 * TermBuilder.Power(x - y, 2), // x + 2(x-y)²
+                    x*y - y*z,                           // xy - yz
+                    3 * x * y * z,                       // 3xyz
+                };
+
+            // (x + 2(x-y)²)², (xy - yz)², (3xyz)²
+            terms = terms.Select(t => TermBuilder.Power(t, 2)).ToArray();
+
+            // 0.25 * ((x + 2(x-y)²)² + (xy - yz)² + (3xyz)²) + (y - x + 1)²
+            var func = 0.25 * TermBuilder.Sum(terms) + TermBuilder.Power(y - x + 1, 2);
+
+            var diff = new CompiledDifferentiator(func, Utils.Array(x, y, z));
+            var result = diff.Calculate(Utils.Vector(1, 2, -3));
+
+            // asserts checked with MATLAB
+            CollectionAssert.AreEqual(Utils.Vector(161.5, 107, -62), result.Item1);
+            Assert.AreEqual(103.25, result.Item2);
+        }
+
+        [TestMethod]
         public void DiffExp()
         {
             var x = new Variable();

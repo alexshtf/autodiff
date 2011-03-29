@@ -5,16 +5,12 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class Constant : Term
-    {
-        public override void Accept(ITermVisitor visitor)
+	class Constant : TapeElement
+	{
+        public Constant(double value)
         {
-            visitor.Visit(this);
+            Value = value;
+            Derivative = 0;
         }
-
-        public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
-        {
-            return visitor.Visit(this);
-        }
-    }
+	}
 }

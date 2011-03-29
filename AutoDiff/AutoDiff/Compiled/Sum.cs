@@ -5,20 +5,8 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class Sum : Term
+	class Sum : TapeElement
     {
-        public Term[] Terms;
-        public double Bias;
-
-        public override void Accept(ITermVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
-        {
-            return visitor.Visit(this);
-        }
-
-    }
+        public int[] Terms;
+	}
 }

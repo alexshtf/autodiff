@@ -5,9 +5,10 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class Power : TapeElement
+    class TapeElement
     {
-        public int Base;
-        public double Exponent;
+        public double Value;
+        public double Derivative;
+        public InputConnection[] InputOf;
     }
 }

@@ -5,20 +5,9 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class Product : Term
+	class Product : TapeElement
     {
-        public Term Left;
-        public Term Right;
-
-        public override void Accept(ITermVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
-        {
-            return visitor.Visit(this);
-        }
-
-    }
+        public int Left;
+        public int Right;
+	}
 }

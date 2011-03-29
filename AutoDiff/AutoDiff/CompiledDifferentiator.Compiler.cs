@@ -7,178 +7,158 @@ namespace AutoDiff
 {
     public partial class CompiledDifferentiator
     {
-        private class CompilerVisitor : ITermVisitor<Compiled.Term>
+        private class Compiler : ITermVisitor<int> // int --> the index of the compiled element in the tape
         {
-            private Dictionary<Variable, int> indexOf;
-            private Dictionary<Term, Compiled.Term> compiledTerms;
+            private readonly List<Compiled.TapeElement> tape;
+            private readonly List<List<AutoDiff.Compiled.InputConnection>> inputConnections;
+            private readonly Dictionary<Term, int> indexOf;
 
-            public CompilerVisitor(Term function, Variable[] variables)
+            public Compiler(Variable[] variables, List<Compiled.TapeElement> tape)
             {
-                indexOf = new Dictionary<Variable, int>();
+                this.tape = tape;
+                indexOf = new Dictionary<Term, int>();
+                inputConnections = new List<List<Compiled.InputConnection>>();
                 foreach (var i in Enumerable.Range(0, variables.Length))
+                {
                     indexOf[variables[i]] = i;
-                compiledTerms = new Dictionary<Term, Compiled.Term>();
+                    tape.Add(new Compiled.Variable());
+                    inputConnections.Add(new List<Compiled.InputConnection>());
+                }
             }
 
-            public Compiled.Term Visit(Constant constant)
+            public void Compile(Term term)
             {
-                return new Compiled.Constant { Multiplier = constant.Value };
+                term.Accept(this);
+                for (int i = 0; i < tape.Count; ++i)
+                    tape[i].InputOf = inputConnections[i].ToArray();
             }
 
-            public Compiled.Term Visit(Zero zero)
+            public int Visit(Constant constant)
             {
-                return new Compiled.Constant { Multiplier = 0 };
+                return Compile(constant, () =>
+                    new CompileResult { Element = new Compiled.Constant(constant.Value), InputTapeIndices = new int[0] });
             }
 
-            public Compiled.Term Visit(IntPower intPower)
+            public int Visit(Zero zero)
             {
-                return CachedCompile(intPower, () =>
+                return Compile(zero, () => new CompileResult { Element = new Compiled.Constant(0), InputTapeIndices = new int[0] });
+            }
+
+            public int Visit(IntPower intPower)
+            {
+                return Compile(intPower, () =>
                     {
-                        var compiledBase = intPower.Base.Accept(this);
-                        if (compiledBase.Multiplier == 0)
-                            return new Compiled.Constant { Multiplier = 0 };
-                        else if (compiledBase is Compiled.Constant)
-                        {
-                            var value = ((Compiled.Constant)compiledBase).Multiplier;
-                            return new Compiled.Constant { Multiplier = Math.Pow(value, intPower.Exponent) };
-                        }
-                        else
-                            return new Compiled.Power { Base = compiledBase, Exponent = intPower.Exponent };
+                        var baseIndex = intPower.Base.Accept(this);
+                        var element = new Compiled.Power { Base = baseIndex, Exponent = intPower.Exponent };
+                        return new CompileResult { Element = element, InputTapeIndices = new int[] { baseIndex } };
                     });
             }
 
-            public Compiled.Term Visit(Product product)
+            public int Visit(Product product)
             {
-                return CachedCompile(product, () =>
+                return Compile(product, () =>
                     {
-                        double constant = 1;
-                        var children = new Compiled.Term[2];
-                        int childrenCount = 0;
-
-                        // compile left and right parts of the product
-                        var compiledLeft = product.Left.Accept(this);
-                        var compiledRight = product.Right.Accept(this);
-
-                        // check if the left part compiles to a constant and update as necessary
-                        if (compiledLeft is Compiled.Constant)
-                            constant = constant * ((Compiled.Constant)compiledLeft).Multiplier;
-                        else
-                            children[childrenCount++] = compiledLeft;
-
-                        // check if the right part compiles to a constant and update as necessary
-                        if (compiledRight is Compiled.Constant)
-                            constant = constant * ((Compiled.Constant)compiledRight).Multiplier;
-                        else
-                            children[childrenCount++] = compiledRight;
-
-                        if (childrenCount == 2) // everything is not a constant
-                            return new Compiled.Product { Left = compiledLeft, Right = compiledRight };
-                        else if (childrenCount == 1) // we have a constant and a non-constant child
+                        var leftIndex = product.Left.Accept(this);
+                        var rightIndex = product.Right.Accept(this);
+                        var element = new Compiled.Product
                         {
-                            var child = children[0];
-                            child.Multiplier *= constant;
-                            return child;
-                        }
-                        else // childrenCount == 0 --> everything is a constant
-                            return new Compiled.Constant { Multiplier = constant };
-                    });
-            }
+                            Left = leftIndex,
+                            Right = rightIndex,
+                        };
 
-            public Compiled.Term Visit(Sum sum)
-            {
-                return CachedCompile(sum, () =>
-                    {
-                        var compiledChildren = new List<Compiled.Term>();
-                        double bias = 0;
-                        foreach (var child in sum.Terms)
+                        return new CompileResult
                         {
-                            var compiledChild = child.Accept(this);
-                            if (compiledChild is Compiled.Constant)
-                                bias += ((Compiled.Constant)compiledChild).Multiplier;
-                            else
-                                compiledChildren.Add(compiledChild);
-                        }
-
-                        if (compiledChildren.Count == 0)
-                            return new Compiled.Constant { Multiplier = bias };
-                        else
-                            return new Compiled.Sum { Terms = compiledChildren.ToArray(), Bias = bias };
-                    });
-            }
-
-            public Compiled.Term Visit(Log log)
-            {
-                return CachedCompile(log, () =>
-                    {
-                        var compiledArg = log.Arg.Accept(this);
-                        if (compiledArg is Compiled.Constant)
-                        {
-                            var value = ((Compiled.Constant)compiledArg).Multiplier;
-                            value = Math.Log(value);
-                            return new Compiled.Constant { Multiplier = value };
-                        }
-                        else
-                            return new Compiled.Log { Arg = compiledArg };
-                    });
-            }
-
-            public Compiled.Term Visit(Variable variable)
-            {
-                return new Compiled.Variable { Index = indexOf[variable] };
-            }
-
-            public Compiled.Term Visit(Exp exp)
-            {
-                return CachedCompile(exp, () =>
-                    {
-                        var compiledArg = exp.Arg.Accept(this);
-                        if (compiledArg is Compiled.Constant)
-                        {
-                            var value = ((Compiled.Constant)compiledArg).Multiplier;
-                            value = Math.Exp(value);
-                            return new Compiled.Constant { Multiplier = value };
-                        }
-                        else
-                            return new Compiled.Exp { Arg = compiledArg };
-                    });
-            }
-
-            public Compiled.Term Visit(PiecewiseTerm piecewiseTerm)
-            {
-                return CachedCompile(piecewiseTerm, () =>
-                    {
-                        var inequalities = new List<Compiled.Term>();
-                        var terms = new List<Compiled.Term>();
-
-                        foreach (var item in piecewiseTerm.Pieces)
-                        {
-                            inequalities.Add(item.Item1.Term.Accept(this));
-                            terms.Add(item.Item2.Accept(this));
-                        }
-
-                        return new Compiled.Piecewise
-                        {
-                            Terms = terms.ToArray(),
-                            Inequalities = inequalities.ToArray(),
+                            Element = element,
+                            InputTapeIndices = new int[] { leftIndex, rightIndex },
                         };
                     });
             }
 
-            private Compiled.Term CachedCompile(Term term, Func<Compiled.Term> compiler)
+            public int Visit(Sum sum)
             {
-                Compiled.Term result;
-                if (compiledTerms.TryGetValue(term, out result))
+                return Compile(sum, () =>
+                    {
+                        var indicesQuery = from term in sum.Terms
+                                           select term.Accept(this);
+                        var indices = indicesQuery.ToArray();
+                        var element = new Compiled.Sum { Terms = indices };
+                        return new CompileResult
+                        {
+                            Element = element,
+                            InputTapeIndices = indices,
+                        };
+                    });
+            }
+
+            public int Visit(Variable variable)
+            {
+                return indexOf[variable];
+            }
+
+            public int Visit(Log log)
+            {
+                return Compile(log, () =>
+                    {
+                        var argIndex = log.Arg.Accept(this);
+                        var element = new Compiled.Log { Arg = argIndex };
+                        return new CompileResult
+                        {
+                            Element = element,
+                            InputTapeIndices = new int[] { argIndex },
+                        };
+                    });
+            }
+
+            public int Visit(Exp exp)
+            {
+                return Compile(exp, () =>
+                    {
+                        var argIndex = exp.Arg.Accept(this);
+                        var element = new Compiled.Exp { Arg = argIndex };
+                        return new CompileResult
+                        {
+                            Element = element,
+                            InputTapeIndices = new int[] { argIndex },
+                        };
+                    });
+            }
+
+            public int Visit(PiecewiseTerm piecewiseTerm)
+            {
+                throw new NotImplementedException();
+            }
+
+            private int Compile(Term term, Func<CompileResult> compiler)
+            {
+                int index;
+                if (!indexOf.TryGetValue(term, out index))
                 {
-                    if (!(result is Compiled.Constant) && !(result is Compiled.Variable))
-                        result.IsGradientCached = true;
-                    return result;
+                    var compileResult = compiler();
+                    tape.Add(compileResult.Element);
+
+                    index = tape.Count - 1;
+                    indexOf.Add(term, index);
+
+                    inputConnections.Add(new List<Compiled.InputConnection>());
+                    for (int i = 0; i < compileResult.InputTapeIndices.Length; ++i)
+                    {
+                        var inputTapeIndex = compileResult.InputTapeIndices[i];
+                        inputConnections[inputTapeIndex].Add(new Compiled.InputConnection
+                            {
+                                IndexOnTape = index,
+                                ArgumentIndex = i,
+                            });
+                    }
                 }
 
-                result = compiler();
-                compiledTerms[term] = result;
-                return result;
+                return index;
+            }
+
+            private class CompileResult
+            {
+                public Compiled.TapeElement Element;
+                public int[] InputTapeIndices;
             }
         }
-
     }
 }

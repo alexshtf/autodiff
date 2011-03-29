@@ -35,10 +35,6 @@ namespace AutoDiff
 
             var compiled = new CompiledDifferentiator(term, variables);
             return compiled.Calculate(values).Item1;
-
-            //var visitor = new DiffVisitor(term, variables, values);
-            //term.Accept(visitor);
-            //return visitor.Gradient.ToArray(values.Length);
         }
 
         /// <summary>

@@ -91,20 +91,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompiledDifferentiator.Cleanup.cs" />
     <Compile Include="CompiledDifferentiator.Compiler.cs" />
     <Compile Include="CompiledDifferentiator.cs" />
-    <Compile Include="CompiledDifferentiator.Diff.cs" />
     <Compile Include="Compiled\Constant.cs" />
     <Compile Include="Compiled\Exp.cs" />
-    <Compile Include="Compiled\ITermVisitor.cs" />
-    <Compile Include="Compiled\ITermVisitor.out.cs" />
+    <Compile Include="Compiled\InputConnection.cs" />
     <Compile Include="Compiled\Log.cs" />
-    <Compile Include="Compiled\Piecewise.cs" />
     <Compile Include="Compiled\Power.cs" />
     <Compile Include="Compiled\Product.cs" />
     <Compile Include="Compiled\Sum.cs" />
-    <Compile Include="Compiled\Term.cs" />
+    <Compile Include="Compiled\TapeElement.cs" />
     <Compile Include="Compiled\Variable.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="Differentiator.cs" />

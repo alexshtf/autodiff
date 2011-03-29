@@ -5,18 +5,8 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class Exp : Term
+	class Exp : TapeElement
     {
-        public Term Arg;
-
-        public override void Accept(ITermVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
-        {
-            return visitor.Visit(this);
-        }
-    }
+        public int Arg;
+	}
 }
