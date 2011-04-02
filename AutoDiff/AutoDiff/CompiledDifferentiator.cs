@@ -10,7 +10,7 @@ namespace AutoDiff
     /// <summary>
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
-    public partial class CompiledDifferentiator
+    internal partial class CompiledDifferentiator : ICompiledTerm
     {
         private readonly Compiled.TapeElement[] tape;
 
@@ -35,7 +35,7 @@ namespace AutoDiff
 
         public int Dimension { get; private set; }
 
-        public double Eval(double[] arg)
+        public double Evaluate(double[] arg)
         {
             Contract.Requires(arg != null);
             Contract.Requires(arg.Length == Dimension);
@@ -43,7 +43,7 @@ namespace AutoDiff
             return tape.Last().Value;
         }
 
-        public Tuple<double[], double> Calculate(double[] arg)
+        public Tuple<double[], double> Differentiate(double[] arg)
         {
             Contract.Requires(arg != null);
             Contract.Requires(arg.Length == Dimension);

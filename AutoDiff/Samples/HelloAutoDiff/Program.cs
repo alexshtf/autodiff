@@ -22,8 +22,8 @@ namespace HelloAutoDiff
             double[] point = { 1, -2 };
             
             // calculate the value and the gradient at the point (x, y) = (1, -2)
-            double eval = Evaluator.Evaluate(func, vars, point);
-            double[] gradient = Differentiator.Differentiate(func, vars, point);
+            double eval = func.Evaluate(vars, point);
+            double[] gradient = func.Differentiate(vars, point);
 
             // write the results
             Console.WriteLine("f(1, -2) = " + eval);

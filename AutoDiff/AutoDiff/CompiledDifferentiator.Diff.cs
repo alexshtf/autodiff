@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace AutoDiff
 {
-    public partial class CompiledDifferentiator
+    partial class CompiledDifferentiator
     {
         private class DiffVisitor : Compiled.ITapeVisitor
         {

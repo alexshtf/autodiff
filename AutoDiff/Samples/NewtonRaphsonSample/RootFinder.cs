@@ -19,14 +19,15 @@ namespace NewtonRaphsonSample
         public static double NewtonRaphson(Term func, Variable x, double initGuess, int maxIterations = 10)
         {
             double guess = initGuess;
+            var compiledFunc = func.Compile(x);
             for (int i = 0; i < maxIterations; ++i) // perform maxIterations iterations
             {
-                // evaluate f(x)
-                var fx = Evaluator.Evaluate(func, new Variable[] { x }, new double[] { guess });
-
-                // evaluate f'(x)
-                var gradient = Differentiator.Differentiate(func, new Variable[] { x }, new double[] { guess });
-                var dfx = gradient[0]; // this is a single-variable function. First gradient element is the derivative
+                // perform differentiation
+                var diffResult = compiledFunc.Differentiate(guess);
+                
+                // extract function value + derivative (the first element of the gradient)
+                var dfx = diffResult.Item1[0];
+                var fx = diffResult.Item2;
 
                 // newton-raphson iteration: x <- x - f(x) / f'(x)
                 guess = guess - fx / dfx;

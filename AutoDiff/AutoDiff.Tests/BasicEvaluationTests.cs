@@ -16,7 +16,7 @@ namespace AutoDiff.Tests
         public void TestZero()
         {
             var zero = TermBuilder.Constant(0);
-            var value = Evaluator.Evaluate(zero, NoVars, NoVals);
+            var value = zero.Evaluate(NoVars, NoVals);
             Assert.AreEqual(0, value);
         }
 
@@ -24,7 +24,7 @@ namespace AutoDiff.Tests
         public void TestConstant()
         {
             var constant = TermBuilder.Constant(5);
-            var value = Evaluator.Evaluate(constant, NoVars, NoVals);
+            var value = constant.Evaluate(NoVars, NoVals);
             Assert.AreEqual(5, value);
         }
 
@@ -34,7 +34,7 @@ namespace AutoDiff.Tests
             var c1 = TermBuilder.Constant(5);
             var c2 = TermBuilder.Constant(7);
             var sum = c1 + c2;
-            var value = Evaluator.Evaluate(sum, NoVars, NoVals);
+            var value = sum.Evaluate(NoVars, NoVals);
             Assert.AreEqual(12, value);
         }
 
@@ -44,7 +44,7 @@ namespace AutoDiff.Tests
             var c = TermBuilder.Constant(5);
             var v = new Variable();
             var sum = c + v;
-            var value = Evaluator.Evaluate(sum, Utils.Array(v), Utils.Array(7.0));
+            var value = sum.Evaluate(Utils.Array(v), Utils.Array(7.0));
             Assert.AreEqual(12, value);
         }
 
@@ -54,7 +54,7 @@ namespace AutoDiff.Tests
             var c1 = TermBuilder.Constant(12);
             var c2 = TermBuilder.Constant(5);
             var diff = c1 - c2;
-            var value = Evaluator.Evaluate(diff, NoVars, NoVals);
+            var value = diff.Evaluate(NoVars, NoVals);
             Assert.AreEqual(7, value);
         }
 
@@ -64,7 +64,7 @@ namespace AutoDiff.Tests
             var c = TermBuilder.Constant(12);
             var v = new Variable();
             var diff = c - v;
-            var value = Evaluator.Evaluate(diff, Utils.Array(v), Utils.Array(5.0));
+            var value = diff.Evaluate(Utils.Array(v), Utils.Array(5.0));
             Assert.AreEqual(7, value);
         }
 
@@ -74,7 +74,7 @@ namespace AutoDiff.Tests
             var v1 = new Variable();
             var v2 = new Variable();
             var prod = v1 * v2;
-            var value = Evaluator.Evaluate(prod, Utils.Array(v1, v2), Utils.Array(3.0, -5));
+            var value = prod.Evaluate(Utils.Array(v1, v2), Utils.Array(3.0, -5));
             Assert.AreEqual(-15, value);
         }
 
@@ -83,7 +83,7 @@ namespace AutoDiff.Tests
         {
             var c = TermBuilder.Constant(3);
             var pow = TermBuilder.Power(c, 3);
-            var value = Evaluator.Evaluate(pow, NoVars, NoVals);
+            var value = pow.Evaluate(NoVars, NoVals);
             Assert.AreEqual(27, value);
         }
 
@@ -92,9 +92,9 @@ namespace AutoDiff.Tests
         {
             var v = new Variable();
             var sqDiff = TermBuilder.Power(v - 5, 2);
-            
-            var r1 = Evaluator.Evaluate(sqDiff, Utils.Array(v), Utils.Array(3.0));
-            var r2 = Evaluator.Evaluate(sqDiff, Utils.Array(v), Utils.Array(5.0));
+
+            var r1 = sqDiff.Evaluate(Utils.Array(v), Utils.Array(3.0));
+            var r2 = sqDiff.Evaluate(Utils.Array(v), Utils.Array(5.0));
 
             Assert.AreEqual(4, r1);
             Assert.AreEqual(0, r2);
@@ -109,9 +109,9 @@ namespace AutoDiff.Tests
                 3 * TermBuilder.Power(v[1] - 4, 2),
                 2 * TermBuilder.Power(v[2] + 3, 2));
 
-            var r1 = Evaluator.Evaluate(sqDiff, v, Utils.Array(5.0, 4.0, -3.0)); 
-            var r2 = Evaluator.Evaluate(sqDiff, v, Utils.Array(3.0, 4.0, -3.0));
-            var r3 = Evaluator.Evaluate(sqDiff, v, Utils.Array(4.0, 4.0, 0.0));
+            var r1 = sqDiff.Evaluate(v, Utils.Array(5.0, 4.0, -3.0));
+            var r2 = sqDiff.Evaluate(v, Utils.Array(3.0, 4.0, -3.0));
+            var r3 = sqDiff.Evaluate(v, Utils.Array(4.0, 4.0, 0.0));
 
             Assert.AreEqual(r1, 0);
             Assert.AreEqual(r2, 48);
