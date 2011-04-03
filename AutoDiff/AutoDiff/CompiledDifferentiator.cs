@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics.Contracts;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace AutoDiff
 {
@@ -31,6 +32,7 @@ namespace AutoDiff
             tape = tapeList.ToArray();
 
             Dimension = variables.Length;
+            Variables = Array.AsReadOnly(variables);
         }
 
         public int Dimension { get; private set; }
@@ -91,5 +93,7 @@ namespace AutoDiff
         {
             return tape[index].Value;
         }
+
+        public ReadOnlyCollection<Variable> Variables { get; private set; }
     }
 }
