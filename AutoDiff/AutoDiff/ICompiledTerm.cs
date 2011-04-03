@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 
 namespace AutoDiff
 {
     /// <summary>
     /// Represents a term after it has been compiled for efficient evaluation/differentiation.
     /// </summary>
+    [ContractClass(typeof(CompiledTermContract))]
     public interface ICompiledTerm
     {
         /// <summary>
@@ -39,4 +41,34 @@ namespace AutoDiff
         /// </remarks>
         ReadOnlyCollection<Variable> Variables { get; }
     }
+
+    [ContractClassFor(typeof(ICompiledTerm))]
+    class CompiledTermContract : ICompiledTerm
+    {
+        public double Evaluate(params double[] arg)
+        {
+            Contract.Requires(arg != null);
+            Contract.Requires(arg.Length == Variables.Count);
+            return default(double);
+        }
+
+        public Tuple<double[], double> Differentiate(params double[] arg)
+        {
+            Contract.Requires(arg != null);
+            Contract.Requires(arg.Length == Variables.Count);
+            Contract.Ensures(Contract.Result<Tuple<double[], double>>() != null);
+            Contract.Ensures(Contract.Result<Tuple<double[], double>>().Item1.Length == arg.Length);
+            return null;
+        }
+
+        public ReadOnlyCollection<Variable> Variables
+        {
+            get 
+            { 
+                Contract.Ensures(Contract.Result<ReadOnlyCollection<Variable>>() != null);
+                return null;
+            }
+        }
+    }
+
 }
