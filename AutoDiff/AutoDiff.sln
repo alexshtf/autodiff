@@ -20,9 +20,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewtonRaphsonSample", "Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff.PerfTest", "AutoDiff.PerfTest\AutoDiff.PerfTest.csproj", "{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedHelloAutodiff", "Samples\AdvancedHelloAutodiff\AdvancedHelloAutodiff.csproj", "{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs15
 		SccLocalPath0 = .
@@ -43,6 +45,10 @@ Global
 		SccProjectUniqueName5 = AutoDiff.PerfTest\\AutoDiff.PerfTest.csproj
 		SccProjectName5 = AutoDiff.PerfTest
 		SccLocalPath5 = AutoDiff.PerfTest
+		SccProjectUniqueName6 = Samples\\AdvancedHelloAutodiff\\AdvancedHelloAutodiff.csproj
+		SccProjectTopLevelParentUniqueName6 = AutoDiff.sln
+		SccProjectName6 = Samples/AdvancedHelloAutodiff
+		SccLocalPath6 = Samples\\AdvancedHelloAutodiff
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoDiff.vsmdi
@@ -106,6 +112,16 @@ Global
 		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|x86.ActiveCfg = Release|x86
 		{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}.Release|x86.Build.0 = Release|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Debug|x86.ActiveCfg = Debug|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Debug|x86.Build.0 = Debug|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Release|Any CPU.ActiveCfg = Release|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Release|x86.ActiveCfg = Release|x86
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,5 +129,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2127FB51-C9DC-4093-844E-E86130D48B45} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 		{73354289-B1A6-4BD1-B2A0-C29F1426C721} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
+		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 	EndGlobalSection
 EndGlobal
