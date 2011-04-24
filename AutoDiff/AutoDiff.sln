@@ -22,6 +22,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff.PerfTest", "AutoDi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedHelloAutodiff", "Samples\AdvancedHelloAutodiff\AdvancedHelloAutodiff.csproj", "{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{1E440812-986E-4DA8-8176-5171E2FE4C51}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet\AutoDiff.0.3.4131.19185.nupkg = NuGet\AutoDiff.0.3.4131.19185.nupkg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 7
