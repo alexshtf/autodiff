@@ -199,15 +199,13 @@ namespace AutoDiff.Tests
         [TestMethod]
         public void DiffUnaryComplex()
         {
-            var v = Utils.Array(new Variable(), new Variable());
-
-            Func<double, double> eval = x => x * x;
-            Func<double, double> diff = x => 2 * x;
+            var square = UnaryFunc.Factory(x => x * x, x => 2 * x);
 
             // f(x, y) = x^2 + 2 * y^2
             // df/dx = 2 * x
             // df/dy = 4 * y
-            var term = new UnaryFunc(eval, diff, v[0]) + 2 * new UnaryFunc(eval, diff, v[1]);
+            var v = Utils.Array(new Variable(), new Variable());
+            var term = square(v[0]) + 2 * square(v[1]);
 
             var y1 = term.Differentiate(v, Utils.Array(1.0, 0.0));  // (2.0, 0.0)
             var y2 = term.Differentiate(v, Utils.Array(0.0, 1.0));  // (0.0, 4.0)

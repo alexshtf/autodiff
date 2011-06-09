@@ -21,6 +21,7 @@ namespace AutoDiff
         /// </summary>
         /// <param name="eval">The evaluation method for the custom function.</param>
         /// <param name="diff">The differentiation method for the custom function.</param>
+        /// <param name="argument">The argument term for the unary function</param>
         public UnaryFunc(Func<double, double> eval, Func<double, double> diff, Term argument)
         {
             Contract.Requires(eval != null);
@@ -34,6 +35,22 @@ namespace AutoDiff
             this.eval = eval;
             this.diff = diff;
             this.argument = argument;
+        }
+
+        /// <summary>
+        /// Constructs a factory delegate that creates similar unary functions for different terms.
+        /// </summary>
+        /// <param name="eval">The evaluation method for the custom function.</param>
+        /// <param name="diff">The differentiation method for the custom function.</param>
+        /// <returns>The described factory delegate</returns>
+        public static Func<Term, UnaryFunc> Factory(Func<double, double> eval, Func<double, double> diff)
+        {
+            Contract.Requires(eval != null);
+            Contract.Requires(diff != null);
+            Contract.Ensures(Contract.Result<Func<Term, UnaryFunc>>() != null);
+
+            Func<Term, UnaryFunc> result = term => new UnaryFunc(eval, diff, term);
+            return result;
         }
 
         /// <summary>
