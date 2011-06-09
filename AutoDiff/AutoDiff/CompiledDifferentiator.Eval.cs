@@ -51,10 +51,17 @@ namespace AutoDiff
             {
             }
 
+            public void Visit(Compiled.UnaryFunc elem)
+            {
+                elem.Value = elem.Eval(ValueOf(elem.Arg));
+            }
+
             private double ValueOf(int index)
             {
                 return tape[index].Value;
             }
+
+            
         }
     }
 }

@@ -104,6 +104,7 @@
     <Compile Include="Compiled\Product.cs" />
     <Compile Include="Compiled\Sum.cs" />
     <Compile Include="Compiled\TapeElement.cs" />
+    <Compile Include="Compiled\UnaryFunc.cs" />
     <Compile Include="Compiled\Variable.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="Exp.cs" />

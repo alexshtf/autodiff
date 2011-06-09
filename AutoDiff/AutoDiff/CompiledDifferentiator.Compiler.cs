@@ -125,7 +125,16 @@ namespace AutoDiff
 
             public int Visit(UnaryFunc func)
             {
-                throw new NotImplementedException();
+                return Compile(func, () =>
+                    {
+                        var argIndex = func.Argument.Accept(this);
+                        var element = new Compiled.UnaryFunc(func.Eval, func.Diff) { Arg = argIndex };
+                        return new CompileResult
+                        {
+                            Element = element,
+                            InputTapeIndices = new int[] { argIndex },
+                        };
+                    });
             }
 
             private int Compile(Term term, Func<CompileResult> compiler)

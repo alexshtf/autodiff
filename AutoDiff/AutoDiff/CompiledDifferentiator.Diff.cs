@@ -53,6 +53,11 @@ namespace AutoDiff
                 LocalDerivative = elem.Derivative;
             }
 
+            public void Visit(Compiled.UnaryFunc elem)
+            {
+                LocalDerivative = elem.Derivative * elem.Diff(ValueOf(elem.Arg));
+            }
+
             public void Visit(Compiled.Variable var)
             {
             }
@@ -61,6 +66,7 @@ namespace AutoDiff
             {
                 return tape[index].Value;
             }
+
         }
     }
 }
