@@ -117,5 +117,44 @@ namespace AutoDiff.Tests
             Assert.AreEqual(r2, 48);
             Assert.AreEqual(r3, 30);
         }
+
+        [TestMethod]
+        public void TestUnaryFuncSimple()
+        {
+            var v = new Variable();
+
+            Func<double, double> eval = x => x * x;
+            Func<double, double> diff = x => 2 * x;
+
+            var term = new UnaryFunc(eval, diff, v);
+
+            var y1 = term.Evaluate(Utils.Array(v), Utils.Array(1.0));
+            var y2 = term.Evaluate(Utils.Array(v), Utils.Array(2.0));
+            var y3 = term.Evaluate(Utils.Array(v), Utils.Array(3.0));
+
+            Assert.AreEqual(1.0, y1);
+            Assert.AreEqual(4.0, y2);
+            Assert.AreEqual(9.0, y3);
+        }
+
+        [TestMethod]
+        public void TestUnaryFuncComplex()
+        {
+            var v = Utils.Array(new Variable(), new Variable());
+
+            Func<double, double> eval = x => x * x;
+            Func<double, double> diff = x => 2 * x;
+
+            // f(x, y) = x^2 + 2 * y^2
+            var term = new UnaryFunc(eval, diff, v[0]) + 2 * new UnaryFunc(eval, diff, v[1]);
+
+            var y1 = term.Evaluate(v, Utils.Array(1.0, 0.0));  // 1 + 0 = 1
+            var y2 = term.Evaluate(v, Utils.Array(0.0, 1.0));  // 0 + 2 = 2
+            var y3 = term.Evaluate(v, Utils.Array(2.0, 1.0));  // 4 + 2 = 6
+
+            Assert.AreEqual(1, y1);
+            Assert.AreEqual(2, y2);
+            Assert.AreEqual(6, y3);
+        }
     }
 }

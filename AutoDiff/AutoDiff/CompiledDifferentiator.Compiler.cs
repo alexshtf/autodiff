@@ -123,6 +123,11 @@ namespace AutoDiff
                     });
             }
 
+            public int Visit(UnaryFunc func)
+            {
+                throw new NotImplementedException();
+            }
+
             private int Compile(Term term, Func<CompileResult> compiler)
             {
                 int index;

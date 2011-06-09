@@ -66,5 +66,12 @@ namespace AutoDiff
         /// <param name="exp">The input term.</param>
         /// <returns>The result of the computation.</returns>
         TResult Visit(Exp exp);
+
+        /// <summary>
+        /// Computes a value for an unary function
+        /// </summary>
+        /// <param name="func">The unary function</param>
+        /// <returns>The result of the computation</returns>
+        TResult Visit(UnaryFunc func);
     }
 }
