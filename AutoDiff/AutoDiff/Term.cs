@@ -45,7 +45,14 @@ namespace AutoDiff
         /// <returns>A term representing the sum of <see cref="left"/> and <see cref="right"/>.</returns>
         public static Term operator+(Term left, Term right)
         {
-            return TermBuilder.Sum(left, right);
+            if (left is Zero && right is Zero)
+                return new Zero();
+            else if (left is Zero)
+                return right;
+            else if (right is Zero)
+                return left;
+            else
+                return TermBuilder.Sum(left, right);
         }
 
         /// <summary>
