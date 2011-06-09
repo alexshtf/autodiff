@@ -91,6 +91,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryFunc.cs" />
     <Compile Include="CompiledDifferentiator.Compiler.cs" />
     <Compile Include="CompiledDifferentiator.cs" />
     <Compile Include="CompiledDifferentiator.Diff.cs" />

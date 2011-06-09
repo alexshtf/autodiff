@@ -215,5 +215,49 @@ namespace AutoDiff.Tests
             CollectionAssert.AreEqual(Utils.Array(0.0, 4.0), y2);
             CollectionAssert.AreEqual(Utils.Array(4.0, 4.0), y3);
         }
+
+        [TestMethod]
+        public void DiffBinarySimple()
+        {
+            var v = Utils.Array(new Variable(), new Variable());
+            var func = BinaryFunc.Factory(
+                (x, y) => x * x - x * y,
+                (x, y) => Tuple.Create(2 * x + y, -x));
+
+            // f(x, y) = x² - xy
+            // df/dx = 2x - y
+            // df/dy = -x
+            var term = func(v[0], v[1]);
+
+            var y1 = term.Differentiate(v, Utils.Array(1.0, 0.0)); // (2, -1)
+            var y2 = term.Differentiate(v, Utils.Array(0.0, 1.0)); // (-1, 0)
+            var y3 = term.Differentiate(v, Utils.Array(1.0, 2.0)); // (0, -1)
+
+            CollectionAssert.AreEqual(Utils.Array(2.0, -1.0), y1);
+            CollectionAssert.AreEqual(Utils.Array(-1.0, 0.0), y2);
+            CollectionAssert.AreEqual(Utils.Array(0.0, -1.0), y3);
+        }
+
+        [TestMethod]
+        public void DiffBinaryComplex()
+        {
+            var v = Utils.Array(new Variable(), new Variable());
+            var func = BinaryFunc.Factory(
+                (x, y) => x * x - x * y,
+                (x, y) => Tuple.Create(2 * x + y, -x));
+
+            // f(x, y) = x² - xy - y² + xy = x² - y²
+            // df/dx = 2x
+            // df/dy = 2y
+            var term = func(v[0], v[1]) - func(v[1], v[0]);
+
+            var y1 = term.Differentiate(v, Utils.Array(1.0, 0.0)); // (2, 0)
+            var y2 = term.Differentiate(v, Utils.Array(0.0, 1.0)); // (0, 2)
+            var y3 = term.Differentiate(v, Utils.Array(2.0, 1.0)); // (4, 2)
+
+            CollectionAssert.AreEqual(Utils.Array(2.0, 0.0), y1);
+            CollectionAssert.AreEqual(Utils.Array(0.0, 2.0), y2);
+            CollectionAssert.AreEqual(Utils.Array(4.0, 2.0), y3);
+        }
     }
 }

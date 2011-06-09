@@ -155,5 +155,44 @@ namespace AutoDiff.Tests
             Assert.AreEqual(2, y2);
             Assert.AreEqual(6, y3);
         }
+
+        [TestMethod]
+        public void TestBinaryFuncSimple()
+        {
+            var v = Utils.Array(new Variable(), new Variable());
+            var func = BinaryFunc.Factory(
+                (x, y) => x * x - x * y, 
+                (x, y) => Tuple.Create(2 * x + y, -x));
+
+            var term = func(v[0], v[1]);
+
+            var y1 = term.Evaluate(v, Utils.Array(1.0, 0.0)); // 1 - 0 = 1
+            var y2 = term.Evaluate(v, Utils.Array(0.0, 1.0)); // 0 - 0 = 0
+            var y3 = term.Evaluate(v, Utils.Array(1.0, 2.0)); // 1 - 2 = -1
+
+            Assert.AreEqual(1.0, y1);
+            Assert.AreEqual(0.0, y2);
+            Assert.AreEqual(-1.0, y3);
+        }
+
+        [TestMethod]
+        public void TestBinaryFuncComplex()
+        {
+            var v = Utils.Array(new Variable(), new Variable());
+            var func = BinaryFunc.Factory(
+                (x, y) => x * x - x * y,
+                (x, y) => Tuple.Create(2 * x + y, -x));
+
+            // f(x, y) = x² - xy - y² + xy = x² - y²
+            var term = func(v[0], v[1]) - func(v[1], v[0]);
+
+            var y1 = term.Evaluate(v, Utils.Array(1.0, 0.0)); // 1 - 0 = 1
+            var y2 = term.Evaluate(v, Utils.Array(0.0, 1.0)); // 0 - 1 = -1
+            var y3 = term.Evaluate(v, Utils.Array(2.0, 1.0)); // 4 - 1 = 3
+
+            Assert.AreEqual(1.0, y1);
+            Assert.AreEqual(-1.0, y2);
+            Assert.AreEqual(3.0, y3);
+        }
     }
 }
