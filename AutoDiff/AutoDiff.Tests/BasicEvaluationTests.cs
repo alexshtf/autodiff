@@ -162,7 +162,7 @@ namespace AutoDiff.Tests
             var v = Utils.Array(new Variable(), new Variable());
             var func = BinaryFunc.Factory(
                 (x, y) => x * x - x * y, 
-                (x, y) => Tuple.Create(2 * x + y, -x));
+                (x, y) => Tuple.Create(2 * x - y, -x));
 
             var term = func(v[0], v[1]);
 
@@ -181,7 +181,7 @@ namespace AutoDiff.Tests
             var v = Utils.Array(new Variable(), new Variable());
             var func = BinaryFunc.Factory(
                 (x, y) => x * x - x * y,
-                (x, y) => Tuple.Create(2 * x + y, -x));
+                (x, y) => Tuple.Create(2 * x - y, -x));
 
             // f(x, y) = x² - xy - y² + xy = x² - y²
             var term = func(v[0], v[1]) - func(v[1], v[0]);

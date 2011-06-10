@@ -73,5 +73,12 @@ namespace AutoDiff
         /// <param name="func">The unary function</param>
         /// <returns>The result of the computation</returns>
         TResult Visit(UnaryFunc func);
+
+        /// <summary>
+        /// Computes a value for a binary function
+        /// </summary>
+        /// <param name="func">The binary function</param>
+        /// <returns>The result of the computation</returns>
+        TResult Visit(BinaryFunc binaryFunc);
     }
 }

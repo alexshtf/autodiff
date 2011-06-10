@@ -48,6 +48,15 @@ namespace AutoDiff
                     LocalDerivative = elem.Derivative * ValueOf(elem.Left);
             }
 
+            public void Visit(Compiled.BinaryFunc elem)
+            {
+                Debug.Assert(ArgumentIndex == 0 || ArgumentIndex == 1);
+                if (ArgumentIndex == 0)
+                    LocalDerivative = elem.Derivative * elem.Diff(ValueOf(elem.Left), ValueOf(elem.Right)).Item1;
+                else
+                    LocalDerivative = elem.Derivative * elem.Diff(ValueOf(elem.Left), ValueOf(elem.Right)).Item2;
+            }
+
             public void Visit(Compiled.Sum elem)
             {
                 LocalDerivative = elem.Derivative;
@@ -66,6 +75,7 @@ namespace AutoDiff
             {
                 return tape[index].Value;
             }
+
 
         }
     }

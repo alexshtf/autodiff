@@ -63,5 +63,11 @@ namespace AutoDiff
         /// </summary>
         /// <param name="func">The unary function</param>
         void Visit(UnaryFunc func);
+
+        /// <summary>
+        /// Performs an action for a binary function.
+        /// </summary>
+        /// <param name="func">The binary function</param>
+        void Visit(BinaryFunc binaryFunc);
     }
 }

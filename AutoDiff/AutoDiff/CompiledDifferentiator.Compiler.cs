@@ -137,6 +137,29 @@ namespace AutoDiff
                     });
             }
 
+
+            public int Visit(BinaryFunc func)
+            {
+                return Compile(func, () =>
+                    {
+                        var leftIndex = func.Left.Accept(this);
+                        var rightIndex = func.Right.Accept(this);
+                        var element = new Compiled.BinaryFunc
+                        {
+                            Eval = func.Eval,
+                            Diff = func.Diff,
+                            Left = leftIndex,
+                            Right = rightIndex,
+                        };
+
+                        return new CompileResult
+                        {
+                            Element = element,
+                            InputTapeIndices = new int[] { leftIndex, rightIndex },
+                        };
+                    });
+            }
+
             private int Compile(Term term, Func<CompileResult> compiler)
             {
                 int index;
@@ -168,6 +191,7 @@ namespace AutoDiff
                 public Compiled.TapeElement Element;
                 public int[] InputTapeIndices;
             }
+
         }
     }
 }

@@ -87,7 +87,7 @@ namespace AutoDiff
         /// <param name="visitor">The term visitor to accept</param>
         public override void Accept(ITermVisitor visitor)
         {
-            throw new NotImplementedException();
+            visitor.Visit(this);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace AutoDiff
         /// <returns>The result from the visitor's visit function.</returns>
         public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
         {
-            throw new NotImplementedException();
+            return visitor.Visit(this);
         }
     }
 }

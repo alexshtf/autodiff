@@ -56,12 +56,16 @@ namespace AutoDiff
                 elem.Value = elem.Eval(ValueOf(elem.Arg));
             }
 
+            public void Visit(Compiled.BinaryFunc elem)
+            {
+                elem.Value = elem.Eval(ValueOf(elem.Left), ValueOf(elem.Right));
+            }
+
             private double ValueOf(int index)
             {
                 return tape[index].Value;
             }
 
-            
         }
     }
 }
