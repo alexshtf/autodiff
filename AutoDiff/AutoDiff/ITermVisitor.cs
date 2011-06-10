@@ -68,6 +68,6 @@ namespace AutoDiff
         /// Performs an action for a binary function.
         /// </summary>
         /// <param name="func">The binary function</param>
-        void Visit(BinaryFunc binaryFunc);
+        void Visit(BinaryFunc func);
     }
 }

@@ -42,7 +42,7 @@ namespace AutoDiff
         /// </summary>
         /// <param name="left">First term in the sum</param>
         /// <param name="right">Second term in the sum</param>
-        /// <returns>A term representing the sum of <see cref="left"/> and <see cref="right"/>.</returns>
+        /// <returns>A term representing the sum of <paramref name="left"/> and <paramref name="right"/>.</returns>
         public static Term operator+(Term left, Term right)
         {
             if (left is Zero && right is Zero)
@@ -60,7 +60,7 @@ namespace AutoDiff
         /// </summary>
         /// <param name="left">The first term in the product</param>
         /// <param name="right">The second term in the product</param>
-        /// <returns>A term representing the product of <see cref="left"/> and <see cref="right"/>.</returns>
+        /// <returns>A term representing the product of <paramref name="left"/> and <paramref name="right"/>.</returns>
         public static Term operator*(Term left, Term right)
         {
             return TermBuilder.Product(left, right);

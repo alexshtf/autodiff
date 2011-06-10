@@ -25,6 +25,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{1E440812-986E-4DA8-8176-5171E2FE4C51}"
 	ProjectSection(SolutionItems) = preProject
 		NuGet\AutoDiff.0.3.4131.19185.nupkg = NuGet\AutoDiff.0.3.4131.19185.nupkg
+		NuGet\AutoDiff.0.4.4178.23369.nupkg = NuGet\AutoDiff.0.4.4178.23369.nupkg
 	EndProjectSection
 EndProject
 Global

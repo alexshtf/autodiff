@@ -79,6 +79,6 @@ namespace AutoDiff
         /// </summary>
         /// <param name="func">The binary function</param>
         /// <returns>The result of the computation</returns>
-        TResult Visit(BinaryFunc binaryFunc);
+        TResult Visit(BinaryFunc func);
     }
 }

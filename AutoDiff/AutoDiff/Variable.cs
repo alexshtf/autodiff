@@ -7,7 +7,7 @@ namespace AutoDiff
 {
     /// <summary>
     /// Represents a variable term. Variable terms are substituted for real values during evaluation and
-    /// differentiation. For more info see <see cref="Evaluator"/> and <see cref="Differentiator"/> classes.
+    /// differentiation. 
     /// </summary>
     [Serializable]
     public class Variable : Term

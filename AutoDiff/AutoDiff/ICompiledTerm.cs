@@ -26,7 +26,7 @@ namespace AutoDiff
         /// </summary>
         /// <param name="arg">The point at which to differentiate.</param>
         /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
-        /// the value at <paramref name="arg1"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
+        /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
         /// <paramref name="arg"/>.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
         Tuple<double[], double> Differentiate(params double[] arg);
