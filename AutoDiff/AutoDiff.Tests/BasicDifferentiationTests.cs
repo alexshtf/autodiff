@@ -36,6 +36,16 @@ namespace AutoDiff.Tests
         }
 
         [TestMethod]
+        public void DiffPartialVars()
+        {
+            var x = new Variable();
+            var y = new Variable();
+            var z = new Variable();
+            var grad = y.Differentiate(Utils.Array(x, y, z), Utils.Vector(1, 2, 3));
+            CollectionAssert.AreEqual(Utils.Vector(0, 1, 0), grad);
+        }
+
+        [TestMethod]
         public void DiffProdTwoVars()
         {
             var x = new Variable();

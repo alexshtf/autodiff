@@ -27,6 +27,9 @@ namespace AutoDiff
             Contract.Requires(Contract.ForAll(variables, variable => variable != null));
             Contract.Ensures(Dimension == variables.Length);
 
+            if (function is Variable)
+                function = new IntPower(function, 1);
+
             var tapeList = new List<Compiled.TapeElement>();
             new Compiler(variables, tapeList).Compile(function);
             tape = tapeList.ToArray();

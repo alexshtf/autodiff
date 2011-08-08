@@ -70,9 +70,10 @@ namespace AutoDiff
             Contract.Requires(point != null);
             Contract.Requires(variables.Length == point.Length);
             Contract.Ensures(Contract.Result<double[]>() != null);
-            Contract.Ensures(Contract.Result<double[]>().Length != variables.Length);
+            Contract.Ensures(Contract.Result<double[]>().Length == variables.Length);
 
-            return term.Compile(variables).Differentiate(point).Item1;
+            var result =  term.Compile(variables).Differentiate(point).Item1;
+            return result;
         }
     }
 }
