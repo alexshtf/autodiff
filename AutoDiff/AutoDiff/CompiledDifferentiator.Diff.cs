@@ -57,6 +57,17 @@ namespace AutoDiff
                     LocalDerivative = elem.Derivative * elem.Diff(ValueOf(elem.Left), ValueOf(elem.Right)).Item2;
             }
 
+            public void Visit(Compiled.NaryFunc elem)
+            {
+                Debug.Assert(ArgumentIndex >= 0 && ArgumentIndex < elem.Terms.Length);
+
+                double[] args = new double[elem.Terms.Length];
+                for(int i=0;i<args.Length;i++)
+                    args[i] = ValueOf(elem.Terms[i]);
+
+                LocalDerivative = elem.Derivative * elem.Diff(args)[ArgumentIndex];
+            }
+
             public void Visit(Compiled.Sum elem)
             {
                 LocalDerivative = elem.Derivative;

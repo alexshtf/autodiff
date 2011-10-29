@@ -16,5 +16,6 @@ namespace AutoDiff.Compiled
         void Visit(Variable var);
         void Visit(UnaryFunc elem);
         void Visit(BinaryFunc elem);
+        void Visit(NaryFunc elem);
     }
 }

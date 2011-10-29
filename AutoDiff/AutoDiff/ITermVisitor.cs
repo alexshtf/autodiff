@@ -69,5 +69,11 @@ namespace AutoDiff
         /// </summary>
         /// <param name="func">The binary function</param>
         void Visit(BinaryFunc func);
+
+        /// <summary>
+        /// Performs an action for a n-ary function.
+        /// </summary>
+        /// <param name="func">The n-ary function</param>
+        void Visit(NaryFunc func);
     }
 }

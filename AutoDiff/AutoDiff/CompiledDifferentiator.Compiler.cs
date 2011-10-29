@@ -160,6 +160,30 @@ namespace AutoDiff
                     });
             }
 
+            public int Visit(NaryFunc func)
+            {
+                return Compile(func, () =>
+                {
+                    var indicesQuery = from term in func.Terms
+                                       select term.Accept(this);
+                    var indices = indicesQuery.ToArray();
+
+                    var element = new Compiled.NaryFunc
+                    {
+                        Eval = func.Eval,
+                        Diff = func.Diff,
+                        Terms = indices
+                    };
+
+                    return new CompileResult
+                    {
+                        Element = element,
+                        InputTapeIndices = indices,
+                    };
+                });
+            }
+
+
             private int Compile(Term term, Func<CompileResult> compiler)
             {
                 int index;

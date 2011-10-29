@@ -80,5 +80,12 @@ namespace AutoDiff
         /// <param name="func">The binary function</param>
         /// <returns>The result of the computation</returns>
         TResult Visit(BinaryFunc func);
+
+        /// <summary>
+        /// Computes a value for a n-ary function
+        /// </summary>
+        /// <param name="func">The n-ary function</param>
+        /// <returns>The result of the computation</returns>
+        TResult Visit(NaryFunc func);
     }
 }

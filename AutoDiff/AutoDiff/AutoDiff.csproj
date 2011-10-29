@@ -102,6 +102,7 @@
     <Compile Include="Compiled\InputConnection.cs" />
     <Compile Include="Compiled\ITapeVisitor.cs" />
     <Compile Include="Compiled\Log.cs" />
+    <Compile Include="Compiled\NaryFunc.cs" />
     <Compile Include="Compiled\Power.cs" />
     <Compile Include="Compiled\Product.cs" />
     <Compile Include="Compiled\Sum.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="ITermVisitor.cs" />
     <Compile Include="ITermVisitor.generic.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="NaryFunc.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnaryFunc.cs" />

@@ -61,6 +61,14 @@ namespace AutoDiff
                 elem.Value = elem.Eval(ValueOf(elem.Left), ValueOf(elem.Right));
             }
 
+            public void Visit(Compiled.NaryFunc elem)
+            {
+                double[] args = new double[elem.Terms.Length];
+                for(int i=0;i<args.Length;i++)
+                    args[i] = ValueOf(elem.Terms[i]);
+                elem.Value = elem.Eval(args);
+            }
+
             private double ValueOf(int index)
             {
                 return tape[index].Value;
