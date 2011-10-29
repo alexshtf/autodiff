@@ -67,6 +67,17 @@ namespace AutoDiff
         }
 
         /// <summary>
+        /// Constructs a fraction term of the two given terms.
+        /// </summary>
+        /// <param name="numerator">The numerator of the fraction. That is, the "top" part.</param>
+        /// <param name="denominator">The denominator of the fraction. That is, the "bottom" part.</param>
+        /// <returns>A term representing the fraction <paramref name="numerator"/> over <paramref name="denominator"/>.</returns>
+        public static Term operator/(Term numerator, Term denominator)
+        {
+            return TermBuilder.Product(numerator, TermBuilder.Power(denominator, -1));
+        }
+
+        /// <summary>
         /// Constructs a difference of the two given terms.
         /// </summary>
         /// <param name="left">The first term in the difference</param>
