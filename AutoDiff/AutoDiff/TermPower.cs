@@ -5,18 +5,9 @@ using System.Text;
 
 namespace AutoDiff
 {
-    /// <summary>
-    /// Represents a constant-power function x^n, where n is constant.
-    /// </summary>
-    [Serializable]
-    public class IntPower : Term
+    public class TermPower : Term
     {
-        /// <summary>
-        /// Constructs a new instance of the <see cref="IntPower"/> class.
-        /// </summary>
-        /// <param name="baseTerm">The base of the power function</param>
-        /// <param name="exponent">The exponent of the power function</param>
-        public IntPower(Term baseTerm, double exponent)
+        public TermPower(Term baseTerm, Term exponent)
         {
             Base = baseTerm;
             Exponent = exponent;
@@ -30,7 +21,7 @@ namespace AutoDiff
         /// <summary>
         /// Gets the exponent term of the power function.
         /// </summary>
-        public double Exponent { get; private set; }
+        public Term Exponent { get; private set; }
 
         /// <summary>
         /// Accepts a term visitor.

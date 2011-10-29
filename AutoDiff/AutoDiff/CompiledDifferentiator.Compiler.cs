@@ -44,14 +44,34 @@ namespace AutoDiff
                 return Compile(zero, () => new CompileResult { Element = new Compiled.Constant(0), InputTapeIndices = new int[0] });
             }
 
-            public int Visit(IntPower intPower)
+            public int Visit(ConstPower intPower)
             {
                 return Compile(intPower, () =>
                     {
                         var baseIndex = intPower.Base.Accept(this);
-                        var element = new Compiled.Power { Base = baseIndex, Exponent = intPower.Exponent };
+                        var element = new Compiled.ConstPower { Base = baseIndex, Exponent = intPower.Exponent };
                         return new CompileResult { Element = element, InputTapeIndices = new int[] { baseIndex } };
                     });
+            }
+
+            public int Visit(TermPower power)
+            {
+                return Compile(power, () =>
+                {
+                    var baseIndex = power.Base.Accept(this);
+                    var expIndex = power.Exponent.Accept(this);
+                    var element = new Compiled.TermPower
+                    {
+                        Base = baseIndex,
+                        Exponent = expIndex,
+                    };
+
+                    return new CompileResult
+                    {
+                        Element = element,
+                        InputTapeIndices = new int[] { baseIndex, expIndex },
+                    };
+                });
             }
 
             public int Visit(Product product)
@@ -137,7 +157,6 @@ namespace AutoDiff
                     });
             }
 
-
             public int Visit(BinaryFunc func)
             {
                 return Compile(func, () =>
@@ -215,6 +234,7 @@ namespace AutoDiff
                 public Compiled.TapeElement Element;
                 public int[] InputTapeIndices;
             }
+
 
         }
     }

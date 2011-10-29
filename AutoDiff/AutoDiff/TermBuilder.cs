@@ -91,7 +91,22 @@ namespace AutoDiff
             Contract.Requires(t != null);
             Contract.Ensures(Contract.Result<Term>() != null);
 
-            return new IntPower(t, power);
+            return new ConstPower(t, power);
+        }
+
+        /// <summary>
+        /// Builds a power term given a base term and an exponent term.
+        /// </summary>
+        /// <param name="baseTerm">The base term</param>
+        /// <param name="exponent">The exponent term</param>
+        /// <returns></returns>
+        public static Term Power(Term baseTerm, Term exponent)
+        {
+            Contract.Requires(baseTerm != null);
+            Contract.Requires(exponent != null);
+            Contract.Ensures(Contract.Result<Term>() != null);
+
+            return new TermPower(baseTerm, exponent);
         }
 
         /// <summary>

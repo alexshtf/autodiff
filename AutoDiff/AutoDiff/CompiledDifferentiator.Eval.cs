@@ -30,9 +30,14 @@ namespace AutoDiff
                 elem.Value = Math.Log(ValueOf(elem.Arg));
             }
 
-            public void Visit(Compiled.Power elem)
+            public void Visit(Compiled.ConstPower elem)
             {
                 elem.Value = Math.Pow(ValueOf(elem.Base), elem.Exponent);
+            }
+
+            public void Visit(Compiled.TermPower elem)
+            {
+                elem.Value = Math.Pow(ValueOf(elem.Base), ValueOf(elem.Exponent));
             }
 
             public void Visit(Compiled.Product elem)
@@ -73,6 +78,7 @@ namespace AutoDiff
             {
                 return tape[index].Value;
             }
+
 
         }
     }

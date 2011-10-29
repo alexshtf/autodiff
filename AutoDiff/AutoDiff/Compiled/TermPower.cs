@@ -5,10 +5,10 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class Power : TapeElement
+    class TermPower : TapeElement
     {
         public int Base;
-        public double Exponent;
+        public int Exponent;
 
         public override void Accept(ITapeVisitor visitor)
         {

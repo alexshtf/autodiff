@@ -188,6 +188,29 @@ namespace AutoDiff.Tests
         }
 
         [TestMethod]
+        public void DiffTermPower()
+        {
+            var x = new Variable();
+            var y = new Variable();
+            var func = TermBuilder.Power(x, y);
+
+            var grad = func.Differentiate(Utils.Array(x, y), Utils.Vector(2, 3));
+
+            CollectionAssert.AreEqual(Utils.Vector(12, 8 * Math.Log(2)), grad);
+        }
+
+        [TestMethod]
+        public void DiffTermPowerSingleVariable()
+        {
+            var x = new Variable();
+            var func = TermBuilder.Power(x, x);
+
+            var grad = func.Differentiate(Utils.Array(x), Utils.Vector(2.5));
+
+            CollectionAssert.AreEqual(Utils.Vector(Math.Pow(2.5, 2.5) * (Math.Log(2.5) + 1)), grad);
+        }
+
+        [TestMethod]
         public void DiffUnarySimple()
         {
             var v = new Variable();

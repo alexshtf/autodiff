@@ -23,10 +23,16 @@ namespace AutoDiff
         void Visit(Zero zero);
 
         /// <summary>
+        /// Performs an action for a constant power term.
+        /// </summary>
+        /// <param name="power">The input term.</param>
+        void Visit(ConstPower power);
+
+        /// <summary>
         /// Performs an action for a power term.
         /// </summary>
-        /// <param name="intPower">The input term.</param>
-        void Visit(IntPower intPower);
+        /// <param name="power">The input term.</param>
+        void Visit(TermPower power);
 
         /// <summary>
         /// Performs an action for a product term.

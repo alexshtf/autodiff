@@ -28,7 +28,7 @@ namespace AutoDiff
             Contract.Ensures(Dimension == variables.Length);
 
             if (function is Variable)
-                function = new IntPower(function, 1);
+                function = new ConstPower(function, 1);
 
             var tapeList = new List<Compiled.TapeElement>();
             new Compiler(variables, tapeList).Compile(function);

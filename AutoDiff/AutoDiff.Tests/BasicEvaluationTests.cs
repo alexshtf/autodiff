@@ -88,6 +88,16 @@ namespace AutoDiff.Tests
         }
 
         [TestMethod]
+        public void TestTermPower()
+        {
+            var baseTerm = TermBuilder.Constant(3);
+            var expTerm = TermBuilder.Constant(4);
+            var pow = TermBuilder.Power(baseTerm, expTerm);
+            var value = pow.Evaluate(NoVars, NoVals);
+            Assert.AreEqual(Math.Pow(3, 4), value);
+        }
+
+        [TestMethod]
         public void TestSquareDiff()
         {
             var v = new Variable();

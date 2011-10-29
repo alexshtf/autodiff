@@ -34,9 +34,25 @@ namespace AutoDiff
                 LocalDerivative = elem.Derivative / ValueOf(elem.Arg);
             }
 
-            public void Visit(Compiled.Power elem)
+            public void Visit(Compiled.ConstPower elem)
             {
                 LocalDerivative = elem.Derivative * elem.Exponent * Math.Pow(ValueOf(elem.Base), elem.Exponent - 1);
+            }
+
+            public void Visit(Compiled.TermPower elem)
+            {
+                Debug.Assert(ArgumentIndex == 0 || ArgumentIndex == 1);
+
+                if (ArgumentIndex == 0)
+                {
+                    var exponent = ValueOf(elem.Exponent);
+                    LocalDerivative = elem.Derivative * exponent * Math.Pow(ValueOf(elem.Base), exponent - 1);
+                }
+                else
+                {
+                    var baseValue = ValueOf(elem.Base);
+                    LocalDerivative = elem.Derivative * Math.Pow(baseValue, ValueOf(elem.Exponent)) * Math.Log(baseValue);
+                }
             }
 
             public void Visit(Compiled.Product elem)
@@ -86,8 +102,6 @@ namespace AutoDiff
             {
                 return tape[index].Value;
             }
-
-
         }
     }
 }
