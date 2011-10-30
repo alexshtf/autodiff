@@ -292,5 +292,22 @@ namespace AutoDiff.Tests
             CollectionAssert.AreEqual(Utils.Array(0.0, -2.0), y2);
             CollectionAssert.AreEqual(Utils.Array(4.0, -2.0), y3);
         }
+
+        [TestMethod]
+        public void DiffParametric()
+        {
+            var x = new Variable();
+            var y = new Variable();
+            var z = new Variable();
+            var m = new Variable();
+            var n = new Variable();
+
+            var func = x + 2 * y + 3 * z + 4 * m + 5 * n;
+            var compiled = func.Compile(Utils.Array(x, y, z), Utils.Array(m, n));
+
+            var diffResult = compiled.Differentiate(Utils.Vector(1, 1, 1), Utils.Vector(1, 1));
+            Assert.AreEqual(15, diffResult.Item2); // 15 = 1 + 2 + 3 + 4 + 5
+            CollectionAssert.AreEqual(Utils.Vector(1, 2, 3), diffResult.Item1);
+        }
     }
 }
