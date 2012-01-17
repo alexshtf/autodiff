@@ -11,6 +11,8 @@ namespace AutoDiff
     /// </summary>
     public static class TermUtils
     {
+        private static readonly InterpreterDifferentiatorFactory interpreterDifferentiatorFactory = new InterpreterDifferentiatorFactory();
+
         /// <summary>
         /// Creates a compiled representation of a given term that allows efficient evaluation of the value/gradient.
         /// </summary>
@@ -31,7 +33,7 @@ namespace AutoDiff
             Contract.Ensures(Contract.Result<ICompiledTerm>().Variables.Count == variables.Length);
             Contract.Ensures(Contract.ForAll(0, variables.Length, i => variables[i] == Contract.Result<ICompiledTerm>().Variables[i]));
 
-            return new InterpreterDifferentiator(term, variables);
+            return interpreterDifferentiatorFactory.Create(term, variables);
         }
 
         /// <summary>
