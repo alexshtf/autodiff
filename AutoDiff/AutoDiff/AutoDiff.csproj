@@ -94,6 +94,11 @@
     <Compile Include="BinaryFunc.cs" />
     <Compile Include="Compiled\Compiler.cs" />
     <Compile Include="Compiled\CompilerVisitor.cs" />
+    <Compile Include="ExpressionTreeDifferentiator.cs" />
+    <Compile Include="ExpressionTreeDifferentiator.Diff.cs" />
+    <Compile Include="ExpressionTreeDifferentiator.Eval.cs" />
+    <Compile Include="ExpressionTreeDifferentiator.Methods.cs" />
+    <Compile Include="ExpressionTreeDifferentiatorFactory.cs" />
     <Compile Include="InterpreterDifferentiator.cs" />
     <Compile Include="InterpreterDifferentiator.Diff.cs" />
     <Compile Include="InterpreterDifferentiator.Eval.cs" />

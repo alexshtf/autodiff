@@ -49,6 +49,23 @@ namespace AutoDiff.Tests
         }
 
         [TestMethod]
+        public void TestSumThreeVars()
+        {
+            var x = new Variable();
+            var y = new Variable();
+            var z = new Variable();
+            var sum = TermBuilder.Sum(x, y, z);
+
+            var value1 = sum.Evaluate(Utils.Array(x, y, z), Utils.Vector(3, 4, 0));
+            var value2 = sum.Evaluate(Utils.Array(x, y, z), Utils.Vector(2, -5, 20));
+            var value3 = sum.Evaluate(Utils.Array(x, y, z), Utils.Vector(13, 41, -8));
+            
+            Assert.AreEqual(7, value1);
+            Assert.AreEqual(17, value2);
+            Assert.AreEqual(46, value3);
+        }
+
+        [TestMethod]
         public void TestDiffConst()
         {
             var c1 = TermBuilder.Constant(12);
