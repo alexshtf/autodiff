@@ -31,7 +31,7 @@ namespace AutoDiff
             Contract.Ensures(Contract.Result<ICompiledTerm>().Variables.Count == variables.Length);
             Contract.Ensures(Contract.ForAll(0, variables.Length, i => variables[i] == Contract.Result<ICompiledTerm>().Variables[i]));
 
-            return new CompiledDifferentiator(term, variables);
+            return new InterpreterDifferentiator(term, variables);
         }
 
         /// <summary>

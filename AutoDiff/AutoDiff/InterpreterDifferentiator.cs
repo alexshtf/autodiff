@@ -11,16 +11,16 @@ namespace AutoDiff
     /// <summary>
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
-    internal partial class CompiledDifferentiator : ICompiledTerm
+    internal partial class InterpreterDifferentiator : ICompiledTerm
     {
         private readonly Compiled.TapeElement[] tape;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompiledDifferentiator"/> class.
+        /// Initializes a new instance of the <see cref="InterpreterDifferentiator"/> class.
         /// </summary>
         /// <param name="function">The function.</param>
         /// <param name="variables">The variables.</param>
-        public CompiledDifferentiator(Term function, Variable[] variables)
+        public InterpreterDifferentiator(Term function, Variable[] variables)
         {
             Contract.Requires(function != null);
             Contract.Requires(variables != null);

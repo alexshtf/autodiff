@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AutoDiff
 {
-    partial class CompiledDifferentiator
+    partial class InterpreterDifferentiator
     {
         private class EvalVisitor : Compiled.ITapeVisitor
         {

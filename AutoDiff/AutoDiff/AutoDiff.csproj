@@ -92,10 +92,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryFunc.cs" />
-    <Compile Include="CompiledDifferentiator.Compiler.cs" />
-    <Compile Include="CompiledDifferentiator.cs" />
-    <Compile Include="CompiledDifferentiator.Diff.cs" />
-    <Compile Include="CompiledDifferentiator.Eval.cs" />
+    <Compile Include="InterpreterDifferentiator.Compiler.cs" />
+    <Compile Include="InterpreterDifferentiator.cs" />
+    <Compile Include="InterpreterDifferentiator.Diff.cs" />
+    <Compile Include="InterpreterDifferentiator.Eval.cs" />
     <Compile Include="Compiled\BinaryFunc.cs" />
     <Compile Include="Compiled\Constant.cs" />
     <Compile Include="Compiled\Exp.cs" />
