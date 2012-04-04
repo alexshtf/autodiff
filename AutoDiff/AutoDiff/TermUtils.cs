@@ -6,27 +6,11 @@ using System.Diagnostics.Contracts;
 
 namespace AutoDiff
 {
-    public enum CompilationType
-    {
-        /// <summary>
-        /// Compiles faster, but runs slower
-        /// </summary>
-        Interpreter,
-
-        /// <summary>
-        /// Compiles slower but runs faster
-        /// </summary>
-        ExpressionTree,
-    }
-
     /// <summary>
     /// Static methods that operate on terms.
     /// </summary>
     public static class TermUtils
     {
-        private static readonly InterpreterDifferentiatorFactory interpreterDifferentiatorFactory = new InterpreterDifferentiatorFactory();
-        private static readonly ExpressionTreeDifferentiatorFactory expressionTreeDifferentiatorFactory = new ExpressionTreeDifferentiatorFactory();
-
         /// <summary>
         /// Creates a compiled representation of a given term that allows efficient evaluation of the value/gradient.
         /// </summary>
@@ -47,30 +31,7 @@ namespace AutoDiff
             Contract.Ensures(Contract.Result<ICompiledTerm>().Variables.Count == variables.Length);
             Contract.Ensures(Contract.ForAll(0, variables.Length, i => variables[i] == Contract.Result<ICompiledTerm>().Variables[i]));
 
-            return term.Compile(CompilationType.ExpressionTree, variables);
-        }
-
-        /// <summary>
-        /// Creates a compiled representation of a given term that allows efficient evaluation of the value/gradient.
-        /// </summary>
-        /// <param name="term">The term to compile.</param>
-        /// <param name="variables">The variables contained in the term.</param>
-        /// <param name="compilationType">The type of the compilation procedure to perform. See <see cref="CompilationType"/> for more info.</param>
-        /// <returns>A compiled representation of <paramref name="term"/> that assigns values to variables in the same order
-        /// as in <paramref name="variables"/></returns>
-        /// <remarks>
-        /// The order of the variables in <paramref name="variables"/> is important. Each call to <c>ICompiledTerm.Evaluate</c> or 
-        /// <c>ICompiledTerm.Differentiate</c> receives an array of numbers representing the point of evaluation. The i'th number in this array corresponds
-        /// to the i'th variable in <c>variables</c>.
-        /// </remarks>
-        public static ICompiledTerm Compile(this Term term, CompilationType compilationType, Variable[] variables)
-        {
-            if (compilationType == CompilationType.Interpreter)
-                return interpreterDifferentiatorFactory.Create(term, variables);
-            else if (compilationType == CompilationType.ExpressionTree)
-                return expressionTreeDifferentiatorFactory.Create(term, variables);
-            else
-                throw new NotSupportedException();
+            return new CompiledDifferentiator(term, variables);
         }
 
         /// <summary>

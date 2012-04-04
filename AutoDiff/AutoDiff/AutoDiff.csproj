@@ -92,16 +92,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryFunc.cs" />
-    <Compile Include="Compiled\Compiler.cs" />
-    <Compile Include="Compiled\CompilerVisitor.cs" />
-    <Compile Include="ExpressionTreeDifferentiator.cs" />
-    <Compile Include="ExpressionTreeDifferentiator.Diff.cs" />
-    <Compile Include="ExpressionTreeDifferentiator.Eval.cs" />
-    <Compile Include="ExpressionTreeDifferentiator.Methods.cs" />
-    <Compile Include="ExpressionTreeDifferentiatorFactory.cs" />
-    <Compile Include="InterpreterDifferentiator.cs" />
-    <Compile Include="InterpreterDifferentiator.Diff.cs" />
-    <Compile Include="InterpreterDifferentiator.Eval.cs" />
+    <Compile Include="CompiledDifferentiator.Compiler.cs" />
+    <Compile Include="CompiledDifferentiator.cs" />
+    <Compile Include="CompiledDifferentiator.Diff.cs" />
+    <Compile Include="CompiledDifferentiator.Eval.cs" />
     <Compile Include="Compiled\BinaryFunc.cs" />
     <Compile Include="Compiled\Constant.cs" />
     <Compile Include="Compiled\Exp.cs" />
@@ -120,7 +114,6 @@
     <Compile Include="Exp.cs" />
     <Compile Include="ICompiledTerm.cs" />
     <Compile Include="ConstPower.cs" />
-    <Compile Include="InterpreterDifferentiatorFactory.cs" />
     <Compile Include="IParametricCompiledTerm.cs" />
     <Compile Include="ITermVisitor.cs" />
     <Compile Include="ITermVisitor.generic.cs" />

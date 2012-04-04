@@ -6,30 +6,33 @@ using System.Diagnostics.Contracts;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 
-using CompilerVisitor = AutoDiff.Compiled.CompilerVisitor;
-
 namespace AutoDiff
 {
     /// <summary>
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
-    internal partial class InterpreterDifferentiator : ICompiledTerm
+    internal partial class CompiledDifferentiator : ICompiledTerm
     {
         private readonly Compiled.TapeElement[] tape;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InterpreterDifferentiator"/> class.
+        /// Initializes a new instance of the <see cref="CompiledDifferentiator"/> class.
         /// </summary>
         /// <param name="function">The function.</param>
         /// <param name="variables">The variables.</param>
-        public InterpreterDifferentiator(Term function, Variable[] variables, Compiled.Compiler compiler)
+        public CompiledDifferentiator(Term function, Variable[] variables)
         {
             Contract.Requires(function != null);
             Contract.Requires(variables != null);
             Contract.Requires(Contract.ForAll(variables, variable => variable != null));
             Contract.Ensures(Dimension == variables.Length);
 
-            tape = compiler.Compile(function, variables);
+            if (function is Variable)
+                function = new ConstPower(function, 1);
+
+            var tapeList = new List<Compiled.TapeElement>();
+            new Compiler(variables, tapeList).Compile(function);
+            tape = tapeList.ToArray();
 
             Dimension = variables.Length;
             Variables = Array.AsReadOnly(variables);
