@@ -56,7 +56,7 @@ namespace AutoDiff
             EvaluateTape(arg);
             DifferetiateTape();
 
-            var gradient = tape.Take(Dimension).Select(elem => elem.Derivative).ToArray();
+            var gradient = tape.Take(Dimension).Select(elem => elem.Adjoint).ToArray();
             var value = tape.Last().Value;
 
             return Tuple.Create(gradient, value);
@@ -64,11 +64,11 @@ namespace AutoDiff
 
         private void DifferetiateTape()
         {
-            tape.Last().Derivative = 1; // derivative of the last variable with respect to itself is 1.
+            tape.Last().Adjoint = 1; // derivative of the last variable with respect to itself is 1.
             var diffVisitor = new DiffVisitor(tape);
             for (int i = tape.Length - 2; i >= 0; --i)
             {
-                tape[i].Derivative = 0;
+                tape[i].Adjoint = 0;
                 for (int j = 0; j < tape[i].InputOf.Length; ++j)
                 {
                     var connection = tape[i].InputOf[j];
@@ -78,7 +78,7 @@ namespace AutoDiff
                     diffVisitor.ArgumentIndex = connection.ArgumentIndex;
                     inputElement.Accept(diffVisitor);
 
-                    tape[i].Derivative += diffVisitor.LocalDerivative;
+                    tape[i].Adjoint += diffVisitor.LocalDerivative;
                 }
             }
         }

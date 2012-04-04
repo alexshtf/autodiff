@@ -8,7 +8,7 @@ namespace AutoDiff.Compiled
     abstract class TapeElement
     {
         public double Value;
-        public double Derivative;
+        public double Adjoint;
         public InputConnection[] InputOf;
 
         public abstract void Accept(ITapeVisitor visitor);

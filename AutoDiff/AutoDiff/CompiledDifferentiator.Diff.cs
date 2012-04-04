@@ -26,17 +26,17 @@ namespace AutoDiff
 
             public void Visit(Compiled.Exp elem)
             {
-                LocalDerivative = elem.Derivative * elem.Value;
+                LocalDerivative = elem.Adjoint * elem.Value;
             }
 
             public void Visit(Compiled.Log elem)
             {
-                LocalDerivative = elem.Derivative / ValueOf(elem.Arg);
+                LocalDerivative = elem.Adjoint / ValueOf(elem.Arg);
             }
 
             public void Visit(Compiled.ConstPower elem)
             {
-                LocalDerivative = elem.Derivative * elem.Exponent * Math.Pow(ValueOf(elem.Base), elem.Exponent - 1);
+                LocalDerivative = elem.Adjoint * elem.Exponent * Math.Pow(ValueOf(elem.Base), elem.Exponent - 1);
             }
 
             public void Visit(Compiled.TermPower elem)
@@ -46,12 +46,12 @@ namespace AutoDiff
                 if (ArgumentIndex == 0)
                 {
                     var exponent = ValueOf(elem.Exponent);
-                    LocalDerivative = elem.Derivative * exponent * Math.Pow(ValueOf(elem.Base), exponent - 1);
+                    LocalDerivative = elem.Adjoint * exponent * Math.Pow(ValueOf(elem.Base), exponent - 1);
                 }
                 else
                 {
                     var baseValue = ValueOf(elem.Base);
-                    LocalDerivative = elem.Derivative * Math.Pow(baseValue, ValueOf(elem.Exponent)) * Math.Log(baseValue);
+                    LocalDerivative = elem.Adjoint * Math.Pow(baseValue, ValueOf(elem.Exponent)) * Math.Log(baseValue);
                 }
             }
 
@@ -59,18 +59,18 @@ namespace AutoDiff
             {
                 Debug.Assert(ArgumentIndex == 0 || ArgumentIndex == 1);
                 if (ArgumentIndex == 0)
-                    LocalDerivative = elem.Derivative * ValueOf(elem.Right);
+                    LocalDerivative = elem.Adjoint * ValueOf(elem.Right);
                 else
-                    LocalDerivative = elem.Derivative * ValueOf(elem.Left);
+                    LocalDerivative = elem.Adjoint * ValueOf(elem.Left);
             }
 
             public void Visit(Compiled.BinaryFunc elem)
             {
                 Debug.Assert(ArgumentIndex == 0 || ArgumentIndex == 1);
                 if (ArgumentIndex == 0)
-                    LocalDerivative = elem.Derivative * elem.Diff(ValueOf(elem.Left), ValueOf(elem.Right)).Item1;
+                    LocalDerivative = elem.Adjoint * elem.Diff(ValueOf(elem.Left), ValueOf(elem.Right)).Item1;
                 else
-                    LocalDerivative = elem.Derivative * elem.Diff(ValueOf(elem.Left), ValueOf(elem.Right)).Item2;
+                    LocalDerivative = elem.Adjoint * elem.Diff(ValueOf(elem.Left), ValueOf(elem.Right)).Item2;
             }
 
             public void Visit(Compiled.NaryFunc elem)
@@ -81,17 +81,17 @@ namespace AutoDiff
                 for(int i=0;i<args.Length;i++)
                     args[i] = ValueOf(elem.Terms[i]);
 
-                LocalDerivative = elem.Derivative * elem.Diff(args)[ArgumentIndex];
+                LocalDerivative = elem.Adjoint * elem.Diff(args)[ArgumentIndex];
             }
 
             public void Visit(Compiled.Sum elem)
             {
-                LocalDerivative = elem.Derivative;
+                LocalDerivative = elem.Adjoint;
             }
 
             public void Visit(Compiled.UnaryFunc elem)
             {
-                LocalDerivative = elem.Derivative * elem.Diff(ValueOf(elem.Arg));
+                LocalDerivative = elem.Adjoint * elem.Diff(ValueOf(elem.Arg));
             }
 
             public void Visit(Compiled.Variable var)

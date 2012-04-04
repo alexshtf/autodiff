@@ -10,7 +10,7 @@ namespace AutoDiff.Compiled
         public Constant(double value)
         {
             Value = value;
-            Derivative = 0;
+            Adjoint = 0;
         }
 
         public override void Accept(ITapeVisitor visitor)

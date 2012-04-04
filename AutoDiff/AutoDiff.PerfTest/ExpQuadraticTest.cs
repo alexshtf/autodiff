@@ -8,7 +8,7 @@ namespace AutoDiff.PerfTest
 {
     class ExpQuadraticTest : ITest
     {
-        private const int NUM_OF_VARS = 50;
+        private const int NUM_OF_VARS = 500;
         private const int NUM_OF_RUNS = 200;
 
         private readonly Term term;
