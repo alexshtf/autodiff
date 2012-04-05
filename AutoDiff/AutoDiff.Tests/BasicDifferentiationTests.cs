@@ -206,8 +206,8 @@ namespace AutoDiff.Tests
             var func = TermBuilder.Power(x, x);
 
             var grad = func.Differentiate(Utils.Array(x), Utils.Vector(2.5));
-
-            CollectionAssert.AreEqual(Utils.Vector(Math.Pow(2.5, 2.5) * (Math.Log(2.5) + 1)), grad);
+            var expectedGrad = Utils.Vector(Math.Pow(2.5, 2.5) * (Math.Log(2.5) + 1));
+            Assert.IsTrue(Math.Abs(grad[0] - expectedGrad[0]) < 1E-10);
         }
 
         [TestMethod]

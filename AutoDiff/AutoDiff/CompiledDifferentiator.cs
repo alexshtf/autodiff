@@ -53,8 +53,8 @@ namespace AutoDiff
             Contract.Requires(arg != null);
             Contract.Requires(arg.Length == Dimension);
 
-            EvaluateTape(arg);
-            DifferetiateTape();
+            ForwardSweep(arg);
+            ReverseSweep();
 
             var gradient = tape.Take(Dimension).Select(elem => elem.Adjoint).ToArray();
             var value = tape.Last().Value;
@@ -62,25 +62,33 @@ namespace AutoDiff
             return Tuple.Create(gradient, value);
         }
 
-        private void DifferetiateTape()
+        private void ReverseSweep()
         {
-            tape.Last().Adjoint = 1; // derivative of the last variable with respect to itself is 1.
-            var diffVisitor = new DiffVisitor(tape);
-            for (int i = tape.Length - 2; i >= 0; --i)
-            {
+            tape.Last().Adjoint = 1;
+            
+            // initialize adjoints
+            for (int i = 0; i < tape.Length - 1; ++i)
                 tape[i].Adjoint = 0;
-                for (int j = 0; j < tape[i].InputOf.Length; ++j)
-                {
-                    var connection = tape[i].InputOf[j];
-                    Debug.Assert(connection.IndexOnTape > i);
 
-                    var inputElement = tape[connection.IndexOnTape];
-                    diffVisitor.ArgumentIndex = connection.ArgumentIndex;
-                    inputElement.Accept(diffVisitor);
-
-                    tape[i].Adjoint += diffVisitor.LocalDerivative;
-                }
+            // accumulate adjoints
+            for (int i = tape.Length - 1; i >= Dimension; --i)
+            {
+                var inputs = tape[i].Inputs;
+                var adjoint = tape[i].Adjoint;
+                
+                for(int j = 0; j < inputs.Length; ++j)
+                    tape[inputs[j].Index].Adjoint += adjoint * inputs[j].Weight;
             }
+        }
+
+        private void ForwardSweep(double[] arg)
+        {
+            for (int i = 0; i < Dimension; ++i)
+                tape[i].Value = arg[i];
+
+            var forwardDiffVisitor = new ForwardSweepVisitor(tape);
+            for (int i = Dimension; i < tape.Length; ++i)
+                tape[i].Accept(forwardDiffVisitor);
         }
 
         private void EvaluateTape(double[] arg)

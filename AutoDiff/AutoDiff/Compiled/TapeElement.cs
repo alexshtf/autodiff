@@ -9,7 +9,7 @@ namespace AutoDiff.Compiled
     {
         public double Value;
         public double Adjoint;
-        public InputConnection[] InputOf;
+        public InputEdge[] Inputs;
 
         public abstract void Accept(ITapeVisitor visitor);
     }

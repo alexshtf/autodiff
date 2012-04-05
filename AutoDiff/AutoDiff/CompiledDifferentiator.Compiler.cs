@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using CompileResult = AutoDiff.Compiled.TapeElement;
+
 namespace AutoDiff
 {
     partial class CompiledDifferentiator
@@ -10,38 +12,32 @@ namespace AutoDiff
         private class Compiler : ITermVisitor<int> // int --> the index of the compiled element in the tape
         {
             private readonly List<Compiled.TapeElement> tape;
-            private readonly List<List<AutoDiff.Compiled.InputConnection>> inputConnections;
             private readonly Dictionary<Term, int> indexOf;
 
             public Compiler(Variable[] variables, List<Compiled.TapeElement> tape)
             {
                 this.tape = tape;
                 indexOf = new Dictionary<Term, int>();
-                inputConnections = new List<List<Compiled.InputConnection>>();
                 foreach (var i in Enumerable.Range(0, variables.Length))
                 {
                     indexOf[variables[i]] = i;
                     tape.Add(new Compiled.Variable());
-                    inputConnections.Add(new List<Compiled.InputConnection>());
                 }
             }
 
             public void Compile(Term term)
             {
                 term.Accept(this);
-                for (int i = 0; i < tape.Count; ++i)
-                    tape[i].InputOf = inputConnections[i].ToArray();
             }
 
             public int Visit(Constant constant)
             {
-                return Compile(constant, () =>
-                    new CompileResult { Element = new Compiled.Constant(constant.Value), InputTapeIndices = new int[0] });
+                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = new Compiled.InputEdge[0] });
             }
 
             public int Visit(Zero zero)
             {
-                return Compile(zero, () => new CompileResult { Element = new Compiled.Constant(0), InputTapeIndices = new int[0] });
+                return Compile(zero, () => new Compiled.Constant(0) { Inputs = new Compiled.InputEdge[0] });
             }
 
             public int Visit(ConstPower intPower)
@@ -49,8 +45,17 @@ namespace AutoDiff
                 return Compile(intPower, () =>
                     {
                         var baseIndex = intPower.Base.Accept(this);
-                        var element = new Compiled.ConstPower { Base = baseIndex, Exponent = intPower.Exponent };
-                        return new CompileResult { Element = element, InputTapeIndices = new int[] { baseIndex } };
+                        var element = new Compiled.ConstPower
+                        {
+                            Base = baseIndex,
+                            Exponent = intPower.Exponent,
+                            Inputs = new Compiled.InputEdge[] 
+                            {
+                                new Compiled.InputEdge { Index = baseIndex },
+                            },
+                        };
+
+                        return element;
                     });
             }
 
@@ -64,13 +69,14 @@ namespace AutoDiff
                     {
                         Base = baseIndex,
                         Exponent = expIndex,
+                        Inputs = new Compiled.InputEdge[]
+                        {
+                            new Compiled.InputEdge { Index = baseIndex },
+                            new Compiled.InputEdge { Index = expIndex },
+                        },
                     };
 
-                    return new CompileResult
-                    {
-                        Element = element,
-                        InputTapeIndices = new int[] { baseIndex, expIndex },
-                    };
+                    return element;
                 });
             }
 
@@ -84,13 +90,14 @@ namespace AutoDiff
                         {
                             Left = leftIndex,
                             Right = rightIndex,
+                            Inputs = new Compiled.InputEdge[]
+                            {
+                                new Compiled.InputEdge { Index = leftIndex },
+                                new Compiled.InputEdge { Index = rightIndex },
+                            }
                         };
 
-                        return new CompileResult
-                        {
-                            Element = element,
-                            InputTapeIndices = new int[] { leftIndex, rightIndex },
-                        };
+                        return element;
                     });
             }
 
@@ -101,12 +108,13 @@ namespace AutoDiff
                         var indicesQuery = from term in sum.Terms
                                            select term.Accept(this);
                         var indices = indicesQuery.ToArray();
-                        var element = new Compiled.Sum { Terms = indices };
-                        return new CompileResult
-                        {
-                            Element = element,
-                            InputTapeIndices = indices,
+                        var element = new Compiled.Sum 
+                        { 
+                            Terms = indices,
+                            Inputs = indices.Select(x => new Compiled.InputEdge { Index = x }).ToArray(),
                         };
+
+                        return element;
                     });
             }
 
@@ -120,12 +128,16 @@ namespace AutoDiff
                 return Compile(log, () =>
                     {
                         var argIndex = log.Arg.Accept(this);
-                        var element = new Compiled.Log { Arg = argIndex };
-                        return new CompileResult
-                        {
-                            Element = element,
-                            InputTapeIndices = new int[] { argIndex },
+                        var element = new Compiled.Log 
+                        { 
+                            Arg = argIndex,
+                            Inputs = new Compiled.InputEdge[]
+                            {
+                                new Compiled.InputEdge { Index = argIndex },
+                            },
                         };
+
+                        return element;
                     });
             }
 
@@ -134,12 +146,16 @@ namespace AutoDiff
                 return Compile(exp, () =>
                     {
                         var argIndex = exp.Arg.Accept(this);
-                        var element = new Compiled.Exp { Arg = argIndex };
-                        return new CompileResult
+                        var element = new Compiled.Exp
                         {
-                            Element = element,
-                            InputTapeIndices = new int[] { argIndex },
+                            Arg = argIndex,
+                            Inputs = new Compiled.InputEdge[]
+                            {
+                                new Compiled.InputEdge { Index = argIndex },
+                            },
                         };
+
+                        return element;
                     });
             }
 
@@ -148,12 +164,16 @@ namespace AutoDiff
                 return Compile(func, () =>
                     {
                         var argIndex = func.Argument.Accept(this);
-                        var element = new Compiled.UnaryFunc(func.Eval, func.Diff) { Arg = argIndex };
-                        return new CompileResult
+                        var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
                         {
-                            Element = element,
-                            InputTapeIndices = new int[] { argIndex },
+                            Arg = argIndex,
+                            Inputs = new Compiled.InputEdge[]
+                            {
+                                new Compiled.InputEdge { Index = argIndex },
+                            },
                         };
+
+                        return element;
                     });
             }
 
@@ -163,19 +183,21 @@ namespace AutoDiff
                     {
                         var leftIndex = func.Left.Accept(this);
                         var rightIndex = func.Right.Accept(this);
+
                         var element = new Compiled.BinaryFunc
                         {
                             Eval = func.Eval,
                             Diff = func.Diff,
                             Left = leftIndex,
                             Right = rightIndex,
+                            Inputs = new Compiled.InputEdge[]
+                            {
+                                new Compiled.InputEdge { Index = leftIndex },
+                                new Compiled.InputEdge { Index = rightIndex },
+                            }
                         };
 
-                        return new CompileResult
-                        {
-                            Element = element,
-                            InputTapeIndices = new int[] { leftIndex, rightIndex },
-                        };
+                        return element;
                     });
             }
 
@@ -191,14 +213,11 @@ namespace AutoDiff
                     {
                         Eval = func.Eval,
                         Diff = func.Diff,
-                        Terms = indices
+                        Terms = indices,
+                        Inputs = indices.Select(x => new Compiled.InputEdge { Index = x }).ToArray(),
                     };
 
-                    return new CompileResult
-                    {
-                        Element = element,
-                        InputTapeIndices = indices,
-                    };
+                    return element;
                 });
             }
 
@@ -209,33 +228,14 @@ namespace AutoDiff
                 if (!indexOf.TryGetValue(term, out index))
                 {
                     var compileResult = compiler();
-                    tape.Add(compileResult.Element);
+                    tape.Add(compileResult);
 
                     index = tape.Count - 1;
                     indexOf.Add(term, index);
-
-                    inputConnections.Add(new List<Compiled.InputConnection>());
-                    for (int i = 0; i < compileResult.InputTapeIndices.Length; ++i)
-                    {
-                        var inputTapeIndex = compileResult.InputTapeIndices[i];
-                        inputConnections[inputTapeIndex].Add(new Compiled.InputConnection
-                            {
-                                IndexOnTape = index,
-                                ArgumentIndex = i,
-                            });
-                    }
                 }
 
                 return index;
             }
-
-            private class CompileResult
-            {
-                public Compiled.TapeElement Element;
-                public int[] InputTapeIndices;
-            }
-
-
         }
     }
 }

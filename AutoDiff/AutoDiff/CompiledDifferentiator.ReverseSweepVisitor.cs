@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
-namespace AutoDiff.Compiled
+namespace AutoDiff
 {
-    class InputEdge
+    partial class CompiledDifferentiator
     {
-        public int Index;
-        public double Weight;
     }
 }
