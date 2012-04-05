@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{1E440812
 		NuGet\AutoDiff.0.4.4178.23369.nupkg = NuGet\AutoDiff.0.4.4178.23369.nupkg
 		NuGet\AutoDiff.0.4.4237.35996.nupkg = NuGet\AutoDiff.0.4.4237.35996.nupkg
 		NuGet\AutoDiff.0.5.4321.2401.nupkg = NuGet\AutoDiff.0.5.4321.2401.nupkg
+		NuGet\AutoDiff.1.0.nupkg = NuGet\AutoDiff.1.0.nupkg
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradientDescentSample", "Samples\GradientDescentSample\GradientDescentSample.csproj", "{FD5B97F8-D98A-4873-AAC5-22A3B138A6B7}"
