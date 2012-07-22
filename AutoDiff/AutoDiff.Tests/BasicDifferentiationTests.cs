@@ -309,5 +309,33 @@ namespace AutoDiff.Tests
             Assert.AreEqual(15, diffResult.Item2); // 15 = 1 + 2 + 3 + 4 + 5
             CollectionAssert.AreEqual(Utils.Vector(1, 2, 3), diffResult.Item1);
         }
+
+        [TestMethod]
+        public void CompilesUsingAnyList()
+        {
+            var x = new Variable();
+            var y = new Variable();
+
+            IList<Variable> variables = new List<Variable> { x, y };
+            var func = x + y;
+
+            var compiled = func.Compile(variables);
+        }
+
+        [TestMethod]
+        public void DifferentiatesUsingAnyList()
+        {
+            var x = new Variable();
+            var y = new Variable();
+
+            var func = 0.5 * (x*x + y*y); // we chose this function so that the gradient at (x, y) will be just (x, y)
+            var compiled = func.Compile(x, y);
+
+            var input = new List<double> { 2, 6 };
+            var diff = compiled.Differentiate(input);
+
+            CollectionAssert.AreEqual(diff.Item1, Utils.Array(2.0, 6.0));
+            Assert.AreEqual(20, diff.Item2); // 20 = 0.5 * (2^2 + 6^2)
+        }
     }
 }

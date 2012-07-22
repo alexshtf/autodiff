@@ -11,7 +11,8 @@ namespace AutoDiff
     /// <summary>
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
-    internal partial class CompiledDifferentiator : ICompiledTerm
+    internal partial class CompiledDifferentiator<T> : ICompiledTerm
+        where T : IList<Variable>
     {
         private readonly Compiled.TapeElement[] tape;
 
@@ -20,12 +21,12 @@ namespace AutoDiff
         /// </summary>
         /// <param name="function">The function.</param>
         /// <param name="variables">The variables.</param>
-        public CompiledDifferentiator(Term function, Variable[] variables)
+        public CompiledDifferentiator(Term function, T variables)
         {
             Contract.Requires(function != null);
             Contract.Requires(variables != null);
             Contract.Requires(Contract.ForAll(variables, variable => variable != null));
-            Contract.Ensures(Dimension == variables.Length);
+            Contract.Ensures(Dimension == variables.Count);
 
             if (function is Variable)
                 function = new ConstPower(function, 1);
@@ -34,8 +35,8 @@ namespace AutoDiff
             new Compiler(variables, tapeList).Compile(function);
             tape = tapeList.ToArray();
 
-            Dimension = variables.Length;
-            Variables = Array.AsReadOnly(variables);
+            Dimension = variables.Count;
+            Variables = new ReadOnlyCollection<Variable>(variables);
         }
 
         public int Dimension { get; private set; }
@@ -48,10 +49,11 @@ namespace AutoDiff
             return tape.Last().Value;
         }
 
-        public Tuple<double[], double> Differentiate(double[] arg)
+        public Tuple<double[], double> Differentiate<S>(S arg)
+            where S : IList<double>
         {
             Contract.Requires(arg != null);
-            Contract.Requires(arg.Length == Dimension);
+            Contract.Requires(arg.Count == Dimension);
 
             ForwardSweep(arg);
             ReverseSweep();
@@ -60,6 +62,11 @@ namespace AutoDiff
             var value = tape.Last().Value;
 
             return Tuple.Create(gradient, value);
+        }
+
+        public Tuple<double[], double> Differentiate(params double[] arg)
+        {
+            return Differentiate<double[]>(arg);
         }
 
         private void ReverseSweep()
@@ -81,7 +88,8 @@ namespace AutoDiff
             }
         }
 
-        private void ForwardSweep(double[] arg)
+        private void ForwardSweep<S>(S arg)
+            where S : IList<double>
         {
             for (int i = 0; i < Dimension; ++i)
                 tape[i].Value = arg[i];
@@ -106,5 +114,7 @@ namespace AutoDiff
         }
 
         public ReadOnlyCollection<Variable> Variables { get; private set; }
+
+
     }
 }

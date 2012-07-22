@@ -29,6 +29,16 @@ namespace AutoDiff
         /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
         /// <paramref name="arg"/>.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
+        Tuple<double[], double> Differentiate<T>(T arg) where T : IList<double>;
+
+        /// <summary>
+        /// Computes the gradient of the compiled term at the given point.
+        /// </summary>
+        /// <param name="arg">The point at which to differentiate.</param>
+        /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
+        /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
+        /// <paramref name="arg"/>.</returns>
+        /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
         Tuple<double[], double> Differentiate(params double[] arg);
 
         /// <summary>
@@ -50,6 +60,16 @@ namespace AutoDiff
             Contract.Requires(arg != null);
             Contract.Requires(arg.Length == Variables.Count);
             return default(double);
+        }
+
+        public Tuple<double[], double> Differentiate<T>(T arg)
+            where T : IList<double>
+        {
+            Contract.Requires(arg != null);
+            Contract.Requires(arg.Count == Variables.Count);
+            Contract.Ensures(Contract.Result<Tuple<double[], double>>() != null);
+            Contract.Ensures(Contract.Result<Tuple<double[], double>>().Item1.Length == arg.Count);
+            return null;
         }
 
         public Tuple<double[], double> Differentiate(params double[] arg)

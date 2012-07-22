@@ -25,13 +25,31 @@ namespace AutoDiff
         /// </remarks>
         public static ICompiledTerm Compile(this Term term, params Variable[] variables)
         {
+            return Compile<Variable[]>(term, variables);
+        }
+
+        /// <summary>
+        /// Creates a compiled representation of a given term that allows efficient evaluation of the value/gradient.
+        /// </summary>
+        /// <param name="term">The term to compile.</param>
+        /// <param name="variables">The variables contained in the term.</param>
+        /// <returns>A compiled representation of <paramref name="term"/> that assigns values to variables in the same order
+        /// as in <paramref name="variables"/></returns>
+        /// <remarks>
+        /// The order of the variables in <paramref name="variables"/> is important. Each call to <c>ICompiledTerm.Evaluate</c> or 
+        /// <c>ICompiledTerm.Differentiate</c> receives an array of numbers representing the point of evaluation. The i'th number in this array corresponds
+        /// to the i'th variable in <c>variables</c>.
+        /// </remarks>
+        public static ICompiledTerm Compile<T>(this Term term, T variables)
+            where T : IList<Variable>
+        {
             Contract.Requires(variables != null);
             Contract.Requires(term != null);
             Contract.Ensures(Contract.Result<ICompiledTerm>() != null);
-            Contract.Ensures(Contract.Result<ICompiledTerm>().Variables.Count == variables.Length);
-            Contract.Ensures(Contract.ForAll(0, variables.Length, i => variables[i] == Contract.Result<ICompiledTerm>().Variables[i]));
+            Contract.Ensures(Contract.Result<ICompiledTerm>().Variables.Count == variables.Count);
+            Contract.Ensures(Contract.ForAll(0, variables.Count, i => variables[i] == Contract.Result<ICompiledTerm>().Variables[i]));
 
-            return new CompiledDifferentiator(term, variables);
+            return new CompiledDifferentiator<T>(term, variables);
         }
 
         /// <summary>

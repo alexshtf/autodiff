@@ -97,7 +97,6 @@
     <Compile Include="CompiledDifferentiator.Diff.cs" />
     <Compile Include="CompiledDifferentiator.Eval.cs" />
     <Compile Include="CompiledDifferentiator.ForwardSweepVisitor.cs" />
-    <Compile Include="CompiledDifferentiator.ReverseSweepVisitor.cs" />
     <Compile Include="Compiled\BinaryFunc.cs" />
     <Compile Include="Compiled\Constant.cs" />
     <Compile Include="Compiled\Exp.cs" />

@@ -7,18 +7,18 @@ using CompileResult = AutoDiff.Compiled.TapeElement;
 
 namespace AutoDiff
 {
-    partial class CompiledDifferentiator
+    partial class CompiledDifferentiator<T>
     {
         private class Compiler : ITermVisitor<int> // int --> the index of the compiled element in the tape
         {
             private readonly List<Compiled.TapeElement> tape;
             private readonly Dictionary<Term, int> indexOf;
 
-            public Compiler(Variable[] variables, List<Compiled.TapeElement> tape)
+            public Compiler(T variables, List<Compiled.TapeElement> tape)
             {
                 this.tape = tape;
                 indexOf = new Dictionary<Term, int>();
-                foreach (var i in Enumerable.Range(0, variables.Length))
+                foreach (var i in Enumerable.Range(0, variables.Count))
                 {
                     indexOf[variables[i]] = i;
                     tape.Add(new Compiled.Variable());
