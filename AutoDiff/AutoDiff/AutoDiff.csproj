@@ -94,7 +94,6 @@
     <Compile Include="BinaryFunc.cs" />
     <Compile Include="CompiledDifferentiator.Compiler.cs" />
     <Compile Include="CompiledDifferentiator.cs" />
-    <Compile Include="CompiledDifferentiator.Diff.cs" />
     <Compile Include="CompiledDifferentiator.Eval.cs" />
     <Compile Include="CompiledDifferentiator.ForwardSweepVisitor.cs" />
     <Compile Include="Compiled\BinaryFunc.cs" />

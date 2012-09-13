@@ -43,8 +43,6 @@ namespace AutoDiff
 
         public double Evaluate(double[] arg)
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(arg.Length == Dimension);
             EvaluateTape(arg);
             return tape.Last().Value;
         }
@@ -52,9 +50,6 @@ namespace AutoDiff
         public Tuple<double[], double> Differentiate<S>(S arg)
             where S : IList<double>
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(arg.Count == Dimension);
-
             ForwardSweep(arg);
             ReverseSweep();
 

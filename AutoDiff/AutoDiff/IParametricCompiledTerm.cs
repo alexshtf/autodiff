@@ -56,7 +56,7 @@ namespace AutoDiff
     }
 
     [ContractClassFor(typeof(IParametricCompiledTerm))]
-    class ParametricCompiledTermContract : IParametricCompiledTerm
+    abstract class ParametricCompiledTermContract : IParametricCompiledTerm
     {
 
         public double Evaluate(double[] arg, double[] parameters)

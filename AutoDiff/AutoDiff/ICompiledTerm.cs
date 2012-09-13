@@ -53,7 +53,7 @@ namespace AutoDiff
     }
 
     [ContractClassFor(typeof(ICompiledTerm))]
-    class CompiledTermContract : ICompiledTerm
+    abstract class CompiledTermContract : ICompiledTerm
     {
         public double Evaluate(params double[] arg)
         {

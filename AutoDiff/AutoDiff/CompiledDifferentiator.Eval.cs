@@ -9,7 +9,7 @@ namespace AutoDiff
     {
         private class EvalVisitor : Compiled.ITapeVisitor
         {
-            public readonly Compiled.TapeElement[] tape;
+            private readonly Compiled.TapeElement[] tape;
 
             public EvalVisitor(Compiled.TapeElement[] tape)
             {
