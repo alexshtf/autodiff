@@ -3,13 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff", "AutoDiff\AutoDiff.csproj", "{62551FD3-C21F-4E16-A7FC-6A017508809C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{97E8B558-DB43-4921-8F78-8E48A39F73B4}"
-	ProjectSection(SolutionItems) = preProject
-		AutoDiff.vsmdi = AutoDiff.vsmdi
-		Local.testsettings = Local.testsettings
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{D10A6773-BE15-4A1F-97BD-8B3DCDB82846}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloAutoDiff", "Samples\HelloAutoDiff\HelloAutoDiff.csproj", "{2127FB51-C9DC-4093-844E-E86130D48B45}"
