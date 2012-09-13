@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradientDescentSample", "Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserDefinedFunctions", "Samples\UserDefinedFunctions\UserDefinedFunctions.csproj", "{CDFC2A81-09DB-4BDE-B9E9-479177A64A58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff.Tests", "AutoDiff.Tests\AutoDiff.Tests.csproj", "{2E017782-DA30-4BC4-AB62-CB56F569587F}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoDiff.vsmdi
@@ -116,6 +118,16 @@ Global
 		{CDFC2A81-09DB-4BDE-B9E9-479177A64A58}.Release|Mixed Platforms.Build.0 = Release|x86
 		{CDFC2A81-09DB-4BDE-B9E9-479177A64A58}.Release|x86.ActiveCfg = Release|x86
 		{CDFC2A81-09DB-4BDE-B9E9-479177A64A58}.Release|x86.Build.0 = Release|x86
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2E017782-DA30-4BC4-AB62-CB56F569587F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
