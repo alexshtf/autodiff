@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloAutoDiff", "Samples\He
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewtonRaphsonSample", "Samples\NewtonRaphsonSample\NewtonRaphsonSample.csproj", "{73354289-B1A6-4BD1-B2A0-C29F1426C721}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff.PerfTest", "AutoDiff.PerfTest\AutoDiff.PerfTest.csproj", "{DA95DA67-9E06-4D6F-A7A1-EDD44B57272F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedHelloAutodiff", "Samples\AdvancedHelloAutodiff\AdvancedHelloAutodiff.csproj", "{4D1E2E14-9726-421F-AF6E-698C93EE5DBA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{1E440812-986E-4DA8-8176-5171E2FE4C51}"
