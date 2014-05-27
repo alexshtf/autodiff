@@ -9,7 +9,9 @@ namespace AutoDiff
     /// <summary>
     /// A constant value term
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     [DebuggerDisplay("Constant = {Value}")]
     public class Constant : Term
     {

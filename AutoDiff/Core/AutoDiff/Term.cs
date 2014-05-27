@@ -9,7 +9,9 @@ namespace AutoDiff
     /// <summary>
     /// Base class for all automatically-differentiable terms.
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     [ContractClass(typeof(TermContacts))]
     public abstract class Term
     {

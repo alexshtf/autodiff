@@ -10,7 +10,9 @@ namespace AutoDiff
     /// <summary>
     /// Represents a sum of at least two terms.
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     [DebuggerDisplay("Sum: {Terms.Count}")]
     public class Sum : Term
     {
@@ -25,12 +27,12 @@ namespace AutoDiff
             var allTerms = 
                 (new Term[] { first, second}).Concat(rest);
 
-            Terms = allTerms.ToList().AsReadOnly();
+            Terms = new ReadOnlyCollection<Term>(allTerms.ToList());
         }
 
         internal Sum(IEnumerable<Term> terms)
         {
-            Terms = Array.AsReadOnly(terms.ToArray());
+            Terms = new ReadOnlyCollection<Term>(terms.ToArray());
         }
 
         /// <summary>

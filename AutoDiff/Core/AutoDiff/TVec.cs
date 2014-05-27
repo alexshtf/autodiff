@@ -10,7 +10,9 @@ namespace AutoDiff
     /// <summary>
     /// A column vector made of terms.
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     public class TVec
     {
         private readonly Term[] terms;

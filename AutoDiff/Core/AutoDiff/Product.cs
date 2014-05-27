@@ -8,7 +8,9 @@ namespace AutoDiff
     /// <summary>
     /// Represents a product between two terms.
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     public class Product : Term
     {
         /// <summary>

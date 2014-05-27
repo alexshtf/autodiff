@@ -29,7 +29,7 @@ namespace AutoDiff
         {
             this.eval = eval;
             this.diff = diff;
-            this.Terms = Array.AsReadOnly(terms.ToArray());
+            this.Terms = new ReadOnlyCollection<Term>(terms.ToArray());
         }
 
         /// <summary>

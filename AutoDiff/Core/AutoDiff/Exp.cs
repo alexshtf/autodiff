@@ -8,7 +8,9 @@ namespace AutoDiff
     /// <summary>
     /// Represents the exponential function <c>e^x</c>
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     public class Exp : Term
     {
         /// <summary>
