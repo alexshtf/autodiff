@@ -48,15 +48,23 @@ namespace AutoDiff
         }
 
         public Tuple<double[], double> Differentiate<S>(S arg)
-            where S : IList<double>
+            where S : class, IList<double>
+        {
+            var gradient = new double[Dimension];
+            var value = Differentiate(arg, gradient);
+            return Tuple.Create(gradient, value);
+        }
+
+        public double Differentiate<S>(S arg, double[] grad) 
+            where S : class, IList<double> 
         {
             ForwardSweep(arg);
             ReverseSweep();
 
-            var gradient = tape.Take(Dimension).Select(elem => elem.Adjoint).ToArray();
-            var value = tape.Last().Value;
+            for (var i = 0; i < Dimension; ++i)
+                grad[i] = tape[i].Adjoint;
 
-            return Tuple.Create(gradient, value);
+            return tape.Last().Value;
         }
 
         public Tuple<double[], double> Differentiate(params double[] arg)

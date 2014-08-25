@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 
 namespace AutoDiff.Tests
@@ -336,6 +338,23 @@ namespace AutoDiff.Tests
 
             CollectionAssert.AreEqual(diff.Item1, Utils.Array(2.0, 6.0));
             Assert.AreEqual(20, diff.Item2); // 20 = 0.5 * (2^2 + 6^2)
+        }
+
+        [Test]
+        public void FillsGradientArray()
+        {
+            var x = new Variable();
+            var y = new Variable();
+
+            var func = 0.5*(x*x + y*y); 
+            var compiled = func.Compile(x, y);
+
+            var input = new[] {2.0, 6.0 };
+            var gradArray = new double[input.Length];
+            var value = compiled.Differentiate(input, gradArray);
+
+            CollectionAssert.AreEqual(gradArray, input); // the gradient at (x, y) is (x, y)
+            Assert.AreEqual(20, value); // 20 = 0.5 * (2^2 + 6^2)
         }
     }
 }

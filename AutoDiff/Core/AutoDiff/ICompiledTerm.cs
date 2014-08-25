@@ -29,8 +29,18 @@ namespace AutoDiff
         /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
         /// <paramref name="arg"/>.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        Tuple<double[], double> Differentiate<T>(T arg) where T : IList<double>;
+        Tuple<double[], double> Differentiate<T>(T arg) 
+            where T : class, IList<double>;
 
+        /// <summary>
+        /// Computes gradient of the compiled term at the given point
+        /// </summary>
+        /// <param name="arg">The point at which to differentiate</param>
+        /// <param name="grad">The list to be filled with the gradient at the point specified by <paramref name="arg"/></param>
+        /// <returns>The value at the point specified by <paramref name="arg"/></returns>
+        /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
+        double Differentiate<T>(T arg, double[] grad) where T : class, IList<double>; 
+        
         /// <summary>
         /// Computes the gradient of the compiled term at the given point.
         /// </summary>
@@ -63,13 +73,23 @@ namespace AutoDiff
         }
 
         public Tuple<double[], double> Differentiate<T>(T arg)
-            where T : IList<double>
+            where T : class, IList<double>
         {
             Contract.Requires(arg != null);
             Contract.Requires(arg.Count == Variables.Count);
             Contract.Ensures(Contract.Result<Tuple<double[], double>>() != null);
             Contract.Ensures(Contract.Result<Tuple<double[], double>>().Item1.Length == arg.Count);
             return null;
+        }
+
+        public double Differentiate<T>(T arg, double[] grad) 
+            where T : class, IList<double> 
+        {
+            Contract.Requires(arg != null);
+            Contract.Requires(grad != null);
+            Contract.Requires(arg.Count == Variables.Count);
+            Contract.Requires(grad.Length == Variables.Count);
+            return 0;
         }
 
         public Tuple<double[], double> Differentiate(params double[] arg)
