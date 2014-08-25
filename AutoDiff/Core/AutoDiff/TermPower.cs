@@ -5,6 +5,7 @@ using System.Text;
 
 namespace AutoDiff
 {
+    [Serializable]
     public class TermPower : Term
     {
         public TermPower(Term baseTerm, Term exponent)
