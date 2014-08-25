@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9E63C3
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff.Portable", "Core\AutoDiff\AutoDiff.Portable.csproj", "{F36E5964-F924-4817-81C9-A64FF97F9A21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{33A0DACE-19DB-44F9-8E7F-6EFE237E702B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33A0DACE-19DB-44F9-8E7F-6EFE237E702B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33A0DACE-19DB-44F9-8E7F-6EFE237E702B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36E5964-F924-4817-81C9-A64FF97F9A21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36E5964-F924-4817-81C9-A64FF97F9A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36E5964-F924-4817-81C9-A64FF97F9A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36E5964-F924-4817-81C9-A64FF97F9A21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{CDFC2A81-09DB-4BDE-B9E9-479177A64A58} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 		{2E017782-DA30-4BC4-AB62-CB56F569587F} = {F8DFEFF8-3EBD-45AC-BB87-AA71E6C35BD4}
 		{33A0DACE-19DB-44F9-8E7F-6EFE237E702B} = {DD8E40BC-F3A3-4C8E-8FEC-2E2B5D61F226}
+		{F36E5964-F924-4817-81C9-A64FF97F9A21} = {F8DFEFF8-3EBD-45AC-BB87-AA71E6C35BD4}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoDiff.vsmdi

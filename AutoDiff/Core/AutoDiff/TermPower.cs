@@ -5,7 +5,9 @@ using System.Text;
 
 namespace AutoDiff
 {
+#if DOTNET
     [Serializable]
+#endif
     public class TermPower : Term
     {
         public TermPower(Term baseTerm, Term exponent)

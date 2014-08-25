@@ -8,7 +8,9 @@ namespace AutoDiff
     /// <summary>
     /// A constant zero term. Similar to <see cref="Constant"/> but represents only the value 0.
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     public class Zero : Term
     {
         /// <summary>

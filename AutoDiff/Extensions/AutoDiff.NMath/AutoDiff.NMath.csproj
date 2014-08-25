@@ -45,9 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\AutoDiff\AutoDiff.csproj">
-      <Project>{62551fd3-c21f-4e16-a7fc-6a017508809c}</Project>
-      <Name>AutoDiff</Name>
+    <ProjectReference Include="..\..\Core\AutoDiff\AutoDiff.Portable.csproj">
+      <Project>{f36e5964-f924-4817-81c9-a64ff97f9a21}</Project>
+      <Name>AutoDiff.Portable</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -13,8 +13,8 @@ namespace AutoDiff
         public ParametricCompiledTerm(Term term, Variable[] variables, Variable[] parameters)
         {
             compiledTerm = term.Compile(variables.Concat(parameters).ToArray());
-            Variables = Array.AsReadOnly(variables.ToArray());
-            Parameters = Array.AsReadOnly(parameters.ToArray());
+            Variables = new ReadOnlyCollection<Variable>(variables.ToArray());
+            Parameters = new ReadOnlyCollection<Variable>(parameters.ToArray());
         }
 
         public double Evaluate(double[] arg, double[] parameters)

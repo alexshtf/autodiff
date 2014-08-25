@@ -8,7 +8,9 @@ namespace AutoDiff
     /// <summary>
     /// Represents a natural logarithm function
     /// </summary>
+#if DOTNET
     [Serializable]
+#endif
     public class Log : Term
     {
         /// <summary>

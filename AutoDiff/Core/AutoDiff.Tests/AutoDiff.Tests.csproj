@@ -52,13 +52,13 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoDiff\AutoDiff.csproj">
-      <Project>{62551FD3-C21F-4E16-A7FC-6A017508809C}</Project>
-      <Name>AutoDiff</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\AutoDiff\AutoDiff.Portable.csproj">
+      <Project>{f36e5964-f924-4817-81c9-a64ff97f9a21}</Project>
+      <Name>AutoDiff.Portable</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
