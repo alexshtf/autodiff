@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff", "Core\AutoDiff\AutoDiff.csproj", "{62551FD3-C21F-4E16-A7FC-6A017508809C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{D10A6773-BE15-4A1F-97BD-8B3DCDB82846}"
@@ -32,10 +34,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff.NMath", "Extensions\AutoDiff.NMath\AutoDiff.NMath.csproj", "{33A0DACE-19DB-44F9-8E7F-6EFE237E702B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9E63C3A5-8284-43A8-93BB-3FEC37ED9F4A}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = AutoDiff.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -78,13 +84,16 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2E017782-DA30-4BC4-AB62-CB56F569587F} = {F8DFEFF8-3EBD-45AC-BB87-AA71E6C35BD4}
 		{62551FD3-C21F-4E16-A7FC-6A017508809C} = {F8DFEFF8-3EBD-45AC-BB87-AA71E6C35BD4}
 		{2127FB51-C9DC-4093-844E-E86130D48B45} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 		{73354289-B1A6-4BD1-B2A0-C29F1426C721} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 		{4D1E2E14-9726-421F-AF6E-698C93EE5DBA} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 		{FD5B97F8-D98A-4873-AAC5-22A3B138A6B7} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
 		{CDFC2A81-09DB-4BDE-B9E9-479177A64A58} = {D10A6773-BE15-4A1F-97BD-8B3DCDB82846}
+		{2E017782-DA30-4BC4-AB62-CB56F569587F} = {F8DFEFF8-3EBD-45AC-BB87-AA71E6C35BD4}
 		{33A0DACE-19DB-44F9-8E7F-6EFE237E702B} = {DD8E40BC-F3A3-4C8E-8FEC-2E2B5D61F226}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = AutoDiff.vsmdi
 	EndGlobalSection
 EndGlobal
