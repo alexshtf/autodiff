@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NMath, Version=5.2.0.4, Culture=neutral, PublicKeyToken=873235918a322639, processorArchitecture=MSIL" />
+    <Reference Include="NMath" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
