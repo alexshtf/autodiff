@@ -5,6 +5,7 @@ using System.Text;
 using AutoDiff;
 using System.Diagnostics;
 using System.Threading;
+using System.IO;
 
 namespace AutodiffBenchmark
 {
@@ -16,89 +17,123 @@ namespace AutodiffBenchmark
         static void Main(string[] args)
         {
             Console.SetWindowSize(120, 30);
-
-            int[] sizes = { 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 };
-            for (int i = 0; i < sizes.Length; ++i)
+            using (var stdout = new StreamWriter(Console.OpenStandardOutput()))
+            using (var stderr = new StreamWriter(Console.OpenStandardError()))
             {
-                var termsCount = sizes[i];
-                var varsCount = sizes[i];
+                stderr.AutoFlush = true;
+                RunBenchmark(stdout, stderr);
+            }
+            
+        }
+        class BenchmarkResult
+        {
+            public int NumberOfVars{get; set; }
+            public int NumberOfTerms{get; set; }
+            public long CompileMilliseconds{get; set; }
+            public double MillisecondsPerManualEval{get; set; }
+            public double MillisecondsPerGradApprox{get; set; }
+            public double MillisecondsPerCompiledEval{get; set; }
+            public double MillisecondsPerCompiledDiff{get; set; }
+        }
 
-                Console.WriteLine("Benchmark for {0} terms and {1} variables", termsCount, varsCount);
+        static void RunBenchmark(TextWriter resultWriter, TextWriter logWriter)
+        {
+            var fac = new CsvHelper.CsvFactory();
+            using (var csvWriter = fac.CreateWriter(resultWriter))
+            {
+                csvWriter.WriteHeader<BenchmarkResult>();
 
-                Console.Write("\tConstructing coefficients ...");
-                var coefficients = GenerateCoefficients(termsCount, varsCount);
-                Console.WriteLine(" done");
-
-                // generate variables
-                var vars = new Variable[varsCount];
-                for(int j = 0; j < sizes[i]; ++j)
-                    vars[j] = new Variable();
-
-
-                Console.Write("\tGenerating input data ...");
-                double[][] inputData = new double[1000][];
-                for (int j = 0; j < inputData.Length; ++j)
-                    inputData[j] = RandomDoubles(varsCount);
-                Console.WriteLine(" done");
-
-                GC.Collect();
-                Thread.Sleep(4000);
-
-                Console.Write("\tConstructing compiled term ...");
-                var stopWatch = Stopwatch.StartNew();
-                var compiledTerm = ConstructTerm(coefficients, vars);
-                stopWatch.Stop();
-                Console.WriteLine(" done in {0} milliseconds", stopWatch.ElapsedMilliseconds);
-
-                GC.Collect();
-                Thread.Sleep(4000);
-
-                Console.Write("\tBenchmarking manual evaluation ...");
-                stopWatch = Stopwatch.StartNew();
-                double sum = 0;
-                for (int j = 0; j < inputData.Length; ++j)
-                    sum += NativeEvaluate(coefficients, inputData[j]);
-                stopWatch.Stop();
-                Console.WriteLine(" sum is {0}, speed is {1} msec/op", sum, stopWatch.ElapsedMilliseconds / (double)inputData.Length);
-
-                GC.Collect();
-                Thread.Sleep(4000);
-
-                Console.Write("\tBenchmarking gradient approximation ...");
-                stopWatch = Stopwatch.StartNew();
-                sum = 0;
-                for (int j = 0; j < inputData.Length / 10; ++j)
+                int[] sizes = { 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 };
+                for (int i = 0; i < sizes.Length; ++i)
                 {
-                    var gradient = ApproxGradient(coefficients, inputData[j]);
-                    sum += gradient.Sum();
+                    var row = new BenchmarkResult();
+
+                    var termsCount = sizes[i]; row.NumberOfTerms = termsCount;
+                    var varsCount = sizes[i]; row.NumberOfVars = varsCount;
+
+                    logWriter.WriteLine(String.Format("Benchmark for {0} terms and {1} variables", termsCount, varsCount));
+
+                    logWriter.Write("\tConstructing coefficients ...");
+                    var coefficients = GenerateCoefficients(termsCount, varsCount);
+                    logWriter.WriteLine(String.Format(" done"));
+
+                    // generate variables
+                    var vars = new Variable[varsCount];
+                    for (int j = 0; j < sizes[i]; ++j)
+                        vars[j] = new Variable();
+
+
+                    logWriter.Write("\tGenerating input data ...");
+                    double[][] inputData = new double[1000][];
+                    for (int j = 0; j < inputData.Length; ++j)
+                        inputData[j] = RandomDoubles(varsCount);
+                    logWriter.WriteLine(String.Format(" done"));
+
+                    GC.Collect();
+                    Thread.Sleep(4000);
+
+                    logWriter.Write("\tConstructing compiled term ...");
+                    var stopWatch = Stopwatch.StartNew();
+                    var compiledTerm = ConstructTerm(coefficients, vars);
+                    stopWatch.Stop();
+                    row.CompileMilliseconds = stopWatch.ElapsedMilliseconds;
+                    logWriter.WriteLine(String.Format(" done in {0} milliseconds", row.CompileMilliseconds));
+
+                    GC.Collect();
+                    Thread.Sleep(4000);
+
+                    logWriter.Write("\tBenchmarking manual evaluation ...");
+                    stopWatch = Stopwatch.StartNew();
+                    double sum = 0;
+                    for (int j = 0; j < inputData.Length; ++j)
+                        sum += NativeEvaluate(coefficients, inputData[j]);
+                    stopWatch.Stop();
+                    row.MillisecondsPerManualEval = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
+                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerManualEval));
+
+                    GC.Collect();
+                    Thread.Sleep(4000);
+
+                    logWriter.Write("\tBenchmarking gradient approximation ...");
+                    stopWatch = Stopwatch.StartNew();
+                    sum = 0;
+                    for (int j = 0; j < inputData.Length / 10; ++j)
+                    {
+                        var gradient = ApproxGradient(coefficients, inputData[j]);
+                        sum += gradient.Sum();
+                    }
+                    stopWatch.Stop();
+                    row.MillisecondsPerGradApprox = 10 * stopWatch.ElapsedMilliseconds / (double)inputData.Length;
+                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerGradApprox));
+
+                    GC.Collect();
+                    Thread.Sleep(4000);
+
+                    logWriter.Write("\tBenchmarking AutoDiff compiled evaluation ...");
+                    stopWatch = Stopwatch.StartNew();
+                    sum = 0;
+                    for (int j = 0; j < inputData.Length; ++j)
+                        sum += compiledTerm.Evaluate(inputData[j]);
+                    stopWatch.Stop();
+                    row.MillisecondsPerCompiledEval = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
+                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerCompiledEval));
+
+                    GC.Collect();
+                    Thread.Sleep(4000);
+
+                    logWriter.Write("\tBenchmarking compiled differentiation ...");
+                    stopWatch = Stopwatch.StartNew();
+                    sum = 0;
+                    for (int j = 0; j < inputData.Length; ++j)
+                    {
+                        var diffResult = compiledTerm.Differentiate(inputData[j]);
+                        sum += diffResult.Item2 + diffResult.Item1.Sum();
+                    }
+                    row.MillisecondsPerCompiledDiff = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
+                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerCompiledDiff));
+
+                    csvWriter.WriteRecord(row);
                 }
-                stopWatch.Stop();
-                Console.WriteLine(" sum is {0}, speed is {1} msec/op", sum, 10 * stopWatch.ElapsedMilliseconds / (double)inputData.Length);
-
-                GC.Collect();
-                Thread.Sleep(4000);
-
-                Console.Write("\tBenchmarking AutoDiff compiled evaluation ...");
-                stopWatch = Stopwatch.StartNew();
-                sum = 0;
-                for (int j = 0; j < inputData.Length; ++j)
-                    sum += compiledTerm.Evaluate(inputData[j]);
-                stopWatch.Stop();
-                Console.WriteLine(" sum is {0}, speed is {1} msec/op", sum, stopWatch.ElapsedMilliseconds / (double)inputData.Length);
-
-                GC.Collect();
-                Thread.Sleep(4000);
-
-                Console.Write("\tBenchmarking compiled differentiation ...");
-                stopWatch = Stopwatch.StartNew();
-                sum = 0; 
-                for(int j = 0; j < inputData.Length; ++j)
-                {
-                    var diffResult = compiledTerm.Differentiate(inputData[j]);
-                    sum += diffResult.Item2 + diffResult.Item1.Sum();
-                }
-                Console.WriteLine(" sum is {0}, speed is {1} msec/op", sum, stopWatch.ElapsedMilliseconds / (double)inputData.Length);
-
             }
         }
 
