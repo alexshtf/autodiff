@@ -70,7 +70,7 @@ namespace AutodiffBenchmark
                     logWriter.WriteLine(String.Format(" done"));
 
                     GC.Collect();
-                    Thread.Sleep(4000);
+                    GC.WaitForFullGCComplete(4000);
 
                     logWriter.Write("\tConstructing compiled term ...");
                     var stopWatch = Stopwatch.StartNew();
@@ -80,7 +80,7 @@ namespace AutodiffBenchmark
                     logWriter.WriteLine(String.Format(" done in {0} milliseconds", row.CompileMilliseconds));
 
                     GC.Collect();
-                    Thread.Sleep(4000);
+                    GC.WaitForFullGCComplete(4000);
 
                     logWriter.Write("\tBenchmarking manual evaluation ...");
                     stopWatch = Stopwatch.StartNew();
@@ -92,22 +92,7 @@ namespace AutodiffBenchmark
                     logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerManualEval));
 
                     GC.Collect();
-                    Thread.Sleep(4000);
-
-                    logWriter.Write("\tBenchmarking gradient approximation ...");
-                    stopWatch = Stopwatch.StartNew();
-                    sum = 0;
-                    for (int j = 0; j < inputData.Length / 10; ++j)
-                    {
-                        var gradient = ApproxGradient(coefficients, inputData[j]);
-                        sum += gradient.Sum();
-                    }
-                    stopWatch.Stop();
-                    row.MillisecondsPerGradApprox = 10 * stopWatch.ElapsedMilliseconds / (double)inputData.Length;
-                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerGradApprox));
-
-                    GC.Collect();
-                    Thread.Sleep(4000);
+                    GC.WaitForFullGCComplete(4000);
 
                     logWriter.Write("\tBenchmarking AutoDiff compiled evaluation ...");
                     stopWatch = Stopwatch.StartNew();
@@ -119,7 +104,7 @@ namespace AutodiffBenchmark
                     logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerCompiledEval));
 
                     GC.Collect();
-                    Thread.Sleep(4000);
+                    GC.WaitForFullGCComplete(4000);
 
                     logWriter.Write("\tBenchmarking compiled differentiation ...");
                     stopWatch = Stopwatch.StartNew();
