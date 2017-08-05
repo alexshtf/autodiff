@@ -45,14 +45,14 @@ class Program
 
 
 # Documentation
-The [Documentation](doc/Documentation.md) contains some basic tutorials, we have an [article](http://www.codeproject.com/KB/library/Automatic_Differentiation.aspx) on CodeProject, and finally source code contains some code examples in addition to the code of the library itself.
+The [Documentation](docs/Documentation.md) contains some basic tutorials, we have an [article](http://www.codeproject.com/KB/library/Automatic_Differentiation.aspx) on CodeProject, and finally source code contains some code examples in addition to the code of the library itself.
 
 # Motivation
 There are many open and commercial .NET libraries that have numeric optimization as one of their features (for example, [Microsoft Solver Foundation](http://msdn.microsoft.com/en-us/devlabs/hh145003.aspx),  [AlgLib](http://www.alglib.net),[Extreme Optimization](http://www.extremeoptimization.com/), [CenterSpace NMath](http://www.centerspace.net/)) . Most of them require the user to be able to evaluate the function and the function's gradient. This library tries to save the work in manually developing the function's gradient and coding it.
 Once the developer defines his/her function, the AutoDiff library can automatically evaluate and differentiate this function at any point. This allows +easy development and prototyping+ of applications based on numeric optimization.
 
 # Features
-* Fast! See [0.5 vs 0.3 benchmark](doc/0.5-vs-0.3-benchmark.md) and [0.3 benchmark](doc/0.3-benchmark).
+* Fast! See [0.5 vs 0.3 benchmark](docs/0.5-vs-0.3-benchmark.md) and [0.3 benchmark](doss/0.3-benchmark).
 * Composition of functions using arithmetic operators, Exp, Log, Power and user-defined unary and binary functions.
 * Function gradient evaluation at specified points
 * Function value evaluation at specified points
