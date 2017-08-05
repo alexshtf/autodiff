@@ -1,14 +1,14 @@
-**Short intro**
-Sometimes the built-in functions provided by the AutoDiff library are not enough and you wish to use other functions that don't exist in the AutoDiff library. For this purpose the library allows you to define your own custom functions. All you need to do is to provide delegates to compute the function's value and its derivative. The following example will show you how to define {{ arctan }} and {{ atan2 }} functions and create new terms that use them. There are usually two steps:
+# Short intro
+Sometimes the built-in functions provided by the AutoDiff library are not enough and you wish to use other functions that don't exist in the AutoDiff library. For this purpose the library allows you to define your own custom functions. All you need to do is to provide delegates to compute the function's value and its derivative. The following example will show you how to define ` arctan` and `atan2` functions and create new terms that use them. There are usually two steps:
 * Create a terms factory given evaluation / derivative delegates
 * Use the factories to create terms and build functions using those terms
 
-**The code**
+# The code
 This time we will let the code speak for itself. It's quite self-explainatory
-{code:c#}
+```c#
 class Program
 {
-    static void Main(string[]() args)
+    static void Main(string[] args)
     {
         // create function factory for arctangent
         var arctan = UnaryFunc.Factory(
@@ -19,8 +19,8 @@ class Program
         var atan2 = BinaryFunc.Factory(
             (x, y) => Math.Atan2(y, x),
             (x, y) => Tuple.Create(
-                -y / (x**x + y**y),  // d/dx (from wikipedia)
-                x / (x**x + y**y))); // d/dy (from wikipedia)
+                -y / (x*x + y*y),  // d/dx (from wikipedia)
+                x / (x*x + y*y))); // d/dy (from wikipedia)
 
         
         // define variables
@@ -37,9 +37,9 @@ class Program
 
         Console.WriteLine("The value at (1, 2, -2) is {0}", diff.Item2);
         Console.WriteLine("The gradient at (1, 2, -2) is ({0}, {1}, {2})",
-            diff.Item1[0](0), 
-            diff.Item1[1](1), 
-            diff.Item1[2](2));
+            diff.Item1[0], 
+            diff.Item1[1], 
+            diff.Item1[2]);
     }
 }
-{code:c#}
+```

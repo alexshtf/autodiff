@@ -1,9 +1,9 @@
 Here is a code sample to demonstrate integration with ExtremeOptimization (documentation [here](http://www.extremeoptimization.com/Documentation.aspx)).
 
-{code:c#}
+```c#
 class Program
 {
-    static void Main(string[]() args)
+    static void Main(string[] args)
     {
         var x = new Variable();
         var y = new Variable();
@@ -37,4 +37,4 @@ class Program
         return minimum;
     }
 }
-{code:c#}
+```
