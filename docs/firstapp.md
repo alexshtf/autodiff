@@ -48,7 +48,7 @@ As you can probably guess, the `Evaluate` method computes the value of the term 
 
 It is important to note that _order does matter_ - the first variable in the variables array is assigned the first value in the values array, and so on. In addition, order matters for the gradient too. In our example, ``grad[0]`` is the partial derivative with respect to ``x`` because we provided ``x`` as the first element of the variables array, and similarly `grad[1]` is the partial derivative with respect to ``y``.
 
-**Summary**
+# Summary
 This tutorial demonstrates the most basic usage of the AutoDiff library - defining functions and computing their values and gradients. Here are the key points:
 * Objects of type `Term` are used to define functions analytically
 * The `Evaluate`/`Differentiate` methods can be used to compute the value/gradient of a function given assignment of values to variables

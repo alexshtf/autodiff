@@ -23,8 +23,8 @@ double value = compiledTerm.Evaluate(2, -3);
 AutoDiff knows that 2 is the value for `x` and -3 is the value for `y` because of the order of variables given to `Compile`. Gradient computation is similarily done by calling the `ICompiledTerm.Differentiate` method. There is one difference - this method returns a tuple. The first item is the gradient and the second item is the value. The function value is a by-product of the gradient computation algorithm, so we get it for free. Here is a code example:
 ```c#
 // compute value + gradient at x = 3, y = -5
-Tuple<double[](), double> diff = compiledTerm.Differentiate(3, -5);
-double[]() gradient = diff.Item1;
+Tuple<double[], double> diff = compiledTerm.Differentiate(3, -5);
+double[] gradient = diff.Item1;
 double value = diff.Item2;
 ```
 # Behold the power
