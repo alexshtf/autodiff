@@ -1,4 +1,4 @@
-# Intro*
+# Intro
 Like equation-solving, finding a function's minimum is in many cases impossible to solve analytically, or is computationally infeasible (will take too long to compute). To tackle these problems mathematicians invented a family of minimization methods called _iterative solvers_. The gradient descent method is one of them. The idea is very simple - the opposite direction to the gradient is the steepest descent direction, so in order to find a minimum we should just "follow the gradient".
 
 There is an unsolved problem here - the gradient tells us the direction we should go, but does not tell us _how much_ to go. This parameter is called _step size_ and there are many methods to compute/estimate the optimal step size. In this tutorial we will use a constant step size. Another problem is when should we stop? Clearly stopping when we reach the minimum is impractical as it might take forever. There are many stopping criteria, and in this tutorial we will use the simplest one - the number of iterations.
