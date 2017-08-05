@@ -1,7 +1,7 @@
 # The problem
 Real world problems are often modeled by equations. The solution to those equations leads to the solution of our problems. However, problems in the real world are modeled by equations that are not solvable with pen and paper techniques (yes, they lied to you in high-school!). For example, the following equation cannot be solved analytically using pen and paper:
 
-![newton-raphson-eq](/home/alex/git/autodiff/docs/newton-raphson-eq.png)
+![newton-raphson-eq](newton-raphson-eq.png)
 
 In this tutorial we will write a program that solves this kind of equations using the well-known Newton-Raphson method. For more information about this method read [here](http://en.wikipedia.org/wiki/Newton's_method).  We will call it the NR method in this tutorial.
 
@@ -36,7 +36,7 @@ The first thing to note is that we used a compiled term representation inside th
 # Usage
 Now we enjoy! We have built an NR solver for equations, and we can run it on various functions. We will demonstrate it on the equation given at the beginning of this tutorial. The first step is to plot the function of the left-hand-side and see where are the solutions. Here is the plot:
 
-![](/home/alex/git/autodiff/docs/newton-raphson-sample.png)
+![newton-raphson-sample](newton-raphson-sample.png)
 
 You can see that the equation has two solutions - one close to `x = -1` and another one close to `x = 2`. So we will write a small program to solve the equation (well, it's just an approximation for the solution, but a very accurate one).
 
