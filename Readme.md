@@ -31,14 +31,14 @@ class Program
             var func = (x + y) * TermBuilder.Exp(z + x * y);
     
             // prepare arrays needed for evaluation/differentiation
-            Variable[]() vars = { x, y, z };
-            double[]() values = {1, 2, -3 };
+            Variable[] vars = { x, y, z };
+            double[] values = {1, 2, -3 };
     
             // evaluate func at (1, 2, -3)
             double value = func.Evaluate(vars, values);
     
             // calculate the gradient at (1, 2, -3)
-            double[]() gradient = func.Differentiate(vars, values);
+            double[] gradient = func.Differentiate(vars, values);
     
             // print results
             Console.WriteLine("The value at (1, 2, -3) is " + value);
