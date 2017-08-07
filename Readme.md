@@ -17,7 +17,7 @@ using AutoDiff;
 
 class Program
 {
-    public static void Main(string[]() args)
+    public static void Main(string[] args)
     {
             // define variables
             var x = new Variable();
@@ -39,7 +39,7 @@ class Program
     
             // print results
             Console.WriteLine("The value at (1, 2, -3) is " + value);
-            Console.WriteLine("The gradient at (1, 2, -3) is ({0}, {1}, {2})", gradient[0](0), gradient[1](1), gradient[2](2));
+            Console.WriteLine("The gradient at (1, 2, -3) is ({0}, {1}, {2})", gradient[0], gradient[1], gradient[2]);
     }
 }
 ```
