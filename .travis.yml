@@ -1,0 +1,11 @@
+language: csharp
+solution: AutoDiff/AutoDiff.sln
+mono: none
+dotnet: 1.0.4
+dist: trusty
+script:
+ - cd AutoDiff
+ - dotnet restore
+ - dotnet build -c Release
+ - dotnet build -c Debug
+ - dotnet test Core/AutoDiff.Tests/AutoDiff.Tests.csproj
