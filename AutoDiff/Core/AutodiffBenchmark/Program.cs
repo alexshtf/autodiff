@@ -68,9 +68,8 @@ namespace AutodiffBenchmark
                     for (int j = 0; j < inputData.Length; ++j)
                         inputData[j] = RandomDoubles(varsCount);
                     logWriter.WriteLine(String.Format(" done"));
-
-                    GC.Collect();
-                    GC.WaitForFullGCComplete(4000);
+					
+                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
 
                     logWriter.Write("\tConstructing compiled term ...");
                     var stopWatch = Stopwatch.StartNew();
@@ -79,8 +78,7 @@ namespace AutodiffBenchmark
                     row.CompileMilliseconds = stopWatch.ElapsedMilliseconds;
                     logWriter.WriteLine(String.Format(" done in {0} milliseconds", row.CompileMilliseconds));
 
-                    GC.Collect();
-                    GC.WaitForFullGCComplete(4000);
+                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
 
                     logWriter.Write("\tBenchmarking manual evaluation ...");
                     stopWatch = Stopwatch.StartNew();
@@ -91,8 +89,7 @@ namespace AutodiffBenchmark
                     row.MillisecondsPerManualEval = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
                     logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerManualEval));
 
-                    GC.Collect();
-                    GC.WaitForFullGCComplete(4000);
+                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
 
                     logWriter.Write("\tBenchmarking AutoDiff compiled evaluation ...");
                     stopWatch = Stopwatch.StartNew();
@@ -103,8 +100,7 @@ namespace AutodiffBenchmark
                     row.MillisecondsPerCompiledEval = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
                     logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerCompiledEval));
 
-                    GC.Collect();
-                    GC.WaitForFullGCComplete(4000);
+                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
 
                     logWriter.Write("\tBenchmarking compiled differentiation ...");
                     stopWatch = Stopwatch.StartNew();
