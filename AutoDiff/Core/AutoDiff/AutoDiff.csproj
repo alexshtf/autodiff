@@ -4,14 +4,14 @@
   <PropertyGroup>
 	<OutputType>library</OutputType>
     <TargetFramework>netstandard1.4</TargetFramework>
-	<Version>1.0.0</Version>
+	<Version>1.0.2</Version>
 	<Authors>Alex Shtof</Authors>
 	<Product>AutoDiff</Product>
-	<AssemblyVersion>1.0.0</AssemblyVersion>
+	<AssemblyVersion>1.0.2</AssemblyVersion>
 	<Description>High-performance and high-accuracy automatic function-differentiation library suitable for optimization and numeric computing.</Description>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Contracts" Version="4.0.1" />
   </ItemGroup>
 </Project>
