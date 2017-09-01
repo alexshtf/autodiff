@@ -1,16 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  
   <PropertyGroup>
-	<OutputType>library</OutputType>
+    <OutputType>library</OutputType>
     <TargetFramework>netstandard1.4</TargetFramework>
-	<Version>1.0.2</Version>
-	<Authors>Alex Shtof</Authors>
-	<Product>AutoDiff</Product>
-	<AssemblyVersion>1.0.2</AssemblyVersion>
-	<Description>High-performance and high-accuracy automatic function-differentiation library suitable for optimization and numeric computing.</Description>
+    <Version>1.0.2</Version>
+    <Authors>Alex Shtof</Authors>
+    <Product>AutoDiff</Product>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <Description>High-performance and high-accuracy automatic function-differentiation library suitable for optimization and numeric computing.</Description>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
-  
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.0.1" />
   </ItemGroup>

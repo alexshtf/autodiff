@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff
+﻿namespace AutoDiff
 {
     /// <summary>
     /// Represents a natural logarithm function
@@ -34,7 +29,7 @@ namespace AutoDiff
         /// <summary>
         /// Gets the natural logarithm argument.
         /// </summary>
-        public Term Arg { get; private set; }
+        public Term Arg { get; }
 
         /// <summary>
         /// Accepts a term visitor with a generic result

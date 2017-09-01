@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class NaryFunc : TapeElement
+    internal class NaryFunc : TapeElement
     {
         public int[] Terms;
         public Func<double[], double> Eval;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff
+﻿namespace AutoDiff
 {
     /// <summary>
     /// Represents the exponential function <c>e^x</c>
@@ -25,7 +20,7 @@ namespace AutoDiff
         /// <summary>
         /// Gets the exponent term.
         /// </summary>
-        public Term Arg { get; private set; }
+        public Term Arg { get; }
 
         /// <summary>
         /// Accepts a term visitor

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff.Compiled
+﻿namespace AutoDiff.Compiled
 {
-	class Constant : TapeElement
+    internal class Constant : TapeElement
 	{
         public Constant(double value)
         {

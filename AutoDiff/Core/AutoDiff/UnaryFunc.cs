@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -12,10 +9,6 @@ namespace AutoDiff
     /// </summary>
     public class UnaryFunc : Term
     {
-        private readonly Func<double, double> eval;
-        private readonly Func<double, double> diff;
-        private readonly Term argument;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UnaryFunc"/> class.
         /// </summary>
@@ -24,17 +17,17 @@ namespace AutoDiff
         /// <param name="argument">The argument term for the unary function</param>
         public UnaryFunc(Func<double, double> eval, Func<double, double> diff, Term argument)
         {
-            Contract.Requires(eval != null);
-            Contract.Requires(diff != null);
-            Contract.Requires(argument != null);
+            Requires(eval != null);
+            Requires(diff != null);
+            Requires(argument != null);
 
-            Contract.Ensures(Eval == eval);
-            Contract.Ensures(Diff == diff);
-            Contract.Ensures(Argument == argument);
+            Ensures(Eval == eval);
+            Ensures(Diff == diff);
+            Ensures(Argument == argument);
 
-            this.eval = eval;
-            this.diff = diff;
-            this.argument = argument;
+            Eval = eval;
+            Diff = diff;
+            Argument = argument;
         }
 
         /// <summary>
@@ -45,9 +38,9 @@ namespace AutoDiff
         /// <returns>The described factory delegate</returns>
         public static Func<Term, UnaryFunc> Factory(Func<double, double> eval, Func<double, double> diff)
         {
-            Contract.Requires(eval != null);
-            Contract.Requires(diff != null);
-            Contract.Ensures(Contract.Result<Func<Term, UnaryFunc>>() != null);
+            Requires(eval != null);
+            Requires(diff != null);
+            Ensures(Result<Func<Term, UnaryFunc>>() != null);
 
             Func<Term, UnaryFunc> result = term => new UnaryFunc(eval, diff, term);
             return result;
@@ -56,18 +49,18 @@ namespace AutoDiff
         /// <summary>
         /// Gets the evaluation delegate.
         /// </summary>
-        public Func<double, double> Eval { get { return eval; } }
+        public Func<double, double> Eval { get; }
 
 
         /// <summary>
         /// Gets the differentiation delegate.
         /// </summary>
-        public Func<double, double> Diff { get { return diff; } }
+        public Func<double, double> Diff { get; }
 
         /// <summary>
         /// Gets the function's argument term
         /// </summary>
-        public Term Argument { get { return argument; } }
+        public Term Argument { get; }
 
         /// <summary>
         /// Accepts a term visitor

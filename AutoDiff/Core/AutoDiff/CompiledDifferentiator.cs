@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -12,21 +10,24 @@ namespace AutoDiff
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
     internal partial class CompiledDifferentiator<T> : ICompiledTerm
-        where T : IList<Variable>
+        where T : IReadOnlyList<Variable>
     {
         private readonly Compiled.TapeElement[] tape;
+        private readonly int dimension;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompiledDifferentiator"/> class.
+        /// Initializes a new instance of the <see cref="CompiledDifferentiator{T}"/> class.
         /// </summary>
         /// <param name="function">The function.</param>
         /// <param name="variables">The variables.</param>
         public CompiledDifferentiator(Term function, T variables)
         {
-            Contract.Requires(function != null);
-            Contract.Requires(variables != null);
-            Contract.Requires(Contract.ForAll(variables, variable => variable != null));
-            Contract.Ensures(Dimension == variables.Count);
+            Requires(function != null);
+            Requires(variables != null);
+            Requires(ForAll(variables, variable => variable != null));
+
+            Variables = variables.AsReadOnly();
+            dimension = variables.Count;
 
             if (function is Variable)
                 function = new ConstPower(function, 1);
@@ -34,37 +35,34 @@ namespace AutoDiff
             var tapeList = new List<Compiled.TapeElement>();
             new Compiler(variables, tapeList).Compile(function);
             tape = tapeList.ToArray();
-
-            Dimension = variables.Count;
-            Variables = new ReadOnlyCollection<Variable>(variables);
         }
 
-        public int Dimension { get; private set; }
+        public IReadOnlyList<Variable> Variables { get; }
 
         public double Evaluate(double[] arg)
         {
             EvaluateTape(arg);
-            return tape.Last().Value;
+            return tape[tape.Length - 1].Value;
         }
 
-        public Tuple<double[], double> Differentiate<S>(S arg)
-            where S : class, IList<double>
+        public Tuple<double[], double> Differentiate<TArg>(TArg arg)
+            where TArg : class, IReadOnlyList<double>
         {
-            var gradient = new double[Dimension];
+            var gradient = new double[dimension];
             var value = Differentiate(arg, gradient);
             return Tuple.Create(gradient, value);
         }
 
-        public double Differentiate<S>(S arg, double[] grad) 
-            where S : class, IList<double> 
+        public double Differentiate<TArg>(TArg arg, double[] grad) 
+            where TArg : class, IReadOnlyList<double> 
         {
             ForwardSweep(arg);
             ReverseSweep();
 
-            for (var i = 0; i < Dimension; ++i)
+            for (var i = 0; i < dimension; ++i)
                 grad[i] = tape[i].Adjoint;
 
-            return tape.Last().Value;
+            return tape[tape.Length - 1].Value;
         }
 
         public Tuple<double[], double> Differentiate(params double[] arg)
@@ -74,50 +72,43 @@ namespace AutoDiff
 
         private void ReverseSweep()
         {
-            tape.Last().Adjoint = 1;
+            tape[tape.Length - 1].Adjoint = 1;
             
             // initialize adjoints
-            for (int i = 0; i < tape.Length - 1; ++i)
+            for (var i = 0; i < tape.Length - 1; ++i)
                 tape[i].Adjoint = 0;
 
             // accumulate adjoints
-            for (int i = tape.Length - 1; i >= Dimension; --i)
+            for (var i = tape.Length - 1; i >= dimension; --i)
             {
                 var inputs = tape[i].Inputs;
                 var adjoint = tape[i].Adjoint;
                 
-                for(int j = 0; j < inputs.Length; ++j)
+                for(var j = 0; j < inputs.Length; ++j)
                     tape[inputs[j].Index].Adjoint += adjoint * inputs[j].Weight;
             }
         }
 
-        private void ForwardSweep<S>(S arg)
-            where S : IList<double>
+        private void ForwardSweep<TArg>(TArg arg)
+            where TArg : IReadOnlyList<double>
         {
-            for (int i = 0; i < Dimension; ++i)
+            for (var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
 
             var forwardDiffVisitor = new ForwardSweepVisitor(tape);
-            for (int i = Dimension; i < tape.Length; ++i)
+            for (var i = dimension; i < tape.Length; ++i)
                 tape[i].Accept(forwardDiffVisitor);
         }
 
-        private void EvaluateTape(double[] arg)
+        private void EvaluateTape<TArg>(TArg arg)
+            where TArg : IReadOnlyList<double>
         {
-            for(int i = 0; i < Dimension; ++i)
+            for(var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
+            
             var evalVisitor = new EvalVisitor(tape);
-            for (int i = Dimension; i < tape.Length; ++i )
+            for (var i = dimension; i < tape.Length; ++i )
                 tape[i].Accept(evalVisitor);
         }
-
-        private double ValueOf(int index)
-        {
-            return tape[index].Value;
-        }
-
-        public ReadOnlyCollection<Variable> Variables { get; private set; }
-
-
     }
 }

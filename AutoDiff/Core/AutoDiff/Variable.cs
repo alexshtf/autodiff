@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff
+﻿namespace AutoDiff
 {
     /// <summary>
     /// Represents a variable term. Variable terms are substituted for real values during evaluation and

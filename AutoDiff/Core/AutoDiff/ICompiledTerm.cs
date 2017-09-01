@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -30,7 +29,7 @@ namespace AutoDiff
         /// <paramref name="arg"/>.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
         Tuple<double[], double> Differentiate<T>(T arg) 
-            where T : class, IList<double>;
+            where T : class, IReadOnlyList<double>;
 
         /// <summary>
         /// Computes gradient of the compiled term at the given point
@@ -39,7 +38,8 @@ namespace AutoDiff
         /// <param name="grad">The list to be filled with the gradient at the point specified by <paramref name="arg"/></param>
         /// <returns>The value at the point specified by <paramref name="arg"/></returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        double Differentiate<T>(T arg, double[] grad) where T : class, IList<double>; 
+        double Differentiate<T>(T arg, double[] grad) 
+            where T : class, IReadOnlyList<double>; 
         
         /// <summary>
         /// Computes the gradient of the compiled term at the given point.
@@ -52,14 +52,14 @@ namespace AutoDiff
         Tuple<double[], double> Differentiate(params double[] arg);
 
         /// <summary>
-        /// The collection of variables contained in this compiled term.
+        /// The list of variables contained in this compiled term.
         /// </summary>
         /// <remarks>
         /// The order of variables in this collection specifies the meaning of each argument in <see cref="Differentiate"/> or
         /// <see cref="Evaluate"/>. That is, the variable at <c>Variables[i]</c> corresponds to the i-th parameter of <see cref="Differentiate"/>
         /// and <see cref="Evaluate"/>.
         /// </remarks>
-        ReadOnlyCollection<Variable> Variables { get; }
+        IReadOnlyList<Variable> Variables { get; }
     }
 
     [ContractClassFor(typeof(ICompiledTerm))]
@@ -67,45 +67,45 @@ namespace AutoDiff
     {
         public double Evaluate(params double[] arg)
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(arg.Length == Variables.Count);
+            Requires(arg != null);
+            Requires(arg.Length == Variables.Count);
             return default(double);
         }
 
         public Tuple<double[], double> Differentiate<T>(T arg)
-            where T : class, IList<double>
+            where T : class, IReadOnlyList<double>
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(arg.Count == Variables.Count);
-            Contract.Ensures(Contract.Result<Tuple<double[], double>>() != null);
-            Contract.Ensures(Contract.Result<Tuple<double[], double>>().Item1.Length == arg.Count);
+            Requires(arg != null);
+            Requires(arg.Count == Variables.Count);
+            Ensures(Result<Tuple<double[], double>>() != null);
+            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Count);
             return null;
         }
 
         public double Differentiate<T>(T arg, double[] grad) 
-            where T : class, IList<double> 
+            where T : class, IReadOnlyList<double> 
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(grad != null);
-            Contract.Requires(arg.Count == Variables.Count);
-            Contract.Requires(grad.Length == Variables.Count);
+            Requires(arg != null);
+            Requires(grad != null);
+            Requires(arg.Count == Variables.Count);
+            Requires(grad.Length == Variables.Count);
             return 0;
         }
 
         public Tuple<double[], double> Differentiate(params double[] arg)
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(arg.Length == Variables.Count);
-            Contract.Ensures(Contract.Result<Tuple<double[], double>>() != null);
-            Contract.Ensures(Contract.Result<Tuple<double[], double>>().Item1.Length == arg.Length);
+            Requires(arg != null);
+            Requires(arg.Length == Variables.Count);
+            Ensures(Result<Tuple<double[], double>>() != null);
+            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Length);
             return null;
         }
 
-        public ReadOnlyCollection<Variable> Variables
+        public IReadOnlyList<Variable> Variables
         {
             get 
             { 
-                Contract.Ensures(Contract.Result<ReadOnlyCollection<Variable>>() != null);
+                Ensures(Result<IReadOnlyList<Variable>>() != null);
                 return null;
             }
         }

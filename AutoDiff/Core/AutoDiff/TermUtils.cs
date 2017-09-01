@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
+﻿using System.Collections.Generic;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -41,13 +38,13 @@ namespace AutoDiff
         /// to the i'th variable in <c>variables</c>.
         /// </remarks>
         public static ICompiledTerm Compile<T>(this Term term, T variables)
-            where T : IList<Variable>
+            where T : IReadOnlyList<Variable>
         {
-            Contract.Requires(variables != null);
-            Contract.Requires(term != null);
-            Contract.Ensures(Contract.Result<ICompiledTerm>() != null);
-            Contract.Ensures(Contract.Result<ICompiledTerm>().Variables.Count == variables.Count);
-            Contract.Ensures(Contract.ForAll(0, variables.Count, i => variables[i] == Contract.Result<ICompiledTerm>().Variables[i]));
+            Requires(variables != null);
+            Requires(term != null);
+            Ensures(Result<ICompiledTerm>() != null);
+            Ensures(Result<ICompiledTerm>().Variables.Count == variables.Count);
+            Ensures(ForAll(0, variables.Count, i => variables[i] == Result<ICompiledTerm>().Variables[i]));
 
             return new CompiledDifferentiator<T>(term, variables);
         }
@@ -68,14 +65,14 @@ namespace AutoDiff
         /// </remarks>
         public static IParametricCompiledTerm Compile(this Term term, Variable[] variables, Variable[] parameters)
         {
-            Contract.Requires(variables != null);
-            Contract.Requires(parameters != null);
-            Contract.Requires(term != null);
-            Contract.Ensures(Contract.Result<IParametricCompiledTerm>() != null);
-            Contract.Ensures(Contract.Result<IParametricCompiledTerm>().Variables.Count == variables.Length);
-            Contract.Ensures(Contract.ForAll(0, variables.Length, i => variables[i] == Contract.Result<IParametricCompiledTerm>().Variables[i]));
-            Contract.Ensures(Contract.Result<IParametricCompiledTerm>().Parameters.Count == parameters.Length);
-            Contract.Ensures(Contract.ForAll(0, parameters.Length, i => parameters[i] == Contract.Result<IParametricCompiledTerm>().Parameters[i]));
+            Requires(variables != null);
+            Requires(parameters != null);
+            Requires(term != null);
+            Ensures(Result<IParametricCompiledTerm>() != null);
+            Ensures(Result<IParametricCompiledTerm>().Variables.Count == variables.Length);
+            Ensures(ForAll(0, variables.Length, i => variables[i] == Result<IParametricCompiledTerm>().Variables[i]));
+            Ensures(Result<IParametricCompiledTerm>().Parameters.Count == parameters.Length);
+            Ensures(ForAll(0, parameters.Length, i => parameters[i] == Result<IParametricCompiledTerm>().Parameters[i]));
 
             return new ParametricCompiledTerm(term, variables, parameters);
         }
@@ -91,10 +88,10 @@ namespace AutoDiff
         /// <remarks>The i'th value in <c>point</c> corresponds to the i'th variable in <c>variables</c>.</remarks>
         public static double Evaluate(this Term term, Variable[] variables, double[] point)
         {
-            Contract.Requires(term != null);
-            Contract.Requires(variables != null);
-            Contract.Requires(point != null);
-            Contract.Requires(variables.Length == point.Length);
+            Requires(term != null);
+            Requires(variables != null);
+            Requires(point != null);
+            Requires(variables.Length == point.Length);
 
             return term.Compile(variables).Evaluate(point);
         }
@@ -111,12 +108,12 @@ namespace AutoDiff
         /// in the resulting array is the partial derivative with respect to the i'th variable in <c>variables</c>.</remarks>
         public static double[] Differentiate(this Term term, Variable[] variables, double[] point)
         {
-            Contract.Requires(term != null);
-            Contract.Requires(variables != null);
-            Contract.Requires(point != null);
-            Contract.Requires(variables.Length == point.Length);
-            Contract.Ensures(Contract.Result<double[]>() != null);
-            Contract.Ensures(Contract.Result<double[]>().Length == variables.Length);
+            Requires(term != null);
+            Requires(variables != null);
+            Requires(point != null);
+            Requires(variables.Length == point.Length);
+            Ensures(Result<double[]>() != null);
+            Ensures(Result<double[]>().Length == variables.Length);
 
             var result =  term.Compile(variables).Differentiate(point).Item1;
             return result;

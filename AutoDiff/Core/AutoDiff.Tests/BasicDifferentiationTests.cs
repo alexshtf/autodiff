@@ -318,7 +318,7 @@ namespace AutoDiff.Tests
             var x = new Variable();
             var y = new Variable();
 
-            IList<Variable> variables = new List<Variable> { x, y };
+            IReadOnlyList<Variable> variables = new List<Variable> { x, y };
             var func = x + y;
 
             var compiled = func.Compile(variables);

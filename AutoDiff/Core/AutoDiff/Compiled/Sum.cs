@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff.Compiled
+﻿namespace AutoDiff.Compiled
 {
-	class Sum : TapeElement
+    internal class Sum : TapeElement
     {
         public int[] Terms;
 

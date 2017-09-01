@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff
+﻿namespace AutoDiff
 {
     /// <summary>
     /// Represents a constant-power function x^n, where n is constant.
@@ -27,12 +22,12 @@ namespace AutoDiff
         /// <summary>
         /// Gets the base term of the power function
         /// </summary>
-        public Term Base { get; private set; }
+        public Term Base { get; }
 
         /// <summary>
         /// Gets the exponent term of the power function.
         /// </summary>
-        public double Exponent { get; private set; }
+        public double Exponent { get; }
 
         /// <summary>
         /// Accepts a term visitor.

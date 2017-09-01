@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace AutoDiff
 {
@@ -12,7 +8,7 @@ namespace AutoDiff
 #if DOTNET
     [Serializable]
 #endif
-    [DebuggerDisplay("Constant = {Value}")]
+    [DebuggerDisplay("Constant = {" + nameof(Value) + "}")]
     public class Constant : Term
     {
         /// <summary>
@@ -27,7 +23,7 @@ namespace AutoDiff
         /// <summary>
         /// Gets the value of this constant
         /// </summary>
-        public double Value { get; private set; }
+        public double Value { get; }
 
         /// <summary>
         /// Accepts a term visitor

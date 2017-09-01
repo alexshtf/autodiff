@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -13,9 +13,6 @@ namespace AutoDiff
     /// </summary>
     public class NaryFunc : Term
     {
-        private readonly Func<double[], double> eval;
-        private readonly Func<double[], double[]> diff;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="NaryFunc"/> class.
         /// </summary>
@@ -27,9 +24,13 @@ namespace AutoDiff
             Func<double[], double[]> diff,
             IEnumerable<Term> terms)
         {
-            this.eval = eval;
-            this.diff = diff;
-            this.Terms = new ReadOnlyCollection<Term>(terms.ToArray());
+            Requires(eval != null);
+            Requires(diff != null);
+            Requires(terms != null && terms.Any());
+            
+            Eval = eval;
+            Diff = diff;
+            Terms = terms.ToList().AsReadOnly();
         }
 
         /// <summary>
@@ -40,9 +41,9 @@ namespace AutoDiff
         /// <returns>The described factory delegate</returns>
         public static Func<IEnumerable<Term>, NaryFunc> Factory(Func<double[], double> eval, Func<double[], double[]> diff)
         {
-            Contract.Requires(eval != null);
-            Contract.Requires(diff != null);
-            Contract.Ensures(Contract.Result<Func<IEnumerable<Term>, NaryFunc>>() != null);
+            Requires(eval != null);
+            Requires(diff != null);
+            Ensures(Result<Func<IEnumerable<Term>, NaryFunc>>() != null);
 
             Func<IEnumerable<Term>, NaryFunc> result = (terms) => new NaryFunc(eval, diff, terms);
             return result;
@@ -51,17 +52,17 @@ namespace AutoDiff
         /// <summary>
         /// Gets the evaluation delegate
         /// </summary>
-        public Func<double[], double> Eval { get { return eval; } }
+        public Func<double[], double> Eval { get; }
 
         /// <summary>
         /// Gets the differentiation delegate
         /// </summary>
-        public Func<double[], double[]> Diff { get { return diff; } }
+        public Func<double[], double[]> Diff { get; }
 
         /// <summary>
         /// Gets the arguments of this function
         /// </summary>
-        public ReadOnlyCollection<Term> Terms { get; private set; }
+        public IReadOnlyList<Term> Terms { get; }
 
         /// <summary>
         /// Accepts a term visitor

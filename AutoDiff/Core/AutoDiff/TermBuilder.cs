@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Diagnostics.Contracts;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -18,8 +18,9 @@ namespace AutoDiff
         /// <returns>The constant term.</returns>
         public static Term Constant(double value)
         {
-            Contract.Ensures(Contract.Result<Term>() != null);
+            Ensures(Result<Term>() != null);
 
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (value == 0)
                 return new Zero();
             else
@@ -33,9 +34,9 @@ namespace AutoDiff
         /// <returns>A term representing the sum of the terms in <paramref name="terms"/>.</returns>
         public static Sum Sum(IEnumerable<Term> terms)
         {
-            Contract.Requires(terms.Where(term => !(term is Zero)).Count() >= 2); // require at-least two non-zero terms.
-            Contract.Requires(Contract.ForAll(terms, term => term != null));
-            Contract.Ensures(Contract.Result<Sum>() != null);
+            Requires(terms.Count(term => !(term is Zero)) >= 2); // require at-least two non-zero terms.
+            Requires(ForAll(terms, term => term != null));
+            Ensures(Result<Sum>() != null);
 
             terms = terms.Where(term => !(term is Zero));
             return new Sum(terms);
@@ -50,10 +51,10 @@ namespace AutoDiff
         /// <returns>A term representing the sum of <paramref name="v1"/>, <paramref name="v2"/> and the terms in <paramref name="rest"/>.</returns>
         public static Sum Sum(Term v1, Term v2, params Term[] rest)
         {
-            Contract.Requires(v1 != null);
-            Contract.Requires(v2 != null);
-            Contract.Requires(Contract.ForAll(rest, term => term != null));
-            Contract.Ensures(Contract.Result<Sum>() != null);
+            Requires(v1 != null);
+            Requires(v2 != null);
+            Requires(ForAll(rest, term => term != null));
+            Ensures(Result<Sum>() != null);
 
             var allTerms = new Term[] { v1, v2 }.Concat(rest);
             return Sum(allTerms);
@@ -68,10 +69,10 @@ namespace AutoDiff
         /// <returns>A term representing the product of <paramref name="v1"/>, <paramref name="v2"/> and the terms in <paramref name="rest"/>.</returns>
         public static Term Product(Term v1, Term v2, params Term[] rest)
         {
-            Contract.Requires(v1 != null);
-            Contract.Requires(v2 != null);
-            Contract.Requires(Contract.ForAll(rest, term => term != null));
-            Contract.Ensures(Contract.Result<Term>() != null);
+            Requires(v1 != null);
+            Requires(v2 != null);
+            Requires(ForAll(rest, term => term != null));
+            Ensures(Result<Term>() != null);
 
             var result = new Product(v1, v2);
             foreach (var item in rest)
@@ -88,8 +89,8 @@ namespace AutoDiff
         /// <returns>A term representing <c>t^power</c>.</returns>
         public static Term Power(Term t, double power)
         {
-            Contract.Requires(t != null);
-            Contract.Ensures(Contract.Result<Term>() != null);
+            Requires(t != null);
+            Ensures(Result<Term>() != null);
 
             return new ConstPower(t, power);
         }
@@ -102,9 +103,9 @@ namespace AutoDiff
         /// <returns></returns>
         public static Term Power(Term baseTerm, Term exponent)
         {
-            Contract.Requires(baseTerm != null);
-            Contract.Requires(exponent != null);
-            Contract.Ensures(Contract.Result<Term>() != null);
+            Requires(baseTerm != null);
+            Requires(exponent != null);
+            Ensures(Result<Term>() != null);
 
             return new TermPower(baseTerm, exponent);
         }
@@ -116,8 +117,8 @@ namespace AutoDiff
         /// <returns>A term representing e^arg.</returns>
         public static Term Exp(Term arg)
         {
-            Contract.Requires(arg != null);
-            Contract.Ensures(Contract.Result<Term>() != null);
+            Requires(arg != null);
+            Ensures(Result<Term>() != null);
 
             return new Exp(arg);
         }
@@ -129,8 +130,8 @@ namespace AutoDiff
         /// <returns>A term representing the natural logarithm of <paramref name="arg"/></returns>
         public static Term Log(Term arg)
         {
-            Contract.Requires(arg != null);
-            Contract.Ensures(Contract.Result<Term>() != null);
+            Requires(arg != null);
+            Ensures(Result<Term>() != null);
 
             return new Log(arg);
         }
@@ -147,13 +148,13 @@ namespace AutoDiff
         /// <returns>A term describing the quadratic form</returns>
         public static Term QuadForm(Term x1, Term x2, Term a11, Term a12, Term a21, Term a22)
         {
-            Contract.Requires(x1 != null);
-            Contract.Requires(x2 != null);
-            Contract.Requires(a11 != null);
-            Contract.Requires(a12 != null);
-            Contract.Requires(a21 != null);
-            Contract.Requires(a22 != null);
-            Contract.Ensures(Contract.Result<Term>() != null);
+            Requires(x1 != null);
+            Requires(x2 != null);
+            Requires(a11 != null);
+            Requires(a12 != null);
+            Requires(a21 != null);
+            Requires(a22 != null);
+            Ensures(Result<Term>() != null);
 
             return Sum(a11 * Power(x1, 2), (a12 + a21) * x1 * x2, a22 * Power(x2, 2));
         }

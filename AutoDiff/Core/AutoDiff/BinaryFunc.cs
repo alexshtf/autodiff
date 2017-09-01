@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics.Contracts;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -12,11 +10,6 @@ namespace AutoDiff
     /// </summary>
     public class BinaryFunc : Term
     {
-        private readonly Func<double, double, double> eval;
-        private readonly Func<double, double, Tuple<double, double>> diff;
-        private readonly Term left;
-        private readonly Term right;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BinaryFunc"/> class.
         /// </summary>
@@ -29,20 +22,20 @@ namespace AutoDiff
             Func<double, double, Tuple<double, double>> diff,
             Term left, Term right)
         {
-            Contract.Requires(eval != null);
-            Contract.Requires(diff != null);
-            Contract.Requires(left != null);
-            Contract.Requires(right != null);
+            Requires(eval != null);
+            Requires(diff != null);
+            Requires(left != null);
+            Requires(right != null);
 
-            Contract.Ensures(Eval == eval);
-            Contract.Ensures(Diff == diff);
-            Contract.Ensures(Left == left);
-            Contract.Ensures(Right == right);
+            Ensures(Eval == eval);
+            Ensures(Diff == diff);
+            Ensures(Left == left);
+            Ensures(Right == right);
 
-            this.eval = eval;
-            this.diff = diff;
-            this.left = left;
-            this.right = right;
+            Eval = eval;
+            Diff = diff;
+            Left = left;
+            Right = right;
         }
 
         /// <summary>
@@ -51,11 +44,13 @@ namespace AutoDiff
         /// <param name="eval">The evaluation method for the custom function.</param>
         /// <param name="diff">The differentiation method for the custom function.</param>
         /// <returns>The described factory delegate</returns>
-        public static Func<Term, Term, BinaryFunc> Factory(Func<double, double, double> eval, Func<double, double, Tuple<double, double>> diff)
+        public static Func<Term, Term, BinaryFunc> Factory(
+            Func<double, double, double> eval, 
+            Func<double, double, Tuple<double, double>> diff)
         {
-            Contract.Requires(eval != null);
-            Contract.Requires(diff != null);
-            Contract.Ensures(Contract.Result < Func<Term, Term, BinaryFunc>>() != null);
+            Requires(eval != null);
+            Requires(diff != null);
+            Ensures(Result<Func<Term, Term, BinaryFunc>>() != null);
 
             Func<Term, Term, BinaryFunc> result = (left, right) => new BinaryFunc(eval, diff, left, right);
             return result;
@@ -64,22 +59,22 @@ namespace AutoDiff
         /// <summary>
         /// Gets the evaluation delegate
         /// </summary>
-        public Func<double, double, double> Eval { get { return eval; } }
+        public Func<double, double, double> Eval { get; }
 
         /// <summary>
         /// Gets the differentiation delegate
         /// </summary>
-        public Func<double, double, Tuple<double, double>> Diff { get { return diff; } }
+        public Func<double, double, Tuple<double, double>> Diff { get; }
 
         /// <summary>
         /// Gets the function's left argument term
         /// </summary>
-        public Term Left { get { return left; } }
+        public Term Left { get; }
 
         /// <summary>
         /// Gets the function's right argument term
         /// </summary>
-        public Term Right { get { return right; } }
+        public Term Right { get; }
 
         /// <summary>
         /// Accepts a term visitor

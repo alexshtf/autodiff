@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace AutoDiff
 {
-    partial class CompiledDifferentiator<T>
+    internal partial class CompiledDifferentiator<T>
     {
         private class ForwardSweepVisitor : Compiled.ITapeVisitor
         {
-            private Compiled.TapeElement[] tape;
+            private readonly Compiled.TapeElement[] tape;
 
             public ForwardSweepVisitor(Compiled.TapeElement[] tape)
             {
@@ -29,22 +25,22 @@ namespace AutoDiff
 
             public void Visit(Compiled.Log elem)
             {
-                double arg = ValueOf(elem.Arg);
+                var arg = ValueOf(elem.Arg);
                 elem.Value = Math.Log(arg);
                 elem.Inputs[0].Weight = 1 / arg;
             }
 
             public void Visit(Compiled.ConstPower elem)
             {
-                double baseVal = ValueOf(elem.Base);
+                var baseVal = ValueOf(elem.Base);
                 elem.Value = Math.Pow(baseVal, elem.Exponent);
                 elem.Inputs[0].Weight = elem.Exponent * Math.Pow(baseVal, elem.Exponent - 1);
             }
 
             public void Visit(Compiled.TermPower elem)
             {
-                double baseVal = ValueOf(elem.Base);
-                double exponent = ValueOf(elem.Exponent);
+                var baseVal = ValueOf(elem.Base);
+                var exponent = ValueOf(elem.Exponent);
 
                 elem.Value = Math.Pow(baseVal, exponent);
                 elem.Inputs[0].Weight = exponent * Math.Pow(baseVal, exponent - 1);
@@ -53,8 +49,8 @@ namespace AutoDiff
 
             public void Visit(Compiled.Product elem)
             {
-                double left = ValueOf(elem.Left);
-                double right = ValueOf(elem.Right);
+                var left = ValueOf(elem.Left);
+                var right = ValueOf(elem.Right);
 
                 elem.Value = left * right;
                 elem.Inputs[0].Weight = right;
@@ -64,11 +60,8 @@ namespace AutoDiff
             public void Visit(Compiled.Sum elem)
             {
                 elem.Value = 0;
-                for (int i = 0; i < elem.Terms.Length; ++i)
-                    elem.Value += ValueOf(elem.Terms[i]);
-
-                for (int i = 0; i < elem.Inputs.Length; ++i)
-                    elem.Inputs[i].Weight = 1;
+                foreach (var term in elem.Terms)
+                    elem.Value += ValueOf(term);
             }
 
             public void Visit(Compiled.Variable var)
@@ -84,8 +77,8 @@ namespace AutoDiff
 
             public void Visit(Compiled.BinaryFunc elem)
             {
-                double left = ValueOf(elem.Left);
-                double right = ValueOf(elem.Right);
+                var left = ValueOf(elem.Left);
+                var right = ValueOf(elem.Right);
 
                 elem.Value = elem.Eval(left, right);
                 var grad = elem.Diff(left, right);
@@ -95,13 +88,13 @@ namespace AutoDiff
 
             public void Visit(Compiled.NaryFunc elem)
             {
-                double[] args = new double[elem.Terms.Length];
-                for (int i = 0; i < args.Length; i++)
+                var args = new double[elem.Terms.Length];
+                for (var i = 0; i < args.Length; i++)
                     args[i] = ValueOf(elem.Terms[i]);
 
                 elem.Value = elem.Eval(args);
                 var grad = elem.Diff(args);
-                for (int i = 0; i < grad.Length; ++i)
+                for (var i = 0; i < grad.Length; ++i)
                     elem.Inputs[i].Weight = grad[i];
             }
 

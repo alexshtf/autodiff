@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff.Compiled
+﻿namespace AutoDiff.Compiled
 {
-    class ConstPower : TapeElement
+    internal class ConstPower : TapeElement
     {
         public int Base;
         public double Exponent;

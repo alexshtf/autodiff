@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff
+﻿namespace AutoDiff
 {
     /// <summary>
     /// Represents a product between two terms.
@@ -27,12 +22,12 @@ namespace AutoDiff
         /// <summary>
         /// Gets the first product term.
         /// </summary>
-        public Term Left { get; private set; }
+        public Term Left { get; }
 
         /// <summary>
         /// Gets the second product term.
         /// </summary>
-        public Term Right { get; private set; }
+        public Term Right { get; }
 
         /// <summary>
         /// Accepts a term visitor

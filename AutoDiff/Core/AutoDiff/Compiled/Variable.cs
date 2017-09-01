@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoDiff.Compiled
+﻿namespace AutoDiff.Compiled
 {
-	class Variable : TapeElement
+	internal class Variable : TapeElement
 	{
         public override void Accept(ITapeVisitor visitor)
         {

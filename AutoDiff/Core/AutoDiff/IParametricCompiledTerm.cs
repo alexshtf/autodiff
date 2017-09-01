@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -42,7 +43,7 @@ namespace AutoDiff
         /// <see cref="Evaluate"/>. That is, the variable at <c>Variables[i]</c> corresponds to the i-th element in the <c>arg</c> parameter of <see cref="Differentiate"/>
         /// and <see cref="Evaluate"/>.
         /// </remarks>
-        ReadOnlyCollection<Variable> Variables { get; }
+        IReadOnlyList<Variable> Variables { get; }
 
         /// <summary>
         /// The collection of parameter variables contained in this compiled term.
@@ -52,7 +53,7 @@ namespace AutoDiff
         /// <see cref="Evaluate"/>. That is, the variable at <c>Variables[i]</c> corresponds to the i-th element in the <c>parameters</c> parameter of <see cref="Differentiate"/>
         /// and <see cref="Evaluate"/>.
         /// </remarks>
-        ReadOnlyCollection<Variable> Parameters { get; }
+        IReadOnlyList<Variable> Parameters { get; }
     }
 
     [ContractClassFor(typeof(IParametricCompiledTerm))]
@@ -61,41 +62,41 @@ namespace AutoDiff
 
         public double Evaluate(double[] arg, double[] parameters)
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(arg.Length == Variables.Count);
-            Contract.Requires(parameters != null);
-            Contract.Requires(parameters.Length == Parameters.Count);
+            Requires(arg != null);
+            Requires(arg.Length == Variables.Count);
+            Requires(parameters != null);
+            Requires(parameters.Length == Parameters.Count);
 
             return default(double);
         }
 
         public Tuple<double[], double> Differentiate(double[] arg, double[] parameters)
         {
-            Contract.Requires(arg != null);
-            Contract.Requires(arg.Length == Variables.Count);
-            Contract.Requires(parameters != null);
-            Contract.Requires(parameters.Length == Parameters.Count);
+            Requires(arg != null);
+            Requires(arg.Length == Variables.Count);
+            Requires(parameters != null);
+            Requires(parameters.Length == Parameters.Count);
 
-            Contract.Ensures(Contract.Result<Tuple<double[], double>>() != null);
-            Contract.Ensures(Contract.Result<Tuple<double[], double>>().Item1.Length == arg.Length);
+            Ensures(Result<Tuple<double[], double>>() != null);
+            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Length);
 
             return null;
         }
 
-        public ReadOnlyCollection<Variable> Variables
+        public IReadOnlyList<Variable> Variables
         {
             get
             {
-                Contract.Ensures(Contract.Result<ReadOnlyCollection<Variable>>() != null);
+                Ensures(Result<ReadOnlyCollection<Variable>>() != null);
                 return null;
             }
         }
 
-        public ReadOnlyCollection<Variable> Parameters
+        public IReadOnlyList<Variable> Parameters
         {
             get
             {
-                Contract.Ensures(Contract.Result<ReadOnlyCollection<Variable>>() != null);
+                Ensures(Result<ReadOnlyCollection<Variable>>() != null);
                 return null;
             }
         }

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AutoDiff
 {
-    partial class CompiledDifferentiator<T>
+    internal partial class CompiledDifferentiator<T>
     {
         private class EvalVisitor : Compiled.ITapeVisitor
         {
@@ -48,8 +45,8 @@ namespace AutoDiff
             public void Visit(Compiled.Sum elem)
             {
                 elem.Value = 0;
-                for (int i = 0; i < elem.Terms.Length; ++i)
-                    elem.Value += ValueOf(elem.Terms[i]);
+                foreach (var term in elem.Terms)
+                    elem.Value += ValueOf(term);
             }
 
             public void Visit(Compiled.Variable var)
@@ -68,8 +65,8 @@ namespace AutoDiff
 
             public void Visit(Compiled.NaryFunc elem)
             {
-                double[] args = new double[elem.Terms.Length];
-                for(int i=0;i<args.Length;i++)
+                var args = new double[elem.Terms.Length];
+                for (var i = 0; i < args.Length; i++)
                     args[i] = ValueOf(elem.Terms[i]);
                 elem.Value = elem.Eval(args);
             }

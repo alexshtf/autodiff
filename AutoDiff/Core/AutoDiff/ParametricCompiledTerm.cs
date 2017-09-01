@@ -34,8 +34,8 @@ namespace AutoDiff
             return Tuple.Create(partialGradient, diffResult.Item2);
         }
 
-        public ReadOnlyCollection<Variable> Variables { get; private set;}
+        public IReadOnlyList<Variable> Variables { get; }
 
-        public ReadOnlyCollection<Variable> Parameters { get; private set;} 
+        public IReadOnlyList<Variable> Parameters { get; } 
     }
 }

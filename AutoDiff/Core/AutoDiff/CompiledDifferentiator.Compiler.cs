@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using CompileResult = AutoDiff.Compiled.TapeElement;
 
 namespace AutoDiff
 {
-    partial class CompiledDifferentiator<T>
+    internal partial class CompiledDifferentiator<T>
     {
+        
         private class Compiler : ITermVisitor<int> // int --> the index of the compiled element in the tape
         {
+            
             private readonly List<Compiled.TapeElement> tape;
             private readonly Dictionary<Term, int> indexOf;
 
@@ -18,7 +17,7 @@ namespace AutoDiff
             {
                 this.tape = tape;
                 indexOf = new Dictionary<Term, int>();
-                foreach (var i in Enumerable.Range(0, variables.Count))
+                for(var i = 0; i < variables.Count; ++i)
                 {
                     indexOf[variables[i]] = i;
                     tape.Add(new Compiled.Variable());
@@ -32,12 +31,12 @@ namespace AutoDiff
 
             public int Visit(Constant constant)
             {
-                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = new Compiled.InputEdge[0] });
+                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = NoInputs });
             }
 
             public int Visit(Zero zero)
             {
-                return Compile(zero, () => new Compiled.Constant(0) { Inputs = new Compiled.InputEdge[0] });
+                return Compile(zero, () => new Compiled.Constant(0) { Inputs = NoInputs });
             }
 
             public int Visit(ConstPower intPower)
@@ -49,7 +48,7 @@ namespace AutoDiff
                         {
                             Base = baseIndex,
                             Exponent = intPower.Exponent,
-                            Inputs = new Compiled.InputEdge[] 
+                            Inputs = new[] 
                             {
                                 new Compiled.InputEdge { Index = baseIndex },
                             },
@@ -69,7 +68,7 @@ namespace AutoDiff
                     {
                         Base = baseIndex,
                         Exponent = expIndex,
-                        Inputs = new Compiled.InputEdge[]
+                        Inputs = new[]
                         {
                             new Compiled.InputEdge { Index = baseIndex },
                             new Compiled.InputEdge { Index = expIndex },
@@ -90,7 +89,7 @@ namespace AutoDiff
                         {
                             Left = leftIndex,
                             Right = rightIndex,
-                            Inputs = new Compiled.InputEdge[]
+                            Inputs = new[]
                             {
                                 new Compiled.InputEdge { Index = leftIndex },
                                 new Compiled.InputEdge { Index = rightIndex },
@@ -105,15 +104,21 @@ namespace AutoDiff
             {
                 return Compile(sum, () =>
                     {
-                        var indicesQuery = from term in sum.Terms
-                                           select term.Accept(this);
-                        var indices = indicesQuery.ToArray();
+                        var terms = sum.Terms;
+                        var indices = new int[terms.Count];
+                        var inputs = new Compiled.InputEdge[terms.Count];
+                        for (var i = 0; i < terms.Count; ++i)
+                        {
+                            var idx = terms[i].Accept(this);
+                            indices[i] = idx;
+                            inputs[i] = new Compiled.InputEdge {Index = idx, Weight = 1};
+                        }
                         var element = new Compiled.Sum 
                         { 
                             Terms = indices,
-                            Inputs = indices.Select(x => new Compiled.InputEdge { Index = x }).ToArray(),
+                            Inputs = inputs,
                         };
-
+    
                         return element;
                     });
             }
@@ -131,7 +136,7 @@ namespace AutoDiff
                         var element = new Compiled.Log 
                         { 
                             Arg = argIndex,
-                            Inputs = new Compiled.InputEdge[]
+                            Inputs = new[]
                             {
                                 new Compiled.InputEdge { Index = argIndex },
                             },
@@ -149,7 +154,7 @@ namespace AutoDiff
                         var element = new Compiled.Exp
                         {
                             Arg = argIndex,
-                            Inputs = new Compiled.InputEdge[]
+                            Inputs = new[]
                             {
                                 new Compiled.InputEdge { Index = argIndex },
                             },
@@ -167,7 +172,7 @@ namespace AutoDiff
                         var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
                         {
                             Arg = argIndex,
-                            Inputs = new Compiled.InputEdge[]
+                            Inputs = new[]
                             {
                                 new Compiled.InputEdge { Index = argIndex },
                             },
@@ -190,7 +195,7 @@ namespace AutoDiff
                             Diff = func.Diff,
                             Left = leftIndex,
                             Right = rightIndex,
-                            Inputs = new Compiled.InputEdge[]
+                            Inputs = new[]
                             {
                                 new Compiled.InputEdge { Index = leftIndex },
                                 new Compiled.InputEdge { Index = rightIndex },
@@ -205,16 +210,22 @@ namespace AutoDiff
             {
                 return Compile(func, () =>
                 {
-                    var indicesQuery = from term in func.Terms
-                                       select term.Accept(this);
-                    var indices = indicesQuery.ToArray();
+                    var terms = func.Terms;
+                    var indices = new int[terms.Count];
+                    var inputs = new Compiled.InputEdge[terms.Count];
+                    for (var i = 0; i < terms.Count; ++i)
+                    {
+                        var idx = terms[i].Accept(this);
+                        indices[i] = idx;
+                        inputs[i] = new Compiled.InputEdge {Index = idx};
+                    }
 
                     var element = new Compiled.NaryFunc
                     {
                         Eval = func.Eval,
                         Diff = func.Diff,
                         Terms = indices,
-                        Inputs = indices.Select(x => new Compiled.InputEdge { Index = x }).ToArray(),
+                        Inputs = inputs,
                     };
 
                     return element;
@@ -225,17 +236,19 @@ namespace AutoDiff
             private int Compile(Term term, Func<CompileResult> compiler)
             {
                 int index;
-                if (!indexOf.TryGetValue(term, out index))
-                {
-                    var compileResult = compiler();
-                    tape.Add(compileResult);
+                if (indexOf.TryGetValue(term, out index)) 
+                    return index;
+                
+                var compileResult = compiler();
+                tape.Add(compileResult);
 
-                    index = tape.Count - 1;
-                    indexOf.Add(term, index);
-                }
+                index = tape.Count - 1;
+                indexOf.Add(term, index);
 
                 return index;
             }
+                                    
+            private static Compiled.InputEdge[] NoInputs => Array.Empty<Compiled.InputEdge>();
         }
     }
 }

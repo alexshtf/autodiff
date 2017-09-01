@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -25,20 +23,20 @@ namespace AutoDiff
         public Sum(Term first, Term second, params Term[] rest)
         {
             var allTerms = 
-                (new Term[] { first, second}).Concat(rest);
+                (new[] { first, second}).Concat(rest);
 
-            Terms = new ReadOnlyCollection<Term>(allTerms.ToList());
+            Terms = allTerms.ToList().AsReadOnly();
         }
 
         internal Sum(IEnumerable<Term> terms)
         {
-            Terms = new ReadOnlyCollection<Term>(terms.ToArray());
+            Terms = terms.ToList().AsReadOnly();
         }
 
         /// <summary>
         /// Gets the terms of this sum.
         /// </summary>
-        public ReadOnlyCollection<Term> Terms { get; private set; }
+        public IReadOnlyList<Term> Terms { get; }
         
         /// <summary>
         /// Accepts a term visitor

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
+using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -49,12 +46,11 @@ namespace AutoDiff
         {
             if (left is Zero && right is Zero)
                 return new Zero();
-            else if (left is Zero)
+            if (left is Zero)
                 return right;
-            else if (right is Zero)
+            if (right is Zero)
                 return left;
-            else
-                return TermBuilder.Sum(left, right);
+            return TermBuilder.Sum(left, right);
         }
 
         /// <summary>
@@ -102,16 +98,16 @@ namespace AutoDiff
     }
 
     [ContractClassFor(typeof(Term))]
-    abstract class TermContacts : Term
+    internal abstract class TermContacts : Term
     {
         public override void Accept(ITermVisitor visitor)
         {
-            Contract.Requires(visitor != null);
+            Requires(visitor != null);
         }
 
         public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
         {
-            Contract.Requires(visitor != null);
+            Requires(visitor != null);
             return default(TResult);
         }
     }
