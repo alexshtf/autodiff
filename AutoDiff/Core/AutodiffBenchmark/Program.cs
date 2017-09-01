@@ -16,7 +16,6 @@ namespace AutodiffBenchmark
 
         static void Main(string[] args)
         {
-            Console.SetWindowSize(120, 30);
             using (var stdout = new StreamWriter(Console.OpenStandardOutput()))
             using (var stderr = new StreamWriter(Console.OpenStandardError()))
             {
