@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AutoDiff.Compiled
 {
-    class InputEdge
+    struct InputEdge
     {
         public int Index;
         public double Weight;
