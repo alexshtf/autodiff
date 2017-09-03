@@ -11,11 +11,13 @@ namespace AutoDiff
         {
             
             private readonly List<Compiled.TapeElement> tape;
+            private readonly List<Compiled.InputEdge> edges;
             private readonly Dictionary<Term, int> indexOf;
 
-            public Compiler(T variables, List<Compiled.TapeElement> tape)
+            public Compiler(T variables, List<Compiled.TapeElement> tape, List<Compiled.InputEdge> edges)
             {
                 this.tape = tape;
+                this.edges = edges;
                 indexOf = new Dictionary<Term, int>();
                 for(var i = 0; i < variables.Count; ++i)
                 {
@@ -31,31 +33,31 @@ namespace AutoDiff
 
             public int Visit(Constant constant)
             {
-                return Compile(constant, () => new Compiled.Constant(constant.Value));
+                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = new Compiled.InputEdges(0,0) });
             }
 
             public int Visit(Zero zero)
             {
-                return Compile(zero, () => new Compiled.Constant(0));
+                return Compile(zero, () => new Compiled.Constant(0) { Inputs = new Compiled.InputEdges(0,0) });
             }
 
             public int Visit(ConstPower intPower)
             {
                 return Compile(intPower, () =>
+                {
+                    var baseIndex = intPower.Base.Accept(this);
+                    var element = new Compiled.ConstPower
                     {
-                        var baseIndex = intPower.Base.Accept(this);
-                        var element = new Compiled.ConstPower
+                        Base = baseIndex,
+                        Exponent = intPower.Exponent,
+                        Inputs = MakeInputEdges(() =>  
                         {
-                            Base = baseIndex,
-                            Exponent = intPower.Exponent,
-                            Inputs = new Compiled.InputEdges(new[] 
-                            {
-                                new Compiled.InputEdge { Index = baseIndex },
-                            }),
-                        };
+                            edges.Add(new Compiled.InputEdge { Index = baseIndex });
+                        }),
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
             public int Visit(TermPower power)
@@ -68,10 +70,10 @@ namespace AutoDiff
                     {
                         Base = baseIndex,
                         Exponent = expIndex,
-                        Inputs = new Compiled.InputEdges(new[]
+                        Inputs = MakeInputEdges(() => 
                         {
-                            new Compiled.InputEdge { Index = baseIndex },
-                            new Compiled.InputEdge { Index = expIndex },
+                            edges.Add(new Compiled.InputEdge { Index = baseIndex });
+                            edges.Add(new Compiled.InputEdge { Index = expIndex });
                         }),
                     };
 
@@ -82,45 +84,47 @@ namespace AutoDiff
             public int Visit(Product product)
             {
                 return Compile(product, () =>
+                {
+                    var leftIndex = product.Left.Accept(this);
+                    var rightIndex = product.Right.Accept(this);
+                    var element = new Compiled.Product
                     {
-                        var leftIndex = product.Left.Accept(this);
-                        var rightIndex = product.Right.Accept(this);
-                        var element = new Compiled.Product
+                        Left = leftIndex,
+                        Right = rightIndex,
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Left = leftIndex,
-                            Right = rightIndex,
-                            Inputs = new Compiled.InputEdges(new[]
-                            {
-                                new Compiled.InputEdge { Index = leftIndex },
-                                new Compiled.InputEdge { Index = rightIndex },
-                            })
-                        };
+                            edges.Add(new Compiled.InputEdge { Index = leftIndex });
+                            edges.Add(new Compiled.InputEdge { Index = rightIndex });
+                        })
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
             public int Visit(Sum sum)
             {
                 return Compile(sum, () =>
+                {
+                    var terms = sum.Terms;
+                    var indices = new int[terms.Count];
+                    for (var i = 0; i < terms.Count; ++i)
                     {
-                        var terms = sum.Terms;
-                        var indices = new int[terms.Count];
-                        var inputs = new Compiled.InputEdge[terms.Count];
-                        for (var i = 0; i < terms.Count; ++i)
+                        var idx = terms[i].Accept(this);
+                        indices[i] = idx;
+                    }
+                    var element = new Compiled.Sum 
+                    { 
+                        Terms = indices,
+                        Inputs = MakeInputEdges(() => 
                         {
-                            var idx = terms[i].Accept(this);
-                            indices[i] = idx;
-                            inputs[i] = new Compiled.InputEdge {Index = idx, Weight = 1};
-                        }
-                        var element = new Compiled.Sum 
-                        { 
-                            Terms = indices,
-                            Inputs = new Compiled.InputEdges(inputs),
-                        };
-    
-                        return element;
-                    });
+                            for(var i = 0; i < terms.Count; ++i)
+                                edges.Add(new Compiled.InputEdge {Index = indices[i], Weight = 1});
+                        })
+                    };
+
+                    return element;
+                });
             }
 
             public int Visit(Variable variable)
@@ -131,79 +135,79 @@ namespace AutoDiff
             public int Visit(Log log)
             {
                 return Compile(log, () =>
-                    {
-                        var argIndex = log.Arg.Accept(this);
-                        var element = new Compiled.Log 
-                        { 
-                            Arg = argIndex,
-                            Inputs = new Compiled.InputEdges(new[]
-                            {
-                                new Compiled.InputEdge { Index = argIndex },
-                            }),
-                        };
+                {
+                    var argIndex = log.Arg.Accept(this);
+                    var element = new Compiled.Log 
+                    { 
+                        Arg = argIndex,
+                        Inputs = MakeInputEdges(() => 
+                        {
+                            edges.Add(new Compiled.InputEdge { Index = argIndex });
+                        }),
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
             public int Visit(Exp exp)
             {
                 return Compile(exp, () =>
+                {
+                    var argIndex = exp.Arg.Accept(this);
+                    var element = new Compiled.Exp
                     {
-                        var argIndex = exp.Arg.Accept(this);
-                        var element = new Compiled.Exp
+                        Arg = argIndex,
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Arg = argIndex,
-                            Inputs = new Compiled.InputEdges(new[]
-                            {
-                                new Compiled.InputEdge { Index = argIndex },
-                            }),
-                        };
+                            edges.Add(new Compiled.InputEdge { Index = argIndex });
+                        }),
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
             public int Visit(UnaryFunc func)
             {
                 return Compile(func, () =>
+                {
+                    var argIndex = func.Argument.Accept(this);
+                    var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
                     {
-                        var argIndex = func.Argument.Accept(this);
-                        var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
+                        Arg = argIndex,
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Arg = argIndex,
-                            Inputs = new Compiled.InputEdges(new[]
-                            {
-                                new Compiled.InputEdge { Index = argIndex },
-                            }),
-                        };
+                            edges.Add(new Compiled.InputEdge { Index = argIndex });
+                        }),
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
             public int Visit(BinaryFunc func)
             {
                 return Compile(func, () =>
+                {
+                    var leftIndex = func.Left.Accept(this);
+                    var rightIndex = func.Right.Accept(this);
+
+                    var element = new Compiled.BinaryFunc
                     {
-                        var leftIndex = func.Left.Accept(this);
-                        var rightIndex = func.Right.Accept(this);
-
-                        var element = new Compiled.BinaryFunc
+                        Eval = func.Eval,
+                        Diff = func.Diff,
+                        Left = leftIndex,
+                        Right = rightIndex,
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Eval = func.Eval,
-                            Diff = func.Diff,
-                            Left = leftIndex,
-                            Right = rightIndex,
-                            Inputs = new Compiled.InputEdges(new[]
-                            {
-                                new Compiled.InputEdge { Index = leftIndex },
-                                new Compiled.InputEdge { Index = rightIndex },
-                            })
-                        };
+                            edges.Add(new Compiled.InputEdge { Index = leftIndex });
+                            edges.Add(new Compiled.InputEdge { Index = rightIndex });
+                        })
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
             public int Visit(NaryFunc func)
@@ -212,12 +216,10 @@ namespace AutoDiff
                 {
                     var terms = func.Terms;
                     var indices = new int[terms.Count];
-                    var inputs = new Compiled.InputEdge[terms.Count];
                     for (var i = 0; i < terms.Count; ++i)
                     {
                         var idx = terms[i].Accept(this);
                         indices[i] = idx;
-                        inputs[i] = new Compiled.InputEdge {Index = idx};
                     }
 
                     var element = new Compiled.NaryFunc
@@ -225,7 +227,11 @@ namespace AutoDiff
                         Eval = func.Eval,
                         Diff = func.Diff,
                         Terms = indices,
-                        Inputs = new Compiled.InputEdges(inputs),
+                        Inputs = MakeInputEdges(() => 
+                        {
+                            for(var i = 0; i < terms.Count; ++i)
+                                edges.Add(new Compiled.InputEdge {Index = indices[i]});
+                        }),
                     };
 
                     return element;
@@ -247,8 +253,14 @@ namespace AutoDiff
 
                 return index;
             }
-                                    
-            private static Compiled.InputEdge[] NoInputs => Array.Empty<Compiled.InputEdge>();
+            
+            private Compiled.InputEdges MakeInputEdges(Action action)
+            {
+                var offset = edges.Count;
+                action();
+                var length = edges.Count - offset;
+                return new Compiled.InputEdges(offset, length);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal class Constant : TapeElement
+    internal sealed class Constant : TapeElement
 	{
         public Constant(double value)
         {

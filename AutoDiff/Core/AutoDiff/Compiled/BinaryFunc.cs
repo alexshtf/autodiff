@@ -2,7 +2,7 @@
 
 namespace AutoDiff.Compiled
 {
-    internal class BinaryFunc : TapeElement
+    internal sealed class BinaryFunc : TapeElement
     {
         public int Left;
         public int Right;

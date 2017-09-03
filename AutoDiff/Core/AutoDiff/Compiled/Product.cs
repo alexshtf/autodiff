@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal class Product : TapeElement
+    internal sealed class Product : TapeElement
     {
         public int Left;
         public int Right;

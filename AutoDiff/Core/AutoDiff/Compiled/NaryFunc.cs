@@ -2,7 +2,7 @@
 
 namespace AutoDiff.Compiled
 {
-    internal class NaryFunc : TapeElement
+    internal sealed class NaryFunc : TapeElement
     {
         public int[] Terms;
         public Func<double[], double> Eval;

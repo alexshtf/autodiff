@@ -2,7 +2,7 @@
 
 namespace AutoDiff.Compiled
 {
-    internal class UnaryFunc : TapeElement
+    internal sealed class UnaryFunc : TapeElement
     {
         public int Arg;
         public readonly Func<double, double> Eval;

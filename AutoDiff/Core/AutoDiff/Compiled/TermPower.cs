@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal class TermPower : TapeElement
+    internal sealed class TermPower : TapeElement
     {
         public int Base;
         public int Exponent;

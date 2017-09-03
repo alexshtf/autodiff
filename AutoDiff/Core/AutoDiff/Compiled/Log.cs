@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal class Log : TapeElement
+    internal sealed class Log : TapeElement
     {
         public int Arg;
 

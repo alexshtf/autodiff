@@ -13,6 +13,7 @@ namespace AutoDiff
         where T : IReadOnlyList<Variable>
     {
         private readonly Compiled.TapeElement[] tape;
+        private readonly Compiled.InputEdge[] inputEdges;
         private readonly int dimension;
 
         /// <summary>
@@ -33,8 +34,12 @@ namespace AutoDiff
                 function = new ConstPower(function, 1);
 
             var tapeList = new List<Compiled.TapeElement>();
-            new Compiler(variables, tapeList).Compile(function);
+            var inputList = new List<Compiled.InputEdge>();
+            new Compiler(variables, tapeList, inputList).Compile(function);
             tape = tapeList.ToArray();
+            inputEdges = inputList.ToArray();
+            foreach(var te in tape)
+                te.Inputs = te.Inputs.Remap(inputEdges);
         }
 
         public IReadOnlyList<Variable> Variables { get; }

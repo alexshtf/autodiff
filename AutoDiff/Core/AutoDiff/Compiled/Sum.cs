@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal class Sum : TapeElement
+    internal sealed class Sum : TapeElement
     {
         public int[] Terms;
 

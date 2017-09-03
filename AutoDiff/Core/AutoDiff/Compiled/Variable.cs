@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-	internal class Variable : TapeElement
+	internal sealed class Variable : TapeElement
 	{
         public override void Accept(ITapeVisitor visitor)
         {

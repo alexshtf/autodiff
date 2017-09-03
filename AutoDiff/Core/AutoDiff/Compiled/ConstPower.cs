@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal class ConstPower : TapeElement
+    internal sealed class ConstPower : TapeElement
     {
         public int Base;
         public double Exponent;
