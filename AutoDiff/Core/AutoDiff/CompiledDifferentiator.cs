@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
+using AutoDiff.Compiled;
 using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
+    /// <inheritdoc />
     /// <summary>
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
     internal partial class CompiledDifferentiator<T> : ICompiledTerm
         where T : IReadOnlyList<Variable>
     {
-        private readonly Compiled.TapeElement[] tape;
+        private readonly TapeElement[] tape;
         private readonly int dimension;
 
         /// <summary>
@@ -32,9 +32,14 @@ namespace AutoDiff
             if (function is Variable)
                 function = new ConstPower(function, 1);
 
-            var tapeList = new List<Compiled.TapeElement>();
-            new Compiler(variables, tapeList).Compile(function);
+            var tapeList = new List<TapeElement>();
+            var inputList = new List<InputEdge>();
+            new Compiler(variables, tapeList, inputList).Compile(function);
             tape = tapeList.ToArray();
+            
+            var inputEdges = inputList.ToArray();
+            foreach(var te in tape)
+                te.Inputs = te.Inputs.Remap(inputEdges);
         }
 
         public IReadOnlyList<Variable> Variables { get; }
@@ -45,16 +50,14 @@ namespace AutoDiff
             return tape[tape.Length - 1].Value;
         }
 
-        public Tuple<double[], double> Differentiate<TArg>(TArg arg)
-            where TArg : class, IReadOnlyList<double>
+        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg)
         {
             var gradient = new double[dimension];
             var value = Differentiate(arg, gradient);
             return Tuple.Create(gradient, value);
         }
 
-        public double Differentiate<TArg>(TArg arg, double[] grad) 
-            where TArg : class, IReadOnlyList<double> 
+        public double Differentiate(IReadOnlyList<double> arg, double[] grad) 
         {
             ForwardSweep(arg);
             ReverseSweep();
@@ -67,16 +70,15 @@ namespace AutoDiff
 
         public Tuple<double[], double> Differentiate(params double[] arg)
         {
-            return Differentiate<double[]>(arg);
+            return Differentiate((IReadOnlyList<double>)arg);
         }
 
         private void ReverseSweep()
         {
-            tape[tape.Length - 1].Adjoint = 1;
-            
             // initialize adjoints
             for (var i = 0; i < tape.Length - 1; ++i)
                 tape[i].Adjoint = 0;
+            tape[tape.Length - 1].Adjoint = 1;
 
             // accumulate adjoints
             for (var i = tape.Length - 1; i >= dimension; --i)
@@ -85,30 +87,26 @@ namespace AutoDiff
                 var adjoint = tape[i].Adjoint;
                 
                 for(var j = 0; j < inputs.Length; ++j)
-                    tape[inputs[j].Index].Adjoint += adjoint * inputs[j].Weight;
+                    inputs.Element(j).Adjoint += adjoint * inputs.Weight(j);
             }
         }
 
-        private void ForwardSweep<TArg>(TArg arg)
-            where TArg : IReadOnlyList<double>
+        private void ForwardSweep(IReadOnlyList<double> arg)
         {
             for (var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
 
-            var forwardDiffVisitor = new ForwardSweepVisitor(tape);
             for (var i = dimension; i < tape.Length; ++i)
-                tape[i].Accept(forwardDiffVisitor);
+                tape[i].Diff();
         }
 
-        private void EvaluateTape<TArg>(TArg arg)
-            where TArg : IReadOnlyList<double>
+        private void EvaluateTape(IReadOnlyList<double> arg)
         {
             for(var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
             
-            var evalVisitor = new EvalVisitor(tape);
             for (var i = dimension; i < tape.Length; ++i )
-                tape[i].Accept(evalVisitor);
+                tape[i].Eval();
         }
     }
 }

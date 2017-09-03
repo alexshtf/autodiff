@@ -2,16 +2,37 @@
 
 namespace AutoDiff.Compiled
 {
-    internal class BinaryFunc : TapeElement
+    internal sealed class BinaryFunc : TapeElement
     {
-        public int Left;
-        public int Right;
-        public Func<double, double, double> Eval;
-        public Func<double, double, Tuple<double, double>> Diff;
+        private const int LeftIdx = 0;
+        private const int RightIdx = 1;
+        
+        private TapeElement Left => Inputs.Element(LeftIdx);
+        private TapeElement Right => Inputs.Element(RightIdx);
 
-        public override void Accept(ITapeVisitor visitor)
+        private readonly Func<double, double, double> eval;
+        private readonly Func<double, double, Tuple<double, double>> diff;
+
+        public BinaryFunc(Func<double, double, double> eval, Func<double, double, Tuple<double, double>> diff)
         {
-            visitor.Visit(this);
+            this.eval = eval;
+            this.diff = diff;
+        }
+
+        public override void Eval()
+        {
+            Value = eval(Left.Value, Right.Value);
+        }
+
+        public override void Diff()
+        {
+            var left = Left.Value;
+            var right = Right.Value;
+            
+            Value = eval(left, right);
+            var grad = diff(left, right);
+            Inputs.SetWeight(LeftIdx, grad.Item1);
+            Inputs.SetWeight(RightIdx, grad.Item2);
         }
     }
 }

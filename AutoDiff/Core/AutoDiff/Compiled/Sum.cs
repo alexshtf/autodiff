@@ -1,12 +1,19 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal class Sum : TapeElement
-    {
-        public int[] Terms;
-
-        public override void Accept(ITapeVisitor visitor)
+    internal sealed class Sum : TapeElement
+    {   
+        public override void Eval()
         {
-            visitor.Visit(this);
+            Value = 0;
+            for (var i = 0; i < Inputs.Length; ++i)
+                Value += Inputs.Element(i).Value;
         }
-	}
+
+        public override void Diff()
+        {
+            Value = 0;
+            for (var i = 0; i < Inputs.Length; ++i)
+                Value += Inputs.Element(i).Value;
+        }
+    }
 }

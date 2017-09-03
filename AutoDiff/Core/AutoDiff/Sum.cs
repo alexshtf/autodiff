@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace AutoDiff
 {
@@ -23,7 +22,7 @@ namespace AutoDiff
         public Sum(Term first, Term second, params Term[] rest)
         {
             var allTerms = 
-                (new[] { first, second}).Concat(rest);
+                new[] { first, second}.Concat(rest);
 
             Terms = allTerms.ToList().AsReadOnly();
         }

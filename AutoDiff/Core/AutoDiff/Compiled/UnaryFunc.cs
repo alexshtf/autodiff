@@ -2,21 +2,30 @@
 
 namespace AutoDiff.Compiled
 {
-    internal class UnaryFunc : TapeElement
+    internal sealed class UnaryFunc : TapeElement
     {
-        public int Arg;
-        public readonly Func<double, double> Eval;
-        public readonly Func<double, double> Diff;
+        private const int ArgIdx = 0;
+        private TapeElement Arg => Inputs.Element(ArgIdx);
+        
+        private readonly Func<double, double> eval;
+        private readonly Func<double, double> diff;
 
         public UnaryFunc(Func<double, double> eval, Func<double, double> diff)
         {
-            Eval = eval;
-            Diff = diff;
+            this.eval = eval;
+            this.diff = diff;
         }
 
-        public override void Accept(ITapeVisitor visitor)
+        public override void Eval()
         {
-            visitor.Visit(this);
+            Value = eval(Arg.Value);
+        }
+
+        public override void Diff()
+        {
+            var arg = Arg.Value;
+            Value = eval(arg);
+            Inputs.SetWeight(ArgIdx, diff(arg));
         }
     }
 }

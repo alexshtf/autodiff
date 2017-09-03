@@ -1,12 +1,21 @@
-﻿namespace AutoDiff.Compiled
-{
-    internal class Exp : TapeElement
-    {
-        public int Arg;
+﻿using System;
 
-        public override void Accept(ITapeVisitor visitor)
+namespace AutoDiff.Compiled
+{
+    internal sealed class Exp : TapeElement
+    {
+        private const int ArgIdx = 0;
+        private TapeElement Arg => Inputs.Element(ArgIdx);
+        
+        public override void Eval()
         {
-            visitor.Visit(this);
+            Value = Math.Exp(Arg.Value);
         }
-	}
+
+        public override void Diff()
+        {
+            Value = Math.Exp(Arg.Value);
+            Inputs.SetWeight(ArgIdx, Value);        
+        }
+    }
 }

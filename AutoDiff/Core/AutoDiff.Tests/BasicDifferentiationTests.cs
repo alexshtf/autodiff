@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 
 namespace AutoDiff.Tests

@@ -1,26 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using CompileResult = AutoDiff.Compiled.TapeElement;
+using TapeElement = AutoDiff.Compiled.TapeElement;
+using InputEdge = AutoDiff.Compiled.InputEdge;
+using InputEdges = AutoDiff.Compiled.InputEdges;
 
 namespace AutoDiff
 {
     internal partial class CompiledDifferentiator<T>
     {
         
-        private class Compiler : ITermVisitor<int> // int --> the index of the compiled element in the tape
+        private class Compiler : ITermVisitor<TapeElement> 
         {
             
-            private readonly List<Compiled.TapeElement> tape;
-            private readonly Dictionary<Term, int> indexOf;
+            private readonly List<TapeElement> tape;
+            private readonly List<InputEdge> edges;
+            private readonly Dictionary<Term, TapeElement> tapeElementOf;
 
-            public Compiler(T variables, List<Compiled.TapeElement> tape)
+            public Compiler(T variables, List<TapeElement> tape, List<InputEdge> edges)
             {
                 this.tape = tape;
-                indexOf = new Dictionary<Term, int>();
-                for(var i = 0; i < variables.Count; ++i)
+                this.edges = edges;
+                tapeElementOf = new Dictionary<Term, TapeElement>();
+                foreach (var variable in variables)
                 {
-                    indexOf[variables[i]] = i;
-                    tape.Add(new Compiled.Variable());
+                    var tapeVariable = new Compiled.Variable();
+                    tape.Add(tapeVariable);
+                    tapeElementOf[variable] = tapeVariable;
                 }
             }
 
@@ -29,203 +34,185 @@ namespace AutoDiff
                 term.Accept(this);
             }
 
-            public int Visit(Constant constant)
+            public TapeElement Visit(Constant constant)
             {
-                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = NoInputs });
+                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = new InputEdges(0,0) });
             }
 
-            public int Visit(Zero zero)
+            public TapeElement Visit(Zero zero)
             {
-                return Compile(zero, () => new Compiled.Constant(0) { Inputs = NoInputs });
+                return Compile(zero, () => new Compiled.Constant(0) { Inputs = new InputEdges(0,0) });
             }
 
-            public int Visit(ConstPower intPower)
+            public TapeElement Visit(ConstPower intPower)
             {
                 return Compile(intPower, () =>
-                    {
-                        var baseIndex = intPower.Base.Accept(this);
-                        var element = new Compiled.ConstPower
-                        {
-                            Base = baseIndex,
-                            Exponent = intPower.Exponent,
-                            Inputs = new[] 
-                            {
-                                new Compiled.InputEdge { Index = baseIndex },
-                            },
-                        };
-
-                        return element;
-                    });
-            }
-
-            public int Visit(TermPower power)
-            {
-                return Compile(power, () =>
                 {
-                    var baseIndex = power.Base.Accept(this);
-                    var expIndex = power.Exponent.Accept(this);
-                    var element = new Compiled.TermPower
+                    var baseElement = intPower.Base.Accept(this);
+                    var element = new Compiled.ConstPower
                     {
-                        Base = baseIndex,
-                        Exponent = expIndex,
-                        Inputs = new[]
+                        Exponent = intPower.Exponent,
+                        Inputs = MakeInputEdges(() =>  
                         {
-                            new Compiled.InputEdge { Index = baseIndex },
-                            new Compiled.InputEdge { Index = expIndex },
-                        },
+                            edges.Add(new InputEdge { Element = baseElement });
+                        }),
                     };
 
                     return element;
                 });
             }
 
-            public int Visit(Product product)
+            public TapeElement  Visit(TermPower power)
+            {
+                return Compile(power, () =>
+                {
+                    var baseElement = power.Base.Accept(this);
+                    var expElement = power.Exponent.Accept(this);
+                    var element = new Compiled.TermPower
+                    {
+                        Inputs = MakeInputEdges(() => 
+                        {
+                            edges.Add(new InputEdge { Element = baseElement });
+                            edges.Add(new InputEdge { Element = expElement });
+                        }),
+                    };
+
+                    return element;
+                });
+            }
+
+            public TapeElement Visit(Product product)
             {
                 return Compile(product, () =>
+                {
+                    var leftElement = product.Left.Accept(this);
+                    var rightElement = product.Right.Accept(this);
+                    var element = new Compiled.Product
                     {
-                        var leftIndex = product.Left.Accept(this);
-                        var rightIndex = product.Right.Accept(this);
-                        var element = new Compiled.Product
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Left = leftIndex,
-                            Right = rightIndex,
-                            Inputs = new[]
-                            {
-                                new Compiled.InputEdge { Index = leftIndex },
-                                new Compiled.InputEdge { Index = rightIndex },
-                            }
-                        };
+                            edges.Add(new InputEdge { Element = leftElement });
+                            edges.Add(new InputEdge { Element = rightElement });
+                        })
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
-            public int Visit(Sum sum)
+            public TapeElement Visit(Sum sum)
             {
                 return Compile(sum, () =>
-                    {
-                        var terms = sum.Terms;
-                        var indices = new int[terms.Count];
-                        var inputs = new Compiled.InputEdge[terms.Count];
-                        for (var i = 0; i < terms.Count; ++i)
+                {
+                    var terms = sum.Terms;
+                    var tapeElements = new TapeElement[terms.Count];
+                    for(var i = 0; i < terms.Count; ++i)
+                        tapeElements[i] = terms[i].Accept(this);
+                    var element = new Compiled.Sum 
+                    { 
+                        Inputs = MakeInputEdges(() => 
                         {
-                            var idx = terms[i].Accept(this);
-                            indices[i] = idx;
-                            inputs[i] = new Compiled.InputEdge {Index = idx, Weight = 1};
-                        }
-                        var element = new Compiled.Sum 
-                        { 
-                            Terms = indices,
-                            Inputs = inputs,
-                        };
-    
-                        return element;
-                    });
+                            for(var i = 0; i < terms.Count; ++i)
+                                edges.Add(new InputEdge { Element = tapeElements[i], Weight = 1});
+                        })
+                    };
+
+                    return element;
+                });
             }
 
-            public int Visit(Variable variable)
+            public TapeElement Visit(Variable variable)
             {
-                return indexOf[variable];
+                return tapeElementOf[variable];
             }
 
-            public int Visit(Log log)
+            public TapeElement Visit(Log log)
             {
                 return Compile(log, () =>
-                    {
-                        var argIndex = log.Arg.Accept(this);
-                        var element = new Compiled.Log 
-                        { 
-                            Arg = argIndex,
-                            Inputs = new[]
-                            {
-                                new Compiled.InputEdge { Index = argIndex },
-                            },
-                        };
+                {
+                    var argElement = log.Arg.Accept(this);
+                    var element = new Compiled.Log 
+                    { 
+                        Inputs = MakeInputEdges(() => 
+                        {
+                            edges.Add(new InputEdge { Element = argElement });
+                        }),
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
-            public int Visit(Exp exp)
+            public TapeElement Visit(Exp exp)
             {
                 return Compile(exp, () =>
+                {
+                    var argElement = exp.Arg.Accept(this);
+                    var element = new Compiled.Exp
                     {
-                        var argIndex = exp.Arg.Accept(this);
-                        var element = new Compiled.Exp
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Arg = argIndex,
-                            Inputs = new[]
-                            {
-                                new Compiled.InputEdge { Index = argIndex },
-                            },
-                        };
+                            edges.Add(new InputEdge { Element = argElement });
+                        }),
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
-            public int Visit(UnaryFunc func)
+            public TapeElement Visit(UnaryFunc func)
             {
                 return Compile(func, () =>
+                {
+                    var argElement = func.Argument.Accept(this);
+                    var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
                     {
-                        var argIndex = func.Argument.Accept(this);
-                        var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Arg = argIndex,
-                            Inputs = new[]
-                            {
-                                new Compiled.InputEdge { Index = argIndex },
-                            },
-                        };
+                            edges.Add(new InputEdge { Element = argElement });
+                        }),
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
-            public int Visit(BinaryFunc func)
+            public TapeElement Visit(BinaryFunc func)
             {
                 return Compile(func, () =>
+                {
+                    var leftElement = func.Left.Accept(this);
+                    var rightElement = func.Right.Accept(this);
+
+                    var element = new Compiled.BinaryFunc(func.Eval, func.Diff)
                     {
-                        var leftIndex = func.Left.Accept(this);
-                        var rightIndex = func.Right.Accept(this);
-
-                        var element = new Compiled.BinaryFunc
+                        Inputs = MakeInputEdges(() => 
                         {
-                            Eval = func.Eval,
-                            Diff = func.Diff,
-                            Left = leftIndex,
-                            Right = rightIndex,
-                            Inputs = new[]
-                            {
-                                new Compiled.InputEdge { Index = leftIndex },
-                                new Compiled.InputEdge { Index = rightIndex },
-                            }
-                        };
+                            edges.Add(new InputEdge { Element = leftElement });
+                            edges.Add(new InputEdge { Element = rightElement });
+                        })
+                    };
 
-                        return element;
-                    });
+                    return element;
+                });
             }
 
-            public int Visit(NaryFunc func)
+            public TapeElement Visit(NaryFunc func)
             {
                 return Compile(func, () =>
                 {
                     var terms = func.Terms;
-                    var indices = new int[terms.Count];
-                    var inputs = new Compiled.InputEdge[terms.Count];
-                    for (var i = 0; i < terms.Count; ++i)
-                    {
-                        var idx = terms[i].Accept(this);
-                        indices[i] = idx;
-                        inputs[i] = new Compiled.InputEdge {Index = idx};
-                    }
+                    var indices = new TapeElement[terms.Count];
+                    for(var i = 0; i < terms.Count; ++i)
+                        indices[i] = terms[i].Accept(this);
 
-                    var element = new Compiled.NaryFunc
+                    var element = new Compiled.NaryFunc(func.Eval, func.Diff)
                     {
-                        Eval = func.Eval,
-                        Diff = func.Diff,
-                        Terms = indices,
-                        Inputs = inputs,
+                        Inputs = MakeInputEdges(() => 
+                        {
+                            for(var i = 0; i < terms.Count; ++i)
+                                edges.Add(new InputEdge { Element = indices[i] });
+                        }),
                     };
 
                     return element;
@@ -233,22 +220,25 @@ namespace AutoDiff
             }
 
 
-            private int Compile(Term term, Func<CompileResult> compiler)
+            private TapeElement Compile(Term term, Func<TapeElement> compiler)
             {
-                int index;
-                if (indexOf.TryGetValue(term, out index)) 
-                    return index;
+                TapeElement element;
+                if (tapeElementOf.TryGetValue(term, out element)) 
+                    return element;
                 
-                var compileResult = compiler();
-                tape.Add(compileResult);
+                tape.Add(element = compiler());
+                tapeElementOf[term] = element;
 
-                index = tape.Count - 1;
-                indexOf.Add(term, index);
-
-                return index;
+                return element;
             }
-                                    
-            private static Compiled.InputEdge[] NoInputs => Array.Empty<Compiled.InputEdge>();
+            
+            private InputEdges MakeInputEdges(Action action)
+            {
+                var offset = edges.Count;
+                action();
+                var length = edges.Count - offset;
+                return new InputEdges(offset, length);
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿namespace AutoDiff.Compiled
 {
-    abstract class TapeElement
+    internal abstract class TapeElement
     {
         public double Value;
         public double Adjoint;
-        public InputEdge[] Inputs;
+        public InputEdges Inputs;
 
-        public abstract void Accept(ITapeVisitor visitor);
+        public abstract void Eval();
+        public abstract void Diff();
     }
 }

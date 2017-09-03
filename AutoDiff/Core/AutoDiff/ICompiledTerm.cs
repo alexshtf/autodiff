@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using static System.Diagnostics.Contracts.Contract;
 
@@ -28,8 +27,7 @@ namespace AutoDiff
         /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
         /// <paramref name="arg"/>.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        Tuple<double[], double> Differentiate<T>(T arg) 
-            where T : class, IReadOnlyList<double>;
+        Tuple<double[], double> Differentiate(IReadOnlyList<double> arg);
 
         /// <summary>
         /// Computes gradient of the compiled term at the given point
@@ -38,8 +36,7 @@ namespace AutoDiff
         /// <param name="grad">The list to be filled with the gradient at the point specified by <paramref name="arg"/></param>
         /// <returns>The value at the point specified by <paramref name="arg"/></returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        double Differentiate<T>(T arg, double[] grad) 
-            where T : class, IReadOnlyList<double>; 
+        double Differentiate(IReadOnlyList<double> arg, double[] grad);
         
         /// <summary>
         /// Computes the gradient of the compiled term at the given point.
@@ -72,8 +69,7 @@ namespace AutoDiff
             return default(double);
         }
 
-        public Tuple<double[], double> Differentiate<T>(T arg)
-            where T : class, IReadOnlyList<double>
+        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg)
         {
             Requires(arg != null);
             Requires(arg.Count == Variables.Count);
@@ -82,8 +78,7 @@ namespace AutoDiff
             return null;
         }
 
-        public double Differentiate<T>(T arg, double[] grad) 
-            where T : class, IReadOnlyList<double> 
+        public double Differentiate(IReadOnlyList<double> arg, double[] grad) 
         {
             Requires(arg != null);
             Requires(grad != null);
