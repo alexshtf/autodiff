@@ -20,21 +20,21 @@ namespace AutoDiff
             public void Visit(Compiled.Exp elem)
             {
                 elem.Value = Math.Exp(ValueOf(elem.Arg));
-                elem.Inputs[0].Weight = elem.Value;
+                elem.Inputs.SetWeight(0, elem.Value);
             }
 
             public void Visit(Compiled.Log elem)
             {
                 var arg = ValueOf(elem.Arg);
                 elem.Value = Math.Log(arg);
-                elem.Inputs[0].Weight = 1 / arg;
+                elem.Inputs.SetWeight(0, 1 / arg);
             }
 
             public void Visit(Compiled.ConstPower elem)
             {
                 var baseVal = ValueOf(elem.Base);
                 elem.Value = Math.Pow(baseVal, elem.Exponent);
-                elem.Inputs[0].Weight = elem.Exponent * Math.Pow(baseVal, elem.Exponent - 1);
+                elem.Inputs.SetWeight(0, elem.Exponent * Math.Pow(baseVal, elem.Exponent - 1));
             }
 
             public void Visit(Compiled.TermPower elem)
@@ -43,8 +43,8 @@ namespace AutoDiff
                 var exponent = ValueOf(elem.Exponent);
 
                 elem.Value = Math.Pow(baseVal, exponent);
-                elem.Inputs[0].Weight = exponent * Math.Pow(baseVal, exponent - 1);
-                elem.Inputs[1].Weight = elem.Value * Math.Log(baseVal);
+                elem.Inputs.SetWeight(0, exponent * Math.Pow(baseVal, exponent - 1));
+                elem.Inputs.SetWeight(1, elem.Value * Math.Log(baseVal));
             }
 
             public void Visit(Compiled.Product elem)
@@ -53,8 +53,8 @@ namespace AutoDiff
                 var right = ValueOf(elem.Right);
 
                 elem.Value = left * right;
-                elem.Inputs[0].Weight = right;
-                elem.Inputs[1].Weight = left;
+                elem.Inputs.SetWeight(0, right);
+                elem.Inputs.SetWeight(1, left);
             }
 
             public void Visit(Compiled.Sum elem)
@@ -72,7 +72,7 @@ namespace AutoDiff
             {
                 double arg = ValueOf(elem.Arg);
                 elem.Value = elem.Eval(arg);
-                elem.Inputs[0].Weight = elem.Diff(arg);
+                elem.Inputs.SetWeight(0, elem.Diff(arg));
             }
 
             public void Visit(Compiled.BinaryFunc elem)
@@ -82,8 +82,8 @@ namespace AutoDiff
 
                 elem.Value = elem.Eval(left, right);
                 var grad = elem.Diff(left, right);
-                elem.Inputs[0].Weight = grad.Item1;
-                elem.Inputs[1].Weight = grad.Item2;
+                elem.Inputs.SetWeight(0, grad.Item1);
+                elem.Inputs.SetWeight(1, grad.Item2);
             }
 
             public void Visit(Compiled.NaryFunc elem)
@@ -95,7 +95,7 @@ namespace AutoDiff
                 elem.Value = elem.Eval(args);
                 var grad = elem.Diff(args);
                 for (var i = 0; i < grad.Length; ++i)
-                    elem.Inputs[i].Weight = grad[i];
+                    elem.Inputs.SetWeight(i, grad[i]);
             }
 
             private double ValueOf(int index)

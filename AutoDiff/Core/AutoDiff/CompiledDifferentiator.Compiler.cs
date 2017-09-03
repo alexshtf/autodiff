@@ -31,12 +31,12 @@ namespace AutoDiff
 
             public int Visit(Constant constant)
             {
-                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = NoInputs });
+                return Compile(constant, () => new Compiled.Constant(constant.Value));
             }
 
             public int Visit(Zero zero)
             {
-                return Compile(zero, () => new Compiled.Constant(0) { Inputs = NoInputs });
+                return Compile(zero, () => new Compiled.Constant(0));
             }
 
             public int Visit(ConstPower intPower)
@@ -48,10 +48,10 @@ namespace AutoDiff
                         {
                             Base = baseIndex,
                             Exponent = intPower.Exponent,
-                            Inputs = new[] 
+                            Inputs = new Compiled.InputEdges(new[] 
                             {
                                 new Compiled.InputEdge { Index = baseIndex },
-                            },
+                            }),
                         };
 
                         return element;
@@ -68,11 +68,11 @@ namespace AutoDiff
                     {
                         Base = baseIndex,
                         Exponent = expIndex,
-                        Inputs = new[]
+                        Inputs = new Compiled.InputEdges(new[]
                         {
                             new Compiled.InputEdge { Index = baseIndex },
                             new Compiled.InputEdge { Index = expIndex },
-                        },
+                        }),
                     };
 
                     return element;
@@ -89,11 +89,11 @@ namespace AutoDiff
                         {
                             Left = leftIndex,
                             Right = rightIndex,
-                            Inputs = new[]
+                            Inputs = new Compiled.InputEdges(new[]
                             {
                                 new Compiled.InputEdge { Index = leftIndex },
                                 new Compiled.InputEdge { Index = rightIndex },
-                            }
+                            })
                         };
 
                         return element;
@@ -116,7 +116,7 @@ namespace AutoDiff
                         var element = new Compiled.Sum 
                         { 
                             Terms = indices,
-                            Inputs = inputs,
+                            Inputs = new Compiled.InputEdges(inputs),
                         };
     
                         return element;
@@ -136,10 +136,10 @@ namespace AutoDiff
                         var element = new Compiled.Log 
                         { 
                             Arg = argIndex,
-                            Inputs = new[]
+                            Inputs = new Compiled.InputEdges(new[]
                             {
                                 new Compiled.InputEdge { Index = argIndex },
-                            },
+                            }),
                         };
 
                         return element;
@@ -154,10 +154,10 @@ namespace AutoDiff
                         var element = new Compiled.Exp
                         {
                             Arg = argIndex,
-                            Inputs = new[]
+                            Inputs = new Compiled.InputEdges(new[]
                             {
                                 new Compiled.InputEdge { Index = argIndex },
-                            },
+                            }),
                         };
 
                         return element;
@@ -172,10 +172,10 @@ namespace AutoDiff
                         var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
                         {
                             Arg = argIndex,
-                            Inputs = new[]
+                            Inputs = new Compiled.InputEdges(new[]
                             {
                                 new Compiled.InputEdge { Index = argIndex },
-                            },
+                            }),
                         };
 
                         return element;
@@ -195,11 +195,11 @@ namespace AutoDiff
                             Diff = func.Diff,
                             Left = leftIndex,
                             Right = rightIndex,
-                            Inputs = new[]
+                            Inputs = new Compiled.InputEdges(new[]
                             {
                                 new Compiled.InputEdge { Index = leftIndex },
                                 new Compiled.InputEdge { Index = rightIndex },
-                            }
+                            })
                         };
 
                         return element;
@@ -225,7 +225,7 @@ namespace AutoDiff
                         Eval = func.Eval,
                         Diff = func.Diff,
                         Terms = indices,
-                        Inputs = inputs,
+                        Inputs = new Compiled.InputEdges(inputs),
                     };
 
                     return element;

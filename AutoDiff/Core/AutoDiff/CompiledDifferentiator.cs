@@ -85,7 +85,7 @@ namespace AutoDiff
                 var adjoint = tape[i].Adjoint;
                 
                 for(var j = 0; j < inputs.Length; ++j)
-                    tape[inputs[j].Index].Adjoint += adjoint * inputs[j].Weight;
+                    tape[inputs.Index(j)].Adjoint += adjoint * inputs.Weight(j);
             }
         }
 
