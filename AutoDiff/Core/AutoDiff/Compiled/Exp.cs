@@ -2,7 +2,7 @@
 {
     internal sealed class Exp : TapeElement
     {
-        public int Arg;
+        public int Arg => Inputs.Index(0);
 
         public override void Accept(ITapeVisitor visitor)
         {

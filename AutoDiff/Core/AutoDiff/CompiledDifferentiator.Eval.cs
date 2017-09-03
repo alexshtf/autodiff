@@ -45,8 +45,9 @@ namespace AutoDiff
             public void Visit(Compiled.Sum elem)
             {
                 elem.Value = 0;
-                foreach (var term in elem.Terms)
-                    elem.Value += ValueOf(term);
+                var terms = elem.Terms;
+                for(int i = 0; i < terms.Length; ++i)
+                    elem.Value += ValueOf(terms[i]);
             }
 
             public void Visit(Compiled.Variable var)

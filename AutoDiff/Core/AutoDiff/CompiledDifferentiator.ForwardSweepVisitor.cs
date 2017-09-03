@@ -60,8 +60,9 @@ namespace AutoDiff
             public void Visit(Compiled.Sum elem)
             {
                 elem.Value = 0;
-                foreach (var term in elem.Terms)
-                    elem.Value += ValueOf(term);
+                var terms = elem.Terms;
+                for(var i = 0; i < terms.Length; ++i)
+                    elem.Value += ValueOf(terms[i]);
             }
 
             public void Visit(Compiled.Variable var)
@@ -88,9 +89,10 @@ namespace AutoDiff
 
             public void Visit(Compiled.NaryFunc elem)
             {
-                var args = new double[elem.Terms.Length];
+                var terms = elem.Terms;
+                var args = new double[terms.Length];
                 for (var i = 0; i < args.Length; i++)
-                    args[i] = ValueOf(elem.Terms[i]);
+                    args[i] = ValueOf(terms[i]);
 
                 elem.Value = elem.Eval(args);
                 var grad = elem.Diff(args);

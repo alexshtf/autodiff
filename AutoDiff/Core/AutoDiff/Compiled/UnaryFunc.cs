@@ -4,7 +4,7 @@ namespace AutoDiff.Compiled
 {
     internal sealed class UnaryFunc : TapeElement
     {
-        public int Arg;
+        public int Arg => Inputs.Index(0);
         public readonly Func<double, double> Eval;
         public readonly Func<double, double> Diff;
 

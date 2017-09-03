@@ -48,7 +48,6 @@ namespace AutoDiff
                     var baseIndex = intPower.Base.Accept(this);
                     var element = new Compiled.ConstPower
                     {
-                        Base = baseIndex,
                         Exponent = intPower.Exponent,
                         Inputs = MakeInputEdges(() =>  
                         {
@@ -68,8 +67,6 @@ namespace AutoDiff
                     var expIndex = power.Exponent.Accept(this);
                     var element = new Compiled.TermPower
                     {
-                        Base = baseIndex,
-                        Exponent = expIndex,
                         Inputs = MakeInputEdges(() => 
                         {
                             edges.Add(new Compiled.InputEdge { Index = baseIndex });
@@ -89,8 +86,6 @@ namespace AutoDiff
                     var rightIndex = product.Right.Accept(this);
                     var element = new Compiled.Product
                     {
-                        Left = leftIndex,
-                        Right = rightIndex,
                         Inputs = MakeInputEdges(() => 
                         {
                             edges.Add(new Compiled.InputEdge { Index = leftIndex });
@@ -108,14 +103,10 @@ namespace AutoDiff
                 {
                     var terms = sum.Terms;
                     var indices = new int[terms.Count];
-                    for (var i = 0; i < terms.Count; ++i)
-                    {
-                        var idx = terms[i].Accept(this);
-                        indices[i] = idx;
-                    }
+                    for(var i = 0; i < terms.Count; ++i)
+                        indices[i] = terms[i].Accept(this);
                     var element = new Compiled.Sum 
                     { 
-                        Terms = indices,
                         Inputs = MakeInputEdges(() => 
                         {
                             for(var i = 0; i < terms.Count; ++i)
@@ -139,7 +130,6 @@ namespace AutoDiff
                     var argIndex = log.Arg.Accept(this);
                     var element = new Compiled.Log 
                     { 
-                        Arg = argIndex,
                         Inputs = MakeInputEdges(() => 
                         {
                             edges.Add(new Compiled.InputEdge { Index = argIndex });
@@ -157,7 +147,6 @@ namespace AutoDiff
                     var argIndex = exp.Arg.Accept(this);
                     var element = new Compiled.Exp
                     {
-                        Arg = argIndex,
                         Inputs = MakeInputEdges(() => 
                         {
                             edges.Add(new Compiled.InputEdge { Index = argIndex });
@@ -175,7 +164,6 @@ namespace AutoDiff
                     var argIndex = func.Argument.Accept(this);
                     var element = new Compiled.UnaryFunc(func.Eval, func.Diff)
                     {
-                        Arg = argIndex,
                         Inputs = MakeInputEdges(() => 
                         {
                             edges.Add(new Compiled.InputEdge { Index = argIndex });
@@ -197,8 +185,6 @@ namespace AutoDiff
                     {
                         Eval = func.Eval,
                         Diff = func.Diff,
-                        Left = leftIndex,
-                        Right = rightIndex,
                         Inputs = MakeInputEdges(() => 
                         {
                             edges.Add(new Compiled.InputEdge { Index = leftIndex });
@@ -216,21 +202,17 @@ namespace AutoDiff
                 {
                     var terms = func.Terms;
                     var indices = new int[terms.Count];
-                    for (var i = 0; i < terms.Count; ++i)
-                    {
-                        var idx = terms[i].Accept(this);
-                        indices[i] = idx;
-                    }
+                    for(var i = 0; i < terms.Count; ++i)
+                        indices[i] = terms[i].Accept(this);
 
                     var element = new Compiled.NaryFunc
                     {
                         Eval = func.Eval,
                         Diff = func.Diff,
-                        Terms = indices,
                         Inputs = MakeInputEdges(() => 
                         {
                             for(var i = 0; i < terms.Count; ++i)
-                                edges.Add(new Compiled.InputEdge {Index = indices[i]});
+                                edges.Add(new Compiled.InputEdge {Index = indices[i] });
                         }),
                     };
 
