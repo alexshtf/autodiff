@@ -1,17 +1,17 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal interface ITapeVisitor
+    internal abstract class ITapeVisitor
     {
-        void Visit(Constant elem);
-        void Visit(Exp elem);
-        void Visit(Log elem);
-        void Visit(ConstPower elem);
-        void Visit(TermPower elem);
-        void Visit(Product elem);
-        void Visit(Sum elem);
-        void Visit(Variable var);
-        void Visit(UnaryFunc elem);
-        void Visit(BinaryFunc elem);
-        void Visit(NaryFunc elem);
+        public abstract void Visit(Constant elem);
+        public abstract void Visit(Exp elem);
+        public abstract void Visit(Log elem);
+        public abstract void Visit(ConstPower elem);
+        public abstract void Visit(TermPower elem);
+        public abstract void Visit(Product elem);
+        public abstract void Visit(Sum elem);
+        public abstract void Visit(Variable var);
+        public abstract void Visit(UnaryFunc elem);
+        public abstract void Visit(BinaryFunc elem);
+        public abstract void Visit(NaryFunc elem);
     }
 }
