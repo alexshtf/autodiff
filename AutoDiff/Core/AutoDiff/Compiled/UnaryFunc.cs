@@ -14,7 +14,7 @@ namespace AutoDiff.Compiled
             Diff = diff;
         }
 
-        public override void Accept(ITapeVisitor visitor)
+        public override void Accept(TapeVisitor visitor)
         {
             visitor.Visit(this);
         }

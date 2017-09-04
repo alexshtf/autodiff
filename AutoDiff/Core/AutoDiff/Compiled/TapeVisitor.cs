@@ -1,6 +1,6 @@
 ﻿namespace AutoDiff.Compiled
 {
-    internal abstract class ITapeVisitor
+    internal abstract class TapeVisitor
     {
         public abstract void Visit(Constant elem);
         public abstract void Visit(Exp elem);

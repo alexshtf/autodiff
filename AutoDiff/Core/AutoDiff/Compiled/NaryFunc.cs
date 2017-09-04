@@ -16,7 +16,7 @@ namespace AutoDiff.Compiled
         public Func<double[], double> Eval;
         public Func<double[], double[]> Diff;
 
-        public override void Accept(ITapeVisitor visitor)
+        public override void Accept(TapeVisitor visitor)
         {
             visitor.Visit(this);
         }

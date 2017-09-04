@@ -8,6 +8,6 @@ namespace AutoDiff.Compiled
         public double Adjoint;
         public InputEdges Inputs;
 
-        public abstract void Accept(ITapeVisitor visitor);
+        public abstract void Accept(TapeVisitor visitor);
     }
 }

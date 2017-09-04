@@ -12,7 +12,7 @@
 
         public TermsAccessor Terms => new TermsAccessor(this);
 
-        public override void Accept(ITapeVisitor visitor)
+        public override void Accept(TapeVisitor visitor)
         {
             visitor.Visit(this);
         }

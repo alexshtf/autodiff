@@ -4,7 +4,7 @@ namespace AutoDiff
 {
     internal partial class CompiledDifferentiator<T>
     {
-        private sealed class ForwardSweepVisitor : Compiled.ITapeVisitor
+        private sealed class ForwardSweepVisitor : Compiled.TapeVisitor
         {
             private readonly Compiled.TapeElement[] tape;
 
