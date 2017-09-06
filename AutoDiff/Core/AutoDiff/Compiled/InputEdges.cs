@@ -8,11 +8,7 @@ namespace AutoDiff.Compiled
         private readonly int offset;
         private readonly int length;
 
-        public InputEdges(InputEdge[] array)
-            : this(array, 0, array.Length)
-        {}
-
-        public InputEdges(InputEdge[] array, int offset, int length)
+        private InputEdges(InputEdge[] array, int offset, int length)
         {
             this.array = array;
             this.offset = offset;

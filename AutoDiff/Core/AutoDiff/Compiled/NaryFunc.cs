@@ -6,7 +6,7 @@ namespace AutoDiff.Compiled
     {
         public struct TermsAccessor
         {
-            private NaryFunc obj;
+            private readonly NaryFunc obj;
             public TermsAccessor(NaryFunc obj) { this.obj = obj; }
             public int this[int i] => obj.Inputs.Index(i);
             public int Length => obj.Inputs.Length;
