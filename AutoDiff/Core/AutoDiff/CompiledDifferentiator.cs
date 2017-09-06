@@ -100,9 +100,8 @@ namespace AutoDiff
             for (var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
 
-            var forwardDiffVisitor = new ForwardSweepVisitor(tape);
             for (var i = dimension; i < tape.Length; ++i)
-                tape[i].Accept(forwardDiffVisitor);
+                tape[i].Diff(tape);
         }
 
         private void EvaluateTape<TArg>(TArg arg)
@@ -111,9 +110,8 @@ namespace AutoDiff
             for(var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
             
-            var evalVisitor = new EvalVisitor(tape);
             for (var i = dimension; i < tape.Length; ++i )
-                tape[i].Accept(evalVisitor);
+                tape[i].Eval(tape);
         }
     }
 }

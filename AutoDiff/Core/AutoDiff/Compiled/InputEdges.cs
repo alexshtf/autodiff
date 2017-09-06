@@ -4,25 +4,24 @@ namespace AutoDiff.Compiled
 {
     internal struct InputEdges
     {
-        private readonly InputEdge[] array;
+        private readonly InputEdge[] edges;
         private readonly int offset;
-        private readonly int length;
 
-        private InputEdges(InputEdge[] array, int offset, int length)
+        private InputEdges(InputEdge[] edges, int offset, int length)
         {
-            this.array = array;
+            this.edges = edges;
             this.offset = offset;
-            this.length = length;
+            Length = length;
         }
 
         public InputEdges(int offset, int length)
             : this(null, offset, length)
         {}
 
-        public InputEdges Remap(InputEdge[] newArray) => new InputEdges(newArray, this.offset, this.length);
-        public int Length => length;
-        public int Index(int i) => array[offset + i].Index;
-        public double Weight(int i) => array[offset + i].Weight;
-        public void SetWeight(int i, double w) => array[offset + i].Weight = w;
+        public InputEdges Remap(InputEdge[] newEdges) => new InputEdges(newEdges, this.offset, this.Length);
+        public int Length { get; }
+        public int Index(int i) => edges[offset + i].Index;
+        public double Weight(int i) => edges[offset + i].Weight;
+        public void SetWeight(int i, double w) => edges[offset + i].Weight = w;
     }
 }

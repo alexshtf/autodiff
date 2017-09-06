@@ -1,12 +1,22 @@
-﻿namespace AutoDiff.Compiled
+﻿using System;
+
+namespace AutoDiff.Compiled
 {
     internal sealed class Log : TapeElement
     {
-        public int Arg => Inputs.Index(0);
-
-        public override void Accept(TapeVisitor visitor)
+        private const int ArgIdx = 0;
+        private int Arg => Inputs.Index(ArgIdx);
+        
+        public override void Eval(TapeElement[] tape)
         {
-            visitor.Visit(this);
+            Value = Math.Log(tape[Arg].Value);
+        }
+
+        public override void Diff(TapeElement[] tape)
+        {
+            var arg = tape[Arg].Value;
+            Value = Math.Log(arg);
+            Inputs.SetWeight(ArgIdx, 1 / arg);        
         }
     }
 }

@@ -8,9 +8,10 @@
             Adjoint = 0;
         }
 
-        public override void Accept(TapeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-    }
+	    public override void Eval(TapeElement[] tape)
+	    {}
+
+	    public override void Diff(TapeElement[] tape)
+	    {}
+	}
 }

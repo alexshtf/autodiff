@@ -1,20 +1,19 @@
 ﻿namespace AutoDiff.Compiled
 {
     internal sealed class Sum : TapeElement
-    {
-        public struct TermsAccessor
+    {   
+        public override void Eval(TapeElement[] tape)
         {
-            private Sum obj;
-            public TermsAccessor(Sum obj) { this.obj = obj; }
-            public int this[int i] => obj.Inputs.Index(i);
-            public int Length => obj.Inputs.Length;
+            Value = 0;
+            for (var i = 0; i < Inputs.Length; ++i)
+                Value += tape[Inputs.Index(i)].Value;
         }
 
-        public TermsAccessor Terms => new TermsAccessor(this);
-
-        public override void Accept(TapeVisitor visitor)
+        public override void Diff(TapeElement[] tape)
         {
-            visitor.Visit(this);
+            Value = 0;
+            for (var i = 0; i < Inputs.Length; ++i)
+                Value += tape[Inputs.Index(i)].Value;
         }
-	}
+    }
 }

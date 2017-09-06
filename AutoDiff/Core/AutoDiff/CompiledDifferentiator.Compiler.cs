@@ -181,10 +181,8 @@ namespace AutoDiff
                     var leftIndex = func.Left.Accept(this);
                     var rightIndex = func.Right.Accept(this);
 
-                    var element = new Compiled.BinaryFunc
+                    var element = new Compiled.BinaryFunc(func.Eval, func.Diff)
                     {
-                        Eval = func.Eval,
-                        Diff = func.Diff,
                         Inputs = MakeInputEdges(() => 
                         {
                             edges.Add(new Compiled.InputEdge { Index = leftIndex });
@@ -205,10 +203,8 @@ namespace AutoDiff
                     for(var i = 0; i < terms.Count; ++i)
                         indices[i] = terms[i].Accept(this);
 
-                    var element = new Compiled.NaryFunc
+                    var element = new Compiled.NaryFunc(func.Eval, func.Diff)
                     {
-                        Eval = func.Eval,
-                        Diff = func.Diff,
                         Inputs = MakeInputEdges(() => 
                         {
                             for(var i = 0; i < terms.Count; ++i)
