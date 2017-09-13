@@ -50,16 +50,14 @@ namespace AutoDiff
             return tape[tape.Length - 1].Value;
         }
 
-        public Tuple<double[], double> Differentiate<TArg>(TArg arg)
-            where TArg : class, IReadOnlyList<double>
+        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg)
         {
             var gradient = new double[dimension];
             var value = Differentiate(arg, gradient);
             return Tuple.Create(gradient, value);
         }
 
-        public double Differentiate<TArg>(TArg arg, double[] grad) 
-            where TArg : class, IReadOnlyList<double> 
+        public double Differentiate(IReadOnlyList<double> arg, double[] grad) 
         {
             ForwardSweep(arg);
             ReverseSweep();
@@ -72,16 +70,15 @@ namespace AutoDiff
 
         public Tuple<double[], double> Differentiate(params double[] arg)
         {
-            return Differentiate<double[]>(arg);
+            return Differentiate((IReadOnlyList<double>)arg);
         }
 
         private void ReverseSweep()
         {
-            tape[tape.Length - 1].Adjoint = 1;
-            
             // initialize adjoints
             for (var i = 0; i < tape.Length - 1; ++i)
                 tape[i].Adjoint = 0;
+            tape[tape.Length - 1].Adjoint = 1;
 
             // accumulate adjoints
             for (var i = tape.Length - 1; i >= dimension; --i)
@@ -94,8 +91,7 @@ namespace AutoDiff
             }
         }
 
-        private void ForwardSweep<TArg>(TArg arg)
-            where TArg : IReadOnlyList<double>
+        private void ForwardSweep(IReadOnlyList<double> arg)
         {
             for (var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
@@ -104,8 +100,7 @@ namespace AutoDiff
                 tape[i].Diff(tape);
         }
 
-        private void EvaluateTape<TArg>(TArg arg)
-            where TArg : IReadOnlyList<double>
+        private void EvaluateTape(IReadOnlyList<double> arg)
         {
             for(var i = 0; i < dimension; ++i)
                 tape[i].Value = arg[i];
