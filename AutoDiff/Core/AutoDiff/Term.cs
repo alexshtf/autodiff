@@ -83,7 +83,7 @@ namespace AutoDiff
         /// <returns>A term representing <paramref name="left"/> - <paramref name="right"/>.</returns>
         public static Term operator-(Term left, Term right)
         {
-            return left + (-1) * right;
+            return left + -1 * right;
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace AutoDiff
         /// <returns>A term representing <c>-term</c>.</returns>
         public static Term operator-(Term term)
         {
-            return (-1) * term;
+            return -1 * term;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -13,20 +14,6 @@ namespace AutoDiff
     [DebuggerDisplay("Sum: {Terms.Count}")]
     public class Sum : Term
     {
-        /// <summary>
-        /// Constructs an instance of the <see cref="Sum"/> class.
-        /// </summary>
-        /// <param name="first">The first term in the sum</param>
-        /// <param name="second">The second term in the sum</param>
-        /// <param name="rest">The rest of the terms in the sum.</param>
-        public Sum(Term first, Term second, params Term[] rest)
-        {
-            var allTerms = 
-                new[] { first, second}.Concat(rest);
-
-            Terms = allTerms.ToList().AsReadOnly();
-        }
-
         internal Sum(IEnumerable<Term> terms)
         {
             Terms = terms.ToList().AsReadOnly();

@@ -22,7 +22,7 @@ namespace AutoDiff
         /// </remarks>
         public static ICompiledTerm Compile(this Term term, params Variable[] variables)
         {
-            return Compile<Variable[]>(term, variables);
+            return Compile(term, (IReadOnlyList<Variable>)variables);
         }
 
         /// <summary>
@@ -37,8 +37,7 @@ namespace AutoDiff
         /// <c>ICompiledTerm.Differentiate</c> receives an array of numbers representing the point of evaluation. The i'th number in this array corresponds
         /// to the i'th variable in <c>variables</c>.
         /// </remarks>
-        public static ICompiledTerm Compile<T>(this Term term, T variables)
-            where T : IReadOnlyList<Variable>
+        public static ICompiledTerm Compile(this Term term, IReadOnlyList<Variable> variables)
         {
             Requires(variables != null);
             Requires(term != null);
@@ -46,7 +45,7 @@ namespace AutoDiff
             Ensures(Result<ICompiledTerm>().Variables.Count == variables.Count);
             Ensures(ForAll(0, variables.Count, i => variables[i] == Result<ICompiledTerm>().Variables[i]));
 
-            return new CompiledDifferentiator<T>(term, variables);
+            return new CompiledDifferentiator(term, variables);
         }
 
         /// <summary>
@@ -63,16 +62,16 @@ namespace AutoDiff
         /// <c>ICompiledTerm.Differentiate</c> receives an array of numbers representing the point of evaluation. The i'th number in this array corresponds
         /// to the i'th variable in <c>variables</c>.
         /// </remarks>
-        public static IParametricCompiledTerm Compile(this Term term, Variable[] variables, Variable[] parameters)
+        public static IParametricCompiledTerm Compile(this Term term, IReadOnlyList<Variable> variables, IReadOnlyList<Variable> parameters)
         {
             Requires(variables != null);
             Requires(parameters != null);
             Requires(term != null);
             Ensures(Result<IParametricCompiledTerm>() != null);
-            Ensures(Result<IParametricCompiledTerm>().Variables.Count == variables.Length);
-            Ensures(ForAll(0, variables.Length, i => variables[i] == Result<IParametricCompiledTerm>().Variables[i]));
-            Ensures(Result<IParametricCompiledTerm>().Parameters.Count == parameters.Length);
-            Ensures(ForAll(0, parameters.Length, i => parameters[i] == Result<IParametricCompiledTerm>().Parameters[i]));
+            Ensures(Result<IParametricCompiledTerm>().Variables.Count == variables.Count);
+            Ensures(ForAll(0, variables.Count, i => variables[i] == Result<IParametricCompiledTerm>().Variables[i]));
+            Ensures(Result<IParametricCompiledTerm>().Parameters.Count == parameters.Count);
+            Ensures(ForAll(0, parameters.Count, i => parameters[i] == Result<IParametricCompiledTerm>().Parameters[i]));
 
             return new ParametricCompiledTerm(term, variables, parameters);
         }
@@ -106,14 +105,14 @@ namespace AutoDiff
         /// and <paramref name="point"/>.</returns>
         /// <remarks>The i'th value in <c>point</c> corresponds to the i'th variable in <c>variables</c>. In addition, the i'th value
         /// in the resulting array is the partial derivative with respect to the i'th variable in <c>variables</c>.</remarks>
-        public static double[] Differentiate(this Term term, Variable[] variables, double[] point)
+        public static double[] Differentiate(this Term term, IReadOnlyList<Variable> variables, IReadOnlyList<double> point)
         {
             Requires(term != null);
             Requires(variables != null);
             Requires(point != null);
-            Requires(variables.Length == point.Length);
+            Requires(variables.Count == point.Count);
             Ensures(Result<double[]>() != null);
-            Ensures(Result<double[]>().Length == variables.Length);
+            Ensures(Result<double[]>().Length == variables.Count);
 
             var result =  term.Compile(variables).Differentiate(point).Item1;
             return result;

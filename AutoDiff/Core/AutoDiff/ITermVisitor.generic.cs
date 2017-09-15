@@ -4,7 +4,7 @@
     /// A visitor for the terms that has a result from its computations
     /// </summary>
     /// <typeparam name="TResult">The type of the computation results</typeparam>
-    public interface ITermVisitor<TResult>
+    public interface ITermVisitor<out TResult>
     {
         /// <summary>
         /// Computes a value for a constant term.

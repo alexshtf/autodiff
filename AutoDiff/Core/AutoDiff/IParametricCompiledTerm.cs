@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using static System.Diagnostics.Contracts.Contract;
 
@@ -20,7 +19,7 @@ namespace AutoDiff
         /// <param name="parameters">The parameter values</param>
         /// <returns>The value of the function represented by the term at the given point.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        double Evaluate(double[] arg, double[] parameters);
+        double Evaluate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters);
 
         /// <summary>
         /// Computes the gradient of the compiled term at the given point.
@@ -31,7 +30,7 @@ namespace AutoDiff
         /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
         /// <paramref name="arg"/> and <paramref name="parameters"/>.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        Tuple<double[], double> Differentiate(double[] arg, double[] parameters);
+        Tuple<double[], double> Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters);
 
         /// <summary>
         /// The collection of variables contained in this compiled term.
@@ -58,25 +57,25 @@ namespace AutoDiff
     abstract class ParametricCompiledTermContract : IParametricCompiledTerm
     {
 
-        public double Evaluate(double[] arg, double[] parameters)
+        public double Evaluate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
         {
             Requires(arg != null);
-            Requires(arg.Length == Variables.Count);
+            Requires(arg.Count == Variables.Count);
             Requires(parameters != null);
-            Requires(parameters.Length == Parameters.Count);
+            Requires(parameters.Count == Parameters.Count);
 
             return default(double);
         }
 
-        public Tuple<double[], double> Differentiate(double[] arg, double[] parameters)
+        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
         {
             Requires(arg != null);
-            Requires(arg.Length == Variables.Count);
+            Requires(arg.Count == Variables.Count);
             Requires(parameters != null);
-            Requires(parameters.Length == Parameters.Count);
+            Requires(parameters.Count == Parameters.Count);
 
             Ensures(Result<Tuple<double[], double>>() != null);
-            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Length);
+            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Count);
 
             return null;
         }
@@ -85,7 +84,7 @@ namespace AutoDiff
         {
             get
             {
-                Ensures(Result<ReadOnlyCollection<Variable>>() != null);
+                Ensures(Result<IReadOnlyList<Variable>>() != null);
                 return null;
             }
         }
@@ -94,7 +93,7 @@ namespace AutoDiff
         {
             get
             {
-                Ensures(Result<ReadOnlyCollection<Variable>>() != null);
+                Ensures(Result<IReadOnlyList<Variable>>() != null);
                 return null;
             }
         }

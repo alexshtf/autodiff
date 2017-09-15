@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoDiff.Compiled;
 using static System.Diagnostics.Contracts.Contract;
+using TapeElement = AutoDiff.Compiled.TapeElement;
+using InputEdge = AutoDiff.Compiled.InputEdge;
 
 namespace AutoDiff
 {
@@ -9,22 +10,21 @@ namespace AutoDiff
     /// <summary>
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
-    internal partial class CompiledDifferentiator<T> : ICompiledTerm
-        where T : IReadOnlyList<Variable>
+    internal partial class CompiledDifferentiator : ICompiledTerm
     {
         private readonly TapeElement[] tape;
         private readonly int dimension;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompiledDifferentiator{T}"/> class.
+        /// Initializes a new instance of the <see cref="CompiledDifferentiator"/> class.
         /// </summary>
         /// <param name="function">The function.</param>
         /// <param name="variables">The variables.</param>
-        public CompiledDifferentiator(Term function, T variables)
+        public CompiledDifferentiator(Term function, IReadOnlyList<Variable> variables)
         {
             Requires(function != null);
             Requires(variables != null);
-            Requires(ForAll(variables, variable => variable != null));
+            Requires(ForAll(variables, v => v != null));
 
             Variables = variables.AsReadOnly();
             dimension = variables.Count;

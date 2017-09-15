@@ -18,15 +18,6 @@
         }
 
         /// <summary>
-        /// Accepts a terms visitor
-        /// </summary>
-        /// <param name="visitor">The term visitor to accept</param>
-        public override void Accept(ITermVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        /// <summary>
         /// Gets the natural logarithm argument.
         /// </summary>
         public Term Arg { get; }
@@ -42,6 +33,16 @@
         public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
         {
             return visitor.Visit(this);
+        }
+        
+
+        /// <summary>
+        /// Accepts a terms visitor
+        /// </summary>
+        /// <param name="visitor">The term visitor to accept</param>
+        public override void Accept(ITermVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

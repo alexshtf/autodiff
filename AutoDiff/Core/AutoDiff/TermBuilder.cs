@@ -32,8 +32,8 @@ namespace AutoDiff
         /// <returns>A term representing the sum of the terms in <paramref name="terms"/>.</returns>
         public static Sum Sum(IEnumerable<Term> terms)
         {
-            Requires(terms.Count(term => !(term is Zero)) >= 2); // require at-least two non-zero terms.
-            Requires(ForAll(terms, term => term != null));
+            Requires(terms != null); 
+            Requires(ForAll(terms, x => x != null));
             Ensures(Result<Sum>() != null);
 
             terms = terms.Where(term => !(term is Zero));
@@ -54,7 +54,7 @@ namespace AutoDiff
             Requires(ForAll(rest, term => term != null));
             Ensures(Result<Sum>() != null);
 
-            var allTerms = new Term[] { v1, v2 }.Concat(rest);
+            var allTerms = new[] { v1, v2 }.Concat(rest);
             return Sum(allTerms);
         }
 
@@ -72,11 +72,7 @@ namespace AutoDiff
             Requires(ForAll(rest, term => term != null));
             Ensures(Result<Term>() != null);
 
-            var result = new Product(v1, v2);
-            foreach (var item in rest)
-                result = new Product(result, item);
-
-            return result;
+            return rest.Aggregate(new Product(v1, v2), (product, item) => new Product(product, item));
         }
 
         /// <summary>
@@ -88,6 +84,7 @@ namespace AutoDiff
         public static Term Power(Term t, double power)
         {
             Requires(t != null);
+            Requires(!double.IsNaN(power) && !double.IsInfinity(power) && power != 0);
             Ensures(Result<Term>() != null);
 
             return new ConstPower(t, power);

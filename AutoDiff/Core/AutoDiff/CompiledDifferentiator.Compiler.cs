@@ -6,7 +6,7 @@ using InputEdges = AutoDiff.Compiled.InputEdges;
 
 namespace AutoDiff
 {
-    internal partial class CompiledDifferentiator<T>
+    internal partial class CompiledDifferentiator
     {
         
         private class Compiler : ITermVisitor<TapeElement> 
@@ -16,7 +16,7 @@ namespace AutoDiff
             private readonly List<InputEdge> edges;
             private readonly Dictionary<Term, TapeElement> tapeElementOf;
 
-            public Compiler(T variables, List<TapeElement> tape, List<InputEdge> edges)
+            public Compiler(IEnumerable<Variable> variables, List<TapeElement> tape, List<InputEdge> edges)
             {
                 this.tape = tape;
                 this.edges = edges;

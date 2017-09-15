@@ -9,25 +9,25 @@ namespace AutoDiff
     {
         private readonly ICompiledTerm compiledTerm;
 
-        public ParametricCompiledTerm(Term term, Variable[] variables, Variable[] parameters)
+        public ParametricCompiledTerm(Term term, IReadOnlyList<Variable> variables, IReadOnlyList<Variable> parameters)
         {
             compiledTerm = term.Compile(variables.Concat(parameters).ToArray());
-            Variables = new ReadOnlyCollection<Variable>(variables.ToArray());
-            Parameters = new ReadOnlyCollection<Variable>(parameters.ToArray());
+            Variables = variables.AsReadOnly();
+            Parameters = parameters.AsReadOnly();
         }
 
-        public double Evaluate(double[] arg, double[] parameters)
+        public double Evaluate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
         {
             var combinedArg = arg.Concat(parameters).ToArray();
             return compiledTerm.Evaluate(combinedArg);
         }
 
-        public Tuple<double[], double> Differentiate(double[] arg, double[] parameters)
+        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
         {
             var combinedArg = arg.Concat(parameters).ToArray();
             var diffResult = compiledTerm.Differentiate(combinedArg);
 
-            var partialGradient = new double[arg.Length];
+            var partialGradient = new double[arg.Count];
             Array.Copy(diffResult.Item1, partialGradient, partialGradient.Length);
 
             return Tuple.Create(partialGradient, diffResult.Item2);
