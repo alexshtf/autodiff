@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using CompileResult = AutoDiff.Compiled.TapeElement;
+using TapeElement = AutoDiff.Compiled.TapeElement;
+using InputEdge = AutoDiff.Compiled.InputEdge;
+using InputEdges = AutoDiff.Compiled.InputEdges;
 
 namespace AutoDiff
 {
     internal partial class CompiledDifferentiator<T>
     {
         
-        private class Compiler : ITermVisitor<Compiled.TapeElement> 
+        private class Compiler : ITermVisitor<TapeElement> 
         {
             
-            private readonly List<Compiled.TapeElement> tape;
-            private readonly List<Compiled.InputEdge> edges;
-            private readonly Dictionary<Term, Compiled.TapeElement> tapeElementOf;
+            private readonly List<TapeElement> tape;
+            private readonly List<InputEdge> edges;
+            private readonly Dictionary<Term, TapeElement> tapeElementOf;
 
-            public Compiler(T variables, List<Compiled.TapeElement> tape, List<Compiled.InputEdge> edges)
+            public Compiler(T variables, List<TapeElement> tape, List<InputEdge> edges)
             {
                 this.tape = tape;
                 this.edges = edges;
-                tapeElementOf = new Dictionary<Term, Compiled.TapeElement>();
+                tapeElementOf = new Dictionary<Term, TapeElement>();
                 foreach (var variable in variables)
                 {
                     var tapeVariable = new Compiled.Variable();
@@ -32,17 +34,17 @@ namespace AutoDiff
                 term.Accept(this);
             }
 
-            public Compiled.TapeElement Visit(Constant constant)
+            public TapeElement Visit(Constant constant)
             {
-                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = new Compiled.InputEdges(0,0) });
+                return Compile(constant, () => new Compiled.Constant(constant.Value) { Inputs = new InputEdges(0,0) });
             }
 
-            public Compiled.TapeElement Visit(Zero zero)
+            public TapeElement Visit(Zero zero)
             {
-                return Compile(zero, () => new Compiled.Constant(0) { Inputs = new Compiled.InputEdges(0,0) });
+                return Compile(zero, () => new Compiled.Constant(0) { Inputs = new InputEdges(0,0) });
             }
 
-            public Compiled.TapeElement Visit(ConstPower intPower)
+            public TapeElement Visit(ConstPower intPower)
             {
                 return Compile(intPower, () =>
                 {
@@ -52,7 +54,7 @@ namespace AutoDiff
                         Exponent = intPower.Exponent,
                         Inputs = MakeInputEdges(() =>  
                         {
-                            edges.Add(new Compiled.InputEdge { Element = baseElement });
+                            edges.Add(new InputEdge { Element = baseElement });
                         }),
                     };
 
@@ -60,7 +62,7 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement  Visit(TermPower power)
+            public TapeElement  Visit(TermPower power)
             {
                 return Compile(power, () =>
                 {
@@ -70,8 +72,8 @@ namespace AutoDiff
                     {
                         Inputs = MakeInputEdges(() => 
                         {
-                            edges.Add(new Compiled.InputEdge { Element = baseElement });
-                            edges.Add(new Compiled.InputEdge { Element = expElement });
+                            edges.Add(new InputEdge { Element = baseElement });
+                            edges.Add(new InputEdge { Element = expElement });
                         }),
                     };
 
@@ -79,7 +81,7 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement Visit(Product product)
+            public TapeElement Visit(Product product)
             {
                 return Compile(product, () =>
                 {
@@ -89,8 +91,8 @@ namespace AutoDiff
                     {
                         Inputs = MakeInputEdges(() => 
                         {
-                            edges.Add(new Compiled.InputEdge { Element = leftElement });
-                            edges.Add(new Compiled.InputEdge { Element = rightElement });
+                            edges.Add(new InputEdge { Element = leftElement });
+                            edges.Add(new InputEdge { Element = rightElement });
                         })
                     };
 
@@ -98,12 +100,12 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement Visit(Sum sum)
+            public TapeElement Visit(Sum sum)
             {
                 return Compile(sum, () =>
                 {
                     var terms = sum.Terms;
-                    var tapeElements = new Compiled.TapeElement[terms.Count];
+                    var tapeElements = new TapeElement[terms.Count];
                     for(var i = 0; i < terms.Count; ++i)
                         tapeElements[i] = terms[i].Accept(this);
                     var element = new Compiled.Sum 
@@ -111,7 +113,7 @@ namespace AutoDiff
                         Inputs = MakeInputEdges(() => 
                         {
                             for(var i = 0; i < terms.Count; ++i)
-                                edges.Add(new Compiled.InputEdge { Element = tapeElements[i], Weight = 1});
+                                edges.Add(new InputEdge { Element = tapeElements[i], Weight = 1});
                         })
                     };
 
@@ -119,12 +121,12 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement Visit(Variable variable)
+            public TapeElement Visit(Variable variable)
             {
                 return tapeElementOf[variable];
             }
 
-            public Compiled.TapeElement Visit(Log log)
+            public TapeElement Visit(Log log)
             {
                 return Compile(log, () =>
                 {
@@ -133,7 +135,7 @@ namespace AutoDiff
                     { 
                         Inputs = MakeInputEdges(() => 
                         {
-                            edges.Add(new Compiled.InputEdge { Element = argElement });
+                            edges.Add(new InputEdge { Element = argElement });
                         }),
                     };
 
@@ -141,7 +143,7 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement Visit(Exp exp)
+            public TapeElement Visit(Exp exp)
             {
                 return Compile(exp, () =>
                 {
@@ -150,7 +152,7 @@ namespace AutoDiff
                     {
                         Inputs = MakeInputEdges(() => 
                         {
-                            edges.Add(new Compiled.InputEdge { Element = argElement });
+                            edges.Add(new InputEdge { Element = argElement });
                         }),
                     };
 
@@ -158,7 +160,7 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement Visit(UnaryFunc func)
+            public TapeElement Visit(UnaryFunc func)
             {
                 return Compile(func, () =>
                 {
@@ -167,7 +169,7 @@ namespace AutoDiff
                     {
                         Inputs = MakeInputEdges(() => 
                         {
-                            edges.Add(new Compiled.InputEdge { Element = argElement });
+                            edges.Add(new InputEdge { Element = argElement });
                         }),
                     };
 
@@ -175,7 +177,7 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement Visit(BinaryFunc func)
+            public TapeElement Visit(BinaryFunc func)
             {
                 return Compile(func, () =>
                 {
@@ -186,8 +188,8 @@ namespace AutoDiff
                     {
                         Inputs = MakeInputEdges(() => 
                         {
-                            edges.Add(new Compiled.InputEdge { Element = leftElement });
-                            edges.Add(new Compiled.InputEdge { Element = rightElement });
+                            edges.Add(new InputEdge { Element = leftElement });
+                            edges.Add(new InputEdge { Element = rightElement });
                         })
                     };
 
@@ -195,12 +197,12 @@ namespace AutoDiff
                 });
             }
 
-            public Compiled.TapeElement Visit(NaryFunc func)
+            public TapeElement Visit(NaryFunc func)
             {
                 return Compile(func, () =>
                 {
                     var terms = func.Terms;
-                    var indices = new Compiled.TapeElement[terms.Count];
+                    var indices = new TapeElement[terms.Count];
                     for(var i = 0; i < terms.Count; ++i)
                         indices[i] = terms[i].Accept(this);
 
@@ -209,7 +211,7 @@ namespace AutoDiff
                         Inputs = MakeInputEdges(() => 
                         {
                             for(var i = 0; i < terms.Count; ++i)
-                                edges.Add(new Compiled.InputEdge { Element = indices[i] });
+                                edges.Add(new InputEdge { Element = indices[i] });
                         }),
                     };
 
@@ -218,9 +220,9 @@ namespace AutoDiff
             }
 
 
-            private Compiled.TapeElement Compile(Term term, Func<CompileResult> compiler)
+            private TapeElement Compile(Term term, Func<TapeElement> compiler)
             {
-                Compiled.TapeElement element;
+                TapeElement element;
                 if (tapeElementOf.TryGetValue(term, out element)) 
                     return element;
                 
@@ -230,12 +232,12 @@ namespace AutoDiff
                 return element;
             }
             
-            private Compiled.InputEdges MakeInputEdges(Action action)
+            private InputEdges MakeInputEdges(Action action)
             {
                 var offset = edges.Count;
                 action();
                 var length = edges.Count - offset;
-                return new Compiled.InputEdges(offset, length);
+                return new InputEdges(offset, length);
             }
         }
     }

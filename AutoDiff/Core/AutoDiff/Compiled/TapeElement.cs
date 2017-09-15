@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AutoDiff.Compiled
+﻿namespace AutoDiff.Compiled
 {
     internal abstract class TapeElement
     {

@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace AutoDiff.Compiled
 {
     internal struct InputEdges

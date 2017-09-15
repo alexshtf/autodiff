@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoDiff.Compiled;
 using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
@@ -11,7 +12,7 @@ namespace AutoDiff
     internal partial class CompiledDifferentiator<T> : ICompiledTerm
         where T : IReadOnlyList<Variable>
     {
-        private readonly Compiled.TapeElement[] tape;
+        private readonly TapeElement[] tape;
         private readonly int dimension;
 
         /// <summary>
@@ -31,8 +32,8 @@ namespace AutoDiff
             if (function is Variable)
                 function = new ConstPower(function, 1);
 
-            var tapeList = new List<Compiled.TapeElement>();
-            var inputList = new List<Compiled.InputEdge>();
+            var tapeList = new List<TapeElement>();
+            var inputList = new List<InputEdge>();
             new Compiler(variables, tapeList, inputList).Compile(function);
             tape = tapeList.ToArray();
             
