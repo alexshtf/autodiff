@@ -8,10 +8,10 @@
             Adjoint = 0;
         }
 
-	    public override void Eval(TapeElement[] tape)
+	    public override void Eval()
 	    {}
 
-	    public override void Diff(TapeElement[] tape)
+	    public override void Diff()
 	    {}
 	}
 }

@@ -5,16 +5,16 @@ namespace AutoDiff.Compiled
     internal sealed class Exp : TapeElement
     {
         private const int ArgIdx = 0;
-        private int Arg => Inputs.Index(ArgIdx);
+        private TapeElement Arg => Inputs.Element(ArgIdx);
         
-        public override void Eval(TapeElement[] tape)
+        public override void Eval()
         {
-            Value = Math.Exp(tape[Arg].Value);
+            Value = Math.Exp(Arg.Value);
         }
 
-        public override void Diff(TapeElement[] tape)
+        public override void Diff()
         {
-            Value = Math.Exp(tape[Arg].Value);
+            Value = Math.Exp(Arg.Value);
             Inputs.SetWeight(ArgIdx, Value);        
         }
     }

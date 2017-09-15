@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
+    /// <inheritdoc />
     /// <summary>
     /// Compiles the terms tree to a more efficient form for differentiation.
     /// </summary>
@@ -13,7 +12,6 @@ namespace AutoDiff
         where T : IReadOnlyList<Variable>
     {
         private readonly Compiled.TapeElement[] tape;
-        private readonly Compiled.InputEdge[] inputEdges;
         private readonly int dimension;
 
         /// <summary>
@@ -37,7 +35,8 @@ namespace AutoDiff
             var inputList = new List<Compiled.InputEdge>();
             new Compiler(variables, tapeList, inputList).Compile(function);
             tape = tapeList.ToArray();
-            inputEdges = inputList.ToArray();
+            
+            var inputEdges = inputList.ToArray();
             foreach(var te in tape)
                 te.Inputs = te.Inputs.Remap(inputEdges);
         }
@@ -87,7 +86,7 @@ namespace AutoDiff
                 var adjoint = tape[i].Adjoint;
                 
                 for(var j = 0; j < inputs.Length; ++j)
-                    tape[inputs.Index(j)].Adjoint += adjoint * inputs.Weight(j);
+                    inputs.Element(j).Adjoint += adjoint * inputs.Weight(j);
             }
         }
 
@@ -97,7 +96,7 @@ namespace AutoDiff
                 tape[i].Value = arg[i];
 
             for (var i = dimension; i < tape.Length; ++i)
-                tape[i].Diff(tape);
+                tape[i].Diff();
         }
 
         private void EvaluateTape(IReadOnlyList<double> arg)
@@ -106,7 +105,7 @@ namespace AutoDiff
                 tape[i].Value = arg[i];
             
             for (var i = dimension; i < tape.Length; ++i )
-                tape[i].Eval(tape);
+                tape[i].Eval();
         }
     }
 }

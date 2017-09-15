@@ -4,18 +4,18 @@
     {
         private const int LeftIdx = 0;
         private const int RightIdx = 1;
-        private int Left => Inputs.Index(LeftIdx);
-        private int Right => Inputs.Index(RightIdx);
+        private TapeElement Left => Inputs.Element(LeftIdx);
+        private TapeElement Right => Inputs.Element(RightIdx);
         
-        public override void Eval(TapeElement[] tape)
+        public override void Eval()
         {
-            Value = tape[Left].Value * tape[Right].Value;
+            Value = Left.Value * Right.Value;
         }
 
-        public override void Diff(TapeElement[] tape)
+        public override void Diff()
         {
-            var left = tape[Left].Value;
-            var right = tape[Right].Value;
+            var left = Left.Value;
+            var right = Right.Value;
 
             Value = left * right;
             Inputs.SetWeight(LeftIdx, right);

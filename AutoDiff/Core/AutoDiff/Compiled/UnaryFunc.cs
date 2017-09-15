@@ -5,7 +5,7 @@ namespace AutoDiff.Compiled
     internal sealed class UnaryFunc : TapeElement
     {
         private const int ArgIdx = 0;
-        private int Arg => Inputs.Index(ArgIdx);
+        private TapeElement Arg => Inputs.Element(ArgIdx);
         
         private readonly Func<double, double> eval;
         private readonly Func<double, double> diff;
@@ -16,14 +16,14 @@ namespace AutoDiff.Compiled
             this.diff = diff;
         }
 
-        public override void Eval(TapeElement[] tape)
+        public override void Eval()
         {
-            Value = eval(tape[Arg].Value);
+            Value = eval(Arg.Value);
         }
 
-        public override void Diff(TapeElement[] tape)
+        public override void Diff()
         {
-            var arg = tape[Arg].Value;
+            var arg = Arg.Value;
             Value = eval(arg);
             Inputs.SetWeight(ArgIdx, diff(arg));
         }

@@ -13,25 +13,25 @@ namespace AutoDiff.Compiled
             this.diff = diff;
         }
 
-        public override void Eval(TapeElement[] tape)
+        public override void Eval()
         {
-            Value = eval(GetArg(tape));
+            Value = eval(GetArg());
         }
 
-        public override void Diff(TapeElement[] tape)
+        public override void Diff()
         {
-            var arg = GetArg(tape);
+            var arg = GetArg();
             Value = eval(arg);
             var grad = diff(arg);
             for (var i = 0; i < grad.Length; ++i)
                 Inputs.SetWeight(i, grad[i]);
         }
 
-        private double[] GetArg(TapeElement[] tape)
+        private double[] GetArg()
         {
             var arg = new double[Inputs.Length];
             for (var i = 0; i < arg.Length; ++i)
-                arg[i] = tape[Inputs.Index(i)].Value;
+                arg[i] = Inputs.Element(i).Value;
             return arg;
         }
     }

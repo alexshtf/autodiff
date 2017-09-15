@@ -2,7 +2,7 @@
 {
     internal struct InputEdge
     {
-        public int Index;
+        public TapeElement Element;
         public double Weight;
     }
 }

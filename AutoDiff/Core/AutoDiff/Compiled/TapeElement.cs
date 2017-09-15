@@ -8,7 +8,7 @@ namespace AutoDiff.Compiled
         public double Adjoint;
         public InputEdges Inputs;
 
-        public abstract void Eval(TapeElement[] tape);
-        public abstract void Diff(TapeElement[] tape);
+        public abstract void Eval();
+        public abstract void Diff();
     }
 }

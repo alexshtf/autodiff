@@ -20,7 +20,7 @@ namespace AutoDiff.Compiled
 
         public InputEdges Remap(InputEdge[] newEdges) => new InputEdges(newEdges, this.offset, this.Length);
         public int Length { get; }
-        public int Index(int i) => edges[offset + i].Index;
+        public TapeElement Element(int i) => edges[offset + i].Element;
         public double Weight(int i) => edges[offset + i].Weight;
         public void SetWeight(int i, double w) => edges[offset + i].Weight = w;
     }
