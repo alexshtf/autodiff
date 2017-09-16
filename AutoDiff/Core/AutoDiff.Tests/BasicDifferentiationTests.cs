@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using static AutoDiff.Tests.Utils;
 
 namespace AutoDiff.Tests
 {
@@ -13,8 +14,8 @@ namespace AutoDiff.Tests
         {
             var zero = TermBuilder.Constant(0);
             var v = new Variable();
-            var grad = zero.Differentiate(Utils.Array(v), Utils.Vector(12));
-            CollectionAssert.AreEqual(Utils.Vector(0), grad);
+            var grad = zero.Differentiate(Array(v), Vector(12));
+            CollectionAssert.AreEqual(Vector(0), grad);
         }
 
         [Test]
@@ -22,16 +23,16 @@ namespace AutoDiff.Tests
         {
             var c = TermBuilder.Constant(100);
             var v = new Variable();
-            var grad = c.Differentiate(Utils.Array(v), Utils.Vector(12));
-            CollectionAssert.AreEqual(Utils.Vector(0), grad);
+            var grad = c.Differentiate(Array(v), Vector(12));
+            CollectionAssert.AreEqual(Vector(0), grad);
         }
 
         [Test]
         public void DiffVar()
         {
             var v = new Variable();
-            var grad = v.Differentiate(Utils.Array(v), Utils.Vector(12));
-            CollectionAssert.AreEqual(Utils.Vector(1), grad);
+            var grad = v.Differentiate(Array(v), Vector(12));
+            CollectionAssert.AreEqual(Vector(1), grad);
         }
 
         [Test]
@@ -40,8 +41,8 @@ namespace AutoDiff.Tests
             var x = new Variable();
             var y = new Variable();
             var z = new Variable();
-            var grad = y.Differentiate(Utils.Array(x, y, z), Utils.Vector(1, 2, 3));
-            CollectionAssert.AreEqual(Utils.Vector(0, 1, 0), grad);
+            var grad = y.Differentiate(Array(x, y, z), Vector(1, 2, 3));
+            CollectionAssert.AreEqual(Vector(0, 1, 0), grad);
         }
 
         [Test]
@@ -50,8 +51,8 @@ namespace AutoDiff.Tests
             var x = new Variable();
             var y = new Variable();
             var func = x * y;
-            var grad = func.Differentiate(Utils.Array(x, y), Utils.Vector(3, -4));
-            CollectionAssert.AreEqual(Utils.Vector(-4, 3), grad);
+            var grad = func.Differentiate(Array(x, y), Vector(3, -4));
+            CollectionAssert.AreEqual(Vector(-4, 3), grad);
         }
 
         [Test]
@@ -60,8 +61,8 @@ namespace AutoDiff.Tests
             var x = new Variable();
             var y = new Variable();
             var func = -3 * x * y;
-            var grad = func.Differentiate(Utils.Array(x, y), Utils.Vector(2, -3));
-            CollectionAssert.AreEqual(Utils.Vector(9, -6), grad);
+            var grad = func.Differentiate(Array(x, y), Vector(2, -3));
+            CollectionAssert.AreEqual(Vector(9, -6), grad);
         }
 
         [Test]
@@ -71,10 +72,10 @@ namespace AutoDiff.Tests
 
             // f(x) = 2x²
             var func = 2 * TermBuilder.Power(x, 2);
-            var grad = func.Differentiate(Utils.Array(x), Utils.Vector(2));
+            var grad = func.Differentiate(Array(x), Vector(2));
 
             // df(x) = 4x
-            CollectionAssert.AreEqual(Utils.Vector(8), grad);
+            CollectionAssert.AreEqual(Vector(8), grad);
         }
 
         [Test]
@@ -85,10 +86,10 @@ namespace AutoDiff.Tests
 
             // f(x, y) = 2x² - 3y²
             var func = 2 * TermBuilder.Power(x, 2) - 3 * TermBuilder.Power(y, 2);
-            var grad = func.Differentiate(Utils.Array(x, y), Utils.Vector(2, 3));
+            var grad = func.Differentiate(Array(x, y), Vector(2, 3));
             
             // df(x, y) = (4x, -6y)
-            CollectionAssert.AreEqual(Utils.Vector(8, -18), grad);
+            CollectionAssert.AreEqual(Vector(8, -18), grad);
         }
 
         [Test]
@@ -99,12 +100,12 @@ namespace AutoDiff.Tests
 
             // f(x, y) = (x - 5)² + (x + 2)²
             var func = 0.5 * (TermBuilder.Power(x - 5, 2) + TermBuilder.Power(y + 2, 2));
-            var gradOpt = func.Differentiate(Utils.Array(x, y), Utils.Vector(5, -2));
-            var gradGen = func.Differentiate(Utils.Array(x, y), Utils.Vector(3, 1));
+            var gradOpt = func.Differentiate(Array(x, y), Vector(5, -2));
+            var gradGen = func.Differentiate(Array(x, y), Vector(3, 1));
 
             // df(x, y) = [x-5, x+2]
-            CollectionAssert.AreEqual(Utils.Vector(0, 0), gradOpt);
-            CollectionAssert.AreEqual(Utils.Vector(-2, 3), gradGen);
+            CollectionAssert.AreEqual(Vector(0, 0), gradOpt);
+            CollectionAssert.AreEqual(Vector(-2, 3), gradGen);
         }
 
         [Test]
@@ -119,14 +120,14 @@ namespace AutoDiff.Tests
                 TermBuilder.Power(x + y, -1);
 
             // df(1,4) = [-0.92, 0.88]
-            var grad1 = func.Differentiate(Utils.Array(x, y), Utils.Vector(1, 4));
+            var grad1 = func.Differentiate(Array(x, y), Vector(1, 4));
             grad1[0] = Math.Round(grad1[0], 2);
             grad1[1] = Math.Round(grad1[1], 2);
-            CollectionAssert.AreEqual(Utils.Vector(-0.92, 0.88), grad1);
+            CollectionAssert.AreEqual(Vector(-0.92, 0.88), grad1);
 
             // df(-6,4) = [-11, -26]
-            var grad2 = func.Differentiate(Utils.Array(x, y), Utils.Vector(-6, 4));
-            CollectionAssert.AreEqual(Utils.Vector(-11, -26), grad2);
+            var grad2 = func.Differentiate(Array(x, y), Vector(-6, 4));
+            CollectionAssert.AreEqual(Vector(-11, -26), grad2);
         }
 
         [Test]
@@ -140,8 +141,8 @@ namespace AutoDiff.Tests
             var func = 2 * TermBuilder.Power(x - y, 2) + 5 * x * y - 3 * TermBuilder.Power(y, 2);
             var diff = func.Compile(x, y, z);
 
-            var result = diff.Differentiate(Utils.Vector(1, 2, -3));
-            CollectionAssert.AreEqual(Utils.Vector(6, -3, 0), result.Item1);
+            var result = diff.Differentiate(Vector(1, 2, -3));
+            CollectionAssert.AreEqual(Vector(6, -3, 0), result.Item1);
             Assert.AreEqual(0, result.Item2);
         }
 
@@ -169,7 +170,7 @@ namespace AutoDiff.Tests
             var result = diff.Differentiate(1, 2, -3);
 
             // asserts checked with MATLAB
-            CollectionAssert.AreEqual(Utils.Vector(161.5, 107, -62), result.Item1);
+            CollectionAssert.AreEqual(Vector(161.5, 107, -62), result.Item1);
             Assert.AreEqual(103.25, result.Item2);
         }
 
@@ -179,11 +180,11 @@ namespace AutoDiff.Tests
             var x = new Variable();
             var func = TermBuilder.Exp(x);
 
-            var grad1 = func.Differentiate(Utils.Array(x), Utils.Vector(1));
-            var grad2 = func.Differentiate(Utils.Array(x), Utils.Vector(-2));
+            var grad1 = func.Differentiate(Array(x), Vector(1));
+            var grad2 = func.Differentiate(Array(x), Vector(-2));
 
-            CollectionAssert.AreEqual(Utils.Vector(Math.Exp(1)), grad1);
-            CollectionAssert.AreEqual(Utils.Vector(Math.Exp(-2)), grad2);
+            CollectionAssert.AreEqual(Vector(Math.Exp(1)), grad1);
+            CollectionAssert.AreEqual(Vector(Math.Exp(-2)), grad2);
         }
 
         [Test]
@@ -193,9 +194,9 @@ namespace AutoDiff.Tests
             var y = new Variable();
             var func = TermBuilder.Power(x, y);
 
-            var grad = func.Differentiate(Utils.Array(x, y), Utils.Vector(2, 3));
+            var grad = func.Differentiate(Array(x, y), Vector(2, 3));
 
-            CollectionAssert.AreEqual(Utils.Vector(12, 8 * Math.Log(2)), grad);
+            CollectionAssert.AreEqual(Vector(12, 8 * Math.Log(2)), grad);
         }
 
         [Test]
@@ -204,8 +205,8 @@ namespace AutoDiff.Tests
             var x = new Variable();
             var func = TermBuilder.Power(x, x);
 
-            var grad = func.Differentiate(Utils.Array(x), Utils.Vector(2.5));
-            var expectedGrad = Utils.Vector(Math.Pow(2.5, 2.5) * (Math.Log(2.5) + 1));
+            var grad = func.Differentiate(Array(x), Vector(2.5));
+            var expectedGrad = Vector(Math.Pow(2.5, 2.5) * (Math.Log(2.5) + 1));
             Assert.IsTrue(Math.Abs(grad[0] - expectedGrad[0]) < 1E-10);
         }
 
@@ -219,13 +220,13 @@ namespace AutoDiff.Tests
 
             var term = new UnaryFunc(eval, diff, v);
 
-            var y1 = term.Differentiate(Utils.Array(v), Utils.Array(1.0)); // 2
-            var y2 = term.Differentiate(Utils.Array(v), Utils.Array(2.0)); // 4
-            var y3 = term.Differentiate(Utils.Array(v), Utils.Array(3.0)); // 6
+            var y1 = term.Differentiate(Array(v), Array(1.0)); // 2
+            var y2 = term.Differentiate(Array(v), Array(2.0)); // 4
+            var y3 = term.Differentiate(Array(v), Array(3.0)); // 6
 
-            CollectionAssert.AreEqual(Utils.Array(2.0), y1);
-            CollectionAssert.AreEqual(Utils.Array(4.0), y2);
-            CollectionAssert.AreEqual(Utils.Array(6.0), y3);
+            CollectionAssert.AreEqual(Array(2.0), y1);
+            CollectionAssert.AreEqual(Array(4.0), y2);
+            CollectionAssert.AreEqual(Array(6.0), y3);
         }
 
         [Test]
@@ -236,22 +237,22 @@ namespace AutoDiff.Tests
             // f(x, y) = x^2 + 2 * y^2
             // df/dx = 2 * x
             // df/dy = 4 * y
-            var v = Utils.Array(new Variable(), new Variable());
+            var v = Array(new Variable(), new Variable());
             var term = square(v[0]) + 2 * square(v[1]);
 
-            var y1 = term.Differentiate(v, Utils.Array(1.0, 0.0));  // (2.0, 0.0)
-            var y2 = term.Differentiate(v, Utils.Array(0.0, 1.0));  // (0.0, 4.0)
-            var y3 = term.Differentiate(v, Utils.Array(2.0, 1.0));  // (4.0, 4.0)
+            var y1 = term.Differentiate(v, Array(1.0, 0.0));  // (2.0, 0.0)
+            var y2 = term.Differentiate(v, Array(0.0, 1.0));  // (0.0, 4.0)
+            var y3 = term.Differentiate(v, Array(2.0, 1.0));  // (4.0, 4.0)
 
-            CollectionAssert.AreEqual(Utils.Array(2.0, 0.0), y1);
-            CollectionAssert.AreEqual(Utils.Array(0.0, 4.0), y2);
-            CollectionAssert.AreEqual(Utils.Array(4.0, 4.0), y3);
+            CollectionAssert.AreEqual(Array(2.0, 0.0), y1);
+            CollectionAssert.AreEqual(Array(0.0, 4.0), y2);
+            CollectionAssert.AreEqual(Array(4.0, 4.0), y3);
         }
 
         [Test]
         public void DiffBinarySimple()
         {
-            var v = Utils.Array(new Variable(), new Variable());
+            var v = Array(new Variable(), new Variable());
             var func = BinaryFunc.Factory(
                 (x, y) => x * x - x * y,
                 (x, y) => Tuple.Create(2 * x - y, -x));
@@ -261,19 +262,19 @@ namespace AutoDiff.Tests
             // df/dy = -x
             var term = func(v[0], v[1]);
 
-            var y1 = term.Differentiate(v, Utils.Array(1.0, 0.0)); // (2, -1)
-            var y2 = term.Differentiate(v, Utils.Array(0.0, 1.0)); // (-1, 0)
-            var y3 = term.Differentiate(v, Utils.Array(1.0, 2.0)); // (0, -1)
+            var y1 = term.Differentiate(v, Array(1.0, 0.0)); // (2, -1)
+            var y2 = term.Differentiate(v, Array(0.0, 1.0)); // (-1, 0)
+            var y3 = term.Differentiate(v, Array(1.0, 2.0)); // (0, -1)
 
-            CollectionAssert.AreEqual(Utils.Array(2.0, -1.0), y1);
-            CollectionAssert.AreEqual(Utils.Array(-1.0, 0.0), y2);
-            CollectionAssert.AreEqual(Utils.Array(0.0, -1.0), y3);
+            CollectionAssert.AreEqual(Array(2.0, -1.0), y1);
+            CollectionAssert.AreEqual(Array(-1.0, 0.0), y2);
+            CollectionAssert.AreEqual(Array(0.0, -1.0), y3);
         }
 
         [Test]
         public void DiffBinaryComplex()
         {
-            var v = Utils.Array(new Variable(), new Variable());
+            var v = Array(new Variable(), new Variable());
             var func = BinaryFunc.Factory(
                 (x, y) => x * x - x * y,
                 (x, y) => Tuple.Create(2 * x - y, -x));
@@ -283,13 +284,13 @@ namespace AutoDiff.Tests
             // df/dy = -2y
             var term = func(v[0], v[1]) - func(v[1], v[0]);
 
-            var y1 = term.Differentiate(v, Utils.Array(1.0, 0.0)); // (2, 0)
-            var y2 = term.Differentiate(v, Utils.Array(0.0, 1.0)); // (0, -2)
-            var y3 = term.Differentiate(v, Utils.Array(2.0, 1.0)); // (4, -2)
+            var y1 = term.Differentiate(v, Array(1.0, 0.0)); // (2, 0)
+            var y2 = term.Differentiate(v, Array(0.0, 1.0)); // (0, -2)
+            var y3 = term.Differentiate(v, Array(2.0, 1.0)); // (4, -2)
 
-            CollectionAssert.AreEqual(Utils.Array(2.0, 0.0), y1);
-            CollectionAssert.AreEqual(Utils.Array(0.0, -2.0), y2);
-            CollectionAssert.AreEqual(Utils.Array(4.0, -2.0), y3);
+            CollectionAssert.AreEqual(Array(2.0, 0.0), y1);
+            CollectionAssert.AreEqual(Array(0.0, -2.0), y2);
+            CollectionAssert.AreEqual(Array(4.0, -2.0), y3);
         }
 
         [Test]
@@ -302,11 +303,11 @@ namespace AutoDiff.Tests
             var n = new Variable();
 
             var func = x + 2 * y + 3 * z + 4 * m + 5 * n;
-            var compiled = func.Compile(Utils.Array(x, y, z), Utils.Array(m, n));
+            var compiled = func.Compile(Array(x, y, z), Array(m, n));
 
-            var diffResult = compiled.Differentiate(Utils.Vector(1, 1, 1), Utils.Vector(1, 1));
+            var diffResult = compiled.Differentiate(Vector(1, 1, 1), Vector(1, 1));
             Assert.AreEqual(15, diffResult.Item2); // 15 = 1 + 2 + 3 + 4 + 5
-            CollectionAssert.AreEqual(Utils.Vector(1, 2, 3), diffResult.Item1);
+            CollectionAssert.AreEqual(Vector(1, 2, 3), diffResult.Item1);
         }
 
         [Test]
@@ -318,7 +319,7 @@ namespace AutoDiff.Tests
             IReadOnlyList<Variable> variables = new List<Variable> { x, y };
             var func = x + y;
 
-            var compiled = func.Compile(variables);
+            func.Compile(variables);
         }
 
         [Test]
@@ -330,15 +331,15 @@ namespace AutoDiff.Tests
             var func = 0.5 * (x*x + y*y); // we chose this function so that the gradient at (x, y) will be just (x, y)
             var compiled = func.Compile(x, y);
 
-            var input = new List<double> { 2, 6 };
+            IReadOnlyList<double> input = new List<double> { 2, 6 };
             var diff = compiled.Differentiate(input);
 
-            CollectionAssert.AreEqual(diff.Item1, Utils.Array(2.0, 6.0));
+            CollectionAssert.AreEqual(diff.Item1, Array(2.0, 6.0));
             Assert.AreEqual(20, diff.Item2); // 20 = 0.5 * (2^2 + 6^2)
         }
 
         [Test]
-        public void FillsGradientArray()
+        public void FillsGradientList()
         {
             var x = new Variable();
             var y = new Variable();
@@ -347,10 +348,10 @@ namespace AutoDiff.Tests
             var compiled = func.Compile(x, y);
 
             var input = new[] {2.0, 6.0 };
-            var gradArray = new double[input.Length];
-            var value = compiled.Differentiate(input, gradArray);
+            IList<double> grad = new double[input.Length];
+            var value = compiled.Differentiate(input, grad);
 
-            CollectionAssert.AreEqual(gradArray, input); // the gradient at (x, y) is (x, y)
+            CollectionAssert.AreEqual(grad, input); // the gradient at (x, y) is (x, y)
             Assert.AreEqual(20, value); // 20 = 0.5 * (2^2 + 6^2)
         }
     }

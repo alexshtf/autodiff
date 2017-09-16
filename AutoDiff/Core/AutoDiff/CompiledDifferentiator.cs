@@ -22,10 +22,6 @@ namespace AutoDiff
         /// <param name="variables">The variables.</param>
         public CompiledDifferentiator(Term function, IReadOnlyList<Variable> variables)
         {
-            Requires(function != null);
-            Requires(variables != null);
-            Requires(ForAll(variables, v => v != null));
-
             Variables = variables.AsReadOnly();
             dimension = variables.Count;
 
@@ -50,14 +46,7 @@ namespace AutoDiff
             return tape[tape.Length - 1].Value;
         }
 
-        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg)
-        {
-            var gradient = new double[dimension];
-            var value = Differentiate(arg, gradient);
-            return Tuple.Create(gradient, value);
-        }
-
-        public double Differentiate(IReadOnlyList<double> arg, double[] grad) 
+        public double Differentiate(IReadOnlyList<double> arg, IList<double> grad) 
         {
             ForwardSweep(arg);
             ReverseSweep();
@@ -66,11 +55,6 @@ namespace AutoDiff
                 grad[i] = tape[i].Adjoint;
 
             return tape[tape.Length - 1].Value;
-        }
-
-        public Tuple<double[], double> Differentiate(params double[] arg)
-        {
-            return Differentiate((IReadOnlyList<double>)arg);
         }
 
         private void ReverseSweep()

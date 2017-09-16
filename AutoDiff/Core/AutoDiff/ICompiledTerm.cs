@@ -5,6 +5,49 @@ using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
+    public static class CompiledTerm
+    {
+        /// <summary>
+        /// Computes the gradient of the compiled term at the given point.
+        /// </summary>
+        /// <param name="arg">The point at which to differentiate.</param>
+        /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
+        /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
+        /// <paramref name="arg"/>.</returns>
+        /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
+        public static Tuple<double[], double> Differentiate(this ICompiledTerm term, IReadOnlyList<double> arg)
+        {
+            Requires(term != null);
+            Requires(arg != null);
+            Requires(arg.Count == term.Variables.Count);
+            Ensures(Result<Tuple<double[], double>>() != null);
+            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Count);
+
+            var grad = new double[term.Variables.Count];
+            var val = term.Differentiate(arg, grad);
+            return Tuple.Create(grad, val);
+        }
+
+        /// <summary>
+        /// Computes the gradient of the compiled term at the given point.
+        /// </summary>
+        /// <param name="arg">The point at which to differentiate.</param>
+        /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
+        /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
+        /// <paramref name="arg"/>.</returns>
+        /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
+        public static Tuple<double[], double> Differentiate(this ICompiledTerm term, params double[] arg)
+        {
+            Requires(term != null);
+            Requires(arg != null);
+            Requires(arg.Length == term.Variables.Count);
+            Ensures(Result<Tuple<double[], double>>() != null);
+            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Length);
+            
+            return Differentiate(term, (IReadOnlyList<double>) arg);
+        }
+    }
+    
     /// <summary>
     /// Represents a term after it has been compiled for efficient evaluation/differentiation.
     /// </summary>
@@ -20,33 +63,13 @@ namespace AutoDiff
         double Evaluate(params double[] arg);
 
         /// <summary>
-        /// Computes the gradient of the compiled term at the given point.
-        /// </summary>
-        /// <param name="arg">The point at which to differentiate.</param>
-        /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
-        /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
-        /// <paramref name="arg"/>.</returns>
-        /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        Tuple<double[], double> Differentiate(IReadOnlyList<double> arg);
-
-        /// <summary>
         /// Computes gradient of the compiled term at the given point
         /// </summary>
         /// <param name="arg">The point at which to differentiate</param>
         /// <param name="grad">The list to be filled with the gradient at the point specified by <paramref name="arg"/></param>
         /// <returns>The value at the point specified by <paramref name="arg"/></returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        double Differentiate(IReadOnlyList<double> arg, double[] grad);
-        
-        /// <summary>
-        /// Computes the gradient of the compiled term at the given point.
-        /// </summary>
-        /// <param name="arg">The point at which to differentiate.</param>
-        /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
-        /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
-        /// <paramref name="arg"/>.</returns>
-        /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        Tuple<double[], double> Differentiate(params double[] arg);
+        double Differentiate(IReadOnlyList<double> arg, IList<double> grad);
 
         /// <summary>
         /// The list of variables contained in this compiled term.
@@ -69,31 +92,13 @@ namespace AutoDiff
             return default(double);
         }
 
-        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg)
-        {
-            Requires(arg != null);
-            Requires(arg.Count == Variables.Count);
-            Ensures(Result<Tuple<double[], double>>() != null);
-            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Count);
-            return null;
-        }
-
-        public double Differentiate(IReadOnlyList<double> arg, double[] grad) 
+        public double Differentiate(IReadOnlyList<double> arg, IList<double> grad) 
         {
             Requires(arg != null);
             Requires(grad != null);
             Requires(arg.Count == Variables.Count);
-            Requires(grad.Length == Variables.Count);
+            Requires(grad.Count == Variables.Count);
             return 0;
-        }
-
-        public Tuple<double[], double> Differentiate(params double[] arg)
-        {
-            Requires(arg != null);
-            Requires(arg.Length == Variables.Count);
-            Ensures(Result<Tuple<double[], double>>() != null);
-            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Length);
-            return null;
         }
 
         public IReadOnlyList<Variable> Variables

@@ -22,15 +22,15 @@ namespace AutoDiff
             return compiledTerm.Evaluate(combinedArg);
         }
 
-        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
+        public double Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters, IList<double> grad)
         {
             var combinedArg = arg.Concat(parameters).ToArray();
-            var diffResult = compiledTerm.Differentiate(combinedArg);
+            var combinedGrad = new double[combinedArg.Length];
+            var val = compiledTerm.Differentiate(combinedArg, combinedGrad);
 
-            var partialGradient = new double[arg.Count];
-            Array.Copy(diffResult.Item1, partialGradient, partialGradient.Length);
-
-            return Tuple.Create(partialGradient, diffResult.Item2);
+            for (var i = 0; i < arg.Count; ++i)
+                grad[i] = combinedGrad[i];
+            return val;
         }
 
         public IReadOnlyList<Variable> Variables { get; }

@@ -8,10 +8,8 @@ namespace AutoDiff
 {
     internal partial class CompiledDifferentiator
     {
-        
         private class Compiler : ITermVisitor<TapeElement> 
         {
-            
             private readonly List<TapeElement> tape;
             private readonly List<InputEdge> edges;
             private readonly Dictionary<Term, TapeElement> tapeElementOf;

@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
+    <LangVersion>6</LangVersion>
     <TargetFramework>netcoreapp1.1</TargetFramework>
 	<Authors>Alex Shtof</Authors>
   </PropertyGroup>

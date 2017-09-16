@@ -5,6 +5,26 @@ using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
+    public static class ParametricCompiledTermExtensions
+    {
+        /// <summary>
+        /// Computes the gradient of the compiled term at the given point.
+        /// </summary>
+        /// <param name="arg">The point at which to differentiate.</param>
+        /// <param name="parameters">The parameter values</param>
+        /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
+        /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
+        /// <paramref name="arg"/> and <paramref name="parameters"/>.</returns>
+        /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
+        public static Tuple<double[], double> Differentiate(this IParametricCompiledTerm term, IReadOnlyList<double> arg,
+            IReadOnlyList<double> parameters)
+        {
+            var grad = new double[arg.Count];
+            var val = term.Differentiate(arg, parameters, grad);
+            return Tuple.Create(grad, val);
+        }
+    }
+    
     /// <summary>
     /// Represents a parametric term after it has been compiled for efficient evaluation/differentiation. A parametric
     /// term has some variables that function as "constant parameters" and others that function as actual variables.
@@ -26,11 +46,12 @@ namespace AutoDiff
         /// </summary>
         /// <param name="arg">The point at which to differentiate.</param>
         /// <param name="parameters">The parameter values</param>
+        /// <param name="grad"></param>
         /// <returns>A tuple, where the first item is the gradient at <paramref name="arg"/> and the second item is 
         /// the value at <paramref name="arg"/>. That is, the second value is the same as running <see cref="Evaluate"/> on 
         /// <paramref name="arg"/> and <paramref name="parameters"/>.</returns>
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
-        Tuple<double[], double> Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters);
+        double Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters, IList<double> grad);
 
         /// <summary>
         /// The collection of variables contained in this compiled term.
@@ -67,17 +88,17 @@ namespace AutoDiff
             return default(double);
         }
 
-        public Tuple<double[], double> Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
+        public double Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters, IList<double> grad)
         {
-            Requires(arg != null);
-            Requires(arg.Count == Variables.Count);
+            Requires(arg != null && arg.Count == Variables.Count);
+            Requires(grad != null && grad.Count == Variables.Count);
             Requires(parameters != null);
             Requires(parameters.Count == Parameters.Count);
 
             Ensures(Result<Tuple<double[], double>>() != null);
             Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Count);
 
-            return null;
+            return default(double);
         }
 
         public IReadOnlyList<Variable> Variables

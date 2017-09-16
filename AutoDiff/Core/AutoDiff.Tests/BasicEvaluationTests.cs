@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using static AutoDiff.Tests.Utils;
 
 namespace AutoDiff.Tests
 {
@@ -41,7 +42,7 @@ namespace AutoDiff.Tests
             var c = TermBuilder.Constant(5);
             var v = new Variable();
             var sum = c + v;
-            var value = sum.Evaluate(Utils.Array(v), Utils.Array(7.0));
+            var value = sum.Evaluate(Array(v), Array(7.0));
             Assert.AreEqual(12, value);
         }
 
@@ -61,7 +62,7 @@ namespace AutoDiff.Tests
             var c = TermBuilder.Constant(12);
             var v = new Variable();
             var diff = c - v;
-            var value = diff.Evaluate(Utils.Array(v), Utils.Array(5.0));
+            var value = diff.Evaluate(Array(v), Array(5.0));
             Assert.AreEqual(7, value);
         }
 
@@ -71,7 +72,7 @@ namespace AutoDiff.Tests
             var v1 = new Variable();
             var v2 = new Variable();
             var prod = v1 * v2;
-            var value = prod.Evaluate(Utils.Array(v1, v2), Utils.Array(3.0, -5));
+            var value = prod.Evaluate(Array(v1, v2), Array(3.0, -5));
             Assert.AreEqual(-15, value);
         }
 
@@ -100,8 +101,8 @@ namespace AutoDiff.Tests
             var v = new Variable();
             var sqDiff = TermBuilder.Power(v - 5, 2);
 
-            var r1 = sqDiff.Evaluate(Utils.Array(v), Utils.Array(3.0));
-            var r2 = sqDiff.Evaluate(Utils.Array(v), Utils.Array(5.0));
+            var r1 = sqDiff.Evaluate(Array(v), Array(3.0));
+            var r2 = sqDiff.Evaluate(Array(v), Array(5.0));
 
             Assert.AreEqual(4, r1);
             Assert.AreEqual(0, r2);
@@ -110,15 +111,15 @@ namespace AutoDiff.Tests
         [Test]
         public void WeighedSquareDiff()
         {
-            var v = Utils.Array(new Variable(), new Variable(), new Variable());
+            var v = Array(new Variable(), new Variable(), new Variable());
             var sqDiff = TermBuilder.Sum(
                 12 * TermBuilder.Power(v[0] - 5, 2),
                 3 * TermBuilder.Power(v[1] - 4, 2),
                 2 * TermBuilder.Power(v[2] + 3, 2));
 
-            var r1 = sqDiff.Evaluate(v, Utils.Array(5.0, 4.0, -3.0));
-            var r2 = sqDiff.Evaluate(v, Utils.Array(3.0, 4.0, -3.0));
-            var r3 = sqDiff.Evaluate(v, Utils.Array(4.0, 4.0, 0.0));
+            var r1 = sqDiff.Evaluate(v, Array(5.0, 4.0, -3.0));
+            var r2 = sqDiff.Evaluate(v, Array(3.0, 4.0, -3.0));
+            var r3 = sqDiff.Evaluate(v, Array(4.0, 4.0, 0.0));
 
             Assert.AreEqual(r1, 0);
             Assert.AreEqual(r2, 48);
@@ -135,9 +136,9 @@ namespace AutoDiff.Tests
 
             var term = new UnaryFunc(eval, diff, v);
 
-            var y1 = term.Evaluate(Utils.Array(v), Utils.Array(1.0));
-            var y2 = term.Evaluate(Utils.Array(v), Utils.Array(2.0));
-            var y3 = term.Evaluate(Utils.Array(v), Utils.Array(3.0));
+            var y1 = term.Evaluate(Array(v), Array(1.0));
+            var y2 = term.Evaluate(Array(v), Array(2.0));
+            var y3 = term.Evaluate(Array(v), Array(3.0));
 
             Assert.AreEqual(1.0, y1);
             Assert.AreEqual(4.0, y2);
@@ -147,16 +148,16 @@ namespace AutoDiff.Tests
         [Test]
         public void TestUnaryFuncComplex()
         {
-            var v = Utils.Array(new Variable(), new Variable());
+            var v = Array(new Variable(), new Variable());
 
             var square = UnaryFunc.Factory(x => x * x, x => 2 * x);
 
             // f(x, y) = x^2 + 2 * y^2
             var term = square(v[0]) +  2 * square(v[1]);
 
-            var y1 = term.Evaluate(v, Utils.Array(1.0, 0.0));  // 1 + 0 = 1
-            var y2 = term.Evaluate(v, Utils.Array(0.0, 1.0));  // 0 + 2 = 2
-            var y3 = term.Evaluate(v, Utils.Array(2.0, 1.0));  // 4 + 2 = 6
+            var y1 = term.Evaluate(v, Array(1.0, 0.0));  // 1 + 0 = 1
+            var y2 = term.Evaluate(v, Array(0.0, 1.0));  // 0 + 2 = 2
+            var y3 = term.Evaluate(v, Array(2.0, 1.0));  // 4 + 2 = 6
 
             Assert.AreEqual(1, y1);
             Assert.AreEqual(2, y2);
@@ -166,16 +167,16 @@ namespace AutoDiff.Tests
         [Test]
         public void TestBinaryFuncSimple()
         {
-            var v = Utils.Array(new Variable(), new Variable());
+            var v = Array(new Variable(), new Variable());
             var func = BinaryFunc.Factory(
                 (x, y) => x * x - x * y, 
                 (x, y) => Tuple.Create(2 * x - y, -x));
 
             var term = func(v[0], v[1]);
 
-            var y1 = term.Evaluate(v, Utils.Array(1.0, 0.0)); // 1 - 0 = 1
-            var y2 = term.Evaluate(v, Utils.Array(0.0, 1.0)); // 0 - 0 = 0
-            var y3 = term.Evaluate(v, Utils.Array(1.0, 2.0)); // 1 - 2 = -1
+            var y1 = term.Evaluate(v, Array(1.0, 0.0)); // 1 - 0 = 1
+            var y2 = term.Evaluate(v, Array(0.0, 1.0)); // 0 - 0 = 0
+            var y3 = term.Evaluate(v, Array(1.0, 2.0)); // 1 - 2 = -1
 
             Assert.AreEqual(1.0, y1);
             Assert.AreEqual(0.0, y2);
@@ -185,7 +186,7 @@ namespace AutoDiff.Tests
         [Test]
         public void TestBinaryFuncComplex()
         {
-            var v = Utils.Array(new Variable(), new Variable());
+            var v = Array(new Variable(), new Variable());
             var func = BinaryFunc.Factory(
                 (x, y) => x * x - x * y,
                 (x, y) => Tuple.Create(2 * x - y, -x));
@@ -193,9 +194,9 @@ namespace AutoDiff.Tests
             // f(x, y) = x² - xy - y² + xy = x² - y²
             var term = func(v[0], v[1]) - func(v[1], v[0]);
 
-            var y1 = term.Evaluate(v, Utils.Array(1.0, 0.0)); // 1 - 0 = 1
-            var y2 = term.Evaluate(v, Utils.Array(0.0, 1.0)); // 0 - 1 = -1
-            var y3 = term.Evaluate(v, Utils.Array(2.0, 1.0)); // 4 - 1 = 3
+            var y1 = term.Evaluate(v, Array(1.0, 0.0)); // 1 - 0 = 1
+            var y2 = term.Evaluate(v, Array(0.0, 1.0)); // 0 - 1 = -1
+            var y3 = term.Evaluate(v, Array(2.0, 1.0)); // 4 - 1 = 3
 
             Assert.AreEqual(1.0, y1);
             Assert.AreEqual(-1.0, y2);
