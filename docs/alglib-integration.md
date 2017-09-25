@@ -28,12 +28,7 @@ class Program
         alglib.mincgcreate(x, out state);
         alglib.mincgoptimize(state, (double[] arg, ref double val, double[] grad, object obj) =>
             {
-                // perform differentiation with AutoDiff
-                var diff = func.Differentiate(arg);
-
-                // copy the results to AlgLib
-                val = diff.Item2;
-                Array.Copy(diff.Item1, grad, grad.Length);
+                val = func.Differentiate(arg, grad);
             }, null, null);
             
         // extract the resulting minimum point
