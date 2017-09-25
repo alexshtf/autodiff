@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/alexshtf/autodiff.svg?branch=master)](https://travis-ci.org/alexshtf/autodiff)
 
 # Project Description
-A library that provides fast, accurate and automatic differentiation (computes derivative /  gradient) of mathematical functions.
+A library that provides moderately fast, accurate, and automatic differentiation (computes derivative /  gradient) of mathematical functions.
 
-AutoDiff provides a simple and intuitive API for computing function gradients/derivatives along with a fast state-of-the-art algorithm for performing the computation. Such computations are mainly useful in numeric optimization scenarios.
+AutoDiff provides a simple and intuitive API for computing function gradients/derivatives along with a fast algorithm for performing the computation. Such computations are mainly useful in numeric optimization scenarios.
 
 The Library is available via NuGet:
 
@@ -54,14 +54,12 @@ There are many open and commercial .NET libraries that have numeric optimization
 Once the developer defines his/her function, the AutoDiff library can automatically evaluate and differentiate this function at any point. This allows +easy development and prototyping+ of applications based on numeric optimization.
 
 # Features
-* Fast! See [0.5 vs 0.3 benchmark](docs/0.5-vs-0.3-benchmark.md) and [0.3 benchmark](doss/0.3-benchmark).
+* Moderate execution speeds. We aim computing a _gradient_ within no more than 50 times the duration of _function evaluation_ by manually tuned code.
 * Composition of functions using arithmetic operators, Exp, Log, Power and user-defined unary and binary functions.
 * Function gradient evaluation at specified points
 * Function value evaluation at specified points
 * Uses [Code Contracts](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.contracts.contract) for specifying valid parameters and return values
-* Computes gradients using Reverse-Mode AD algorithm in **linear time**!
-  * Yes, it's faster than numeric approximation for multivariate functions
-  * You get both high accuracy and speed!
+* Computes gradients using Reverse-Mode AD algorithm in **linear time**, which is substantially faster than numerical gradient approximation for multivariate functions.
 
 # **Using in research papers**
 
