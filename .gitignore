@@ -98,3 +98,11 @@ Backup*/
 UpgradeLog*.XML
 /AutoDiff/.idea/**
 /AutoDiff/.vscode/**
+/AutoDiff/.vs/AutoDiff/v15/Server/sqlite3/storage.ide-wal
+/AutoDiff/.vs/AutoDiff/v15/Server/sqlite3/storage.ide-shm
+/AutoDiff/.vs/AutoDiff/v15/Server/sqlite3/storage.ide
+/AutoDiff/.vs/AutoDiff/v15/Server/sqlite3/db.lock
+/AutoDiff/.vs/AutoDiff/v15/sqlite3/storage.ide-wal
+/AutoDiff/.vs/AutoDiff/v15/sqlite3/storage.ide-shm
+/AutoDiff/.vs/AutoDiff/v15/sqlite3/storage.ide
+/AutoDiff/.vs/AutoDiff/v15/sqlite3/db.lock
