@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/alexshtf/autodiff.svg?branch=master)](https://travis-ci.org/alexshtf/autodiff)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff)](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff)
 
 # Project Description
 A library that provides moderately fast, accurate, and automatic differentiation (computes derivative /  gradient) of mathematical functions.
