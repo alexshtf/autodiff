@@ -3,15 +3,16 @@ using System.Linq;
 using AutoDiff;
 using System.Diagnostics;
 using System.IO;
+using static System.Math;
 
 namespace AutodiffBenchmark
-{
+{    
     class Program
     {
         private const int TERM_SIZE = 10;
         private static readonly Random random = new Random();
 
-        static void Main(string[] args)
+        static void Main()
         {
             using (var stdout = new StreamWriter(Console.OpenStandardOutput()))
             using (var stderr = new StreamWriter(Console.OpenStandardError()))
@@ -27,11 +28,10 @@ namespace AutodiffBenchmark
             public int NumberOfTerms{get; set; }
             public long CompileMilliseconds{get; set; }
             public double MillisecondsPerManualEval{get; set; }
-            public double MillisecondsPerGradApprox{get; set; }
             public double MillisecondsPerCompiledEval{get; set; }
             public double MillisecondsPerCompiledDiff{get; set; }
         }
-
+       
         static void RunBenchmark(TextWriter resultWriter, TextWriter logWriter)
         {
             var fac = new CsvHelper.CsvFactory();
@@ -40,78 +40,90 @@ namespace AutodiffBenchmark
                 csvWriter.WriteHeader<BenchmarkResult>();
 
                 int[] sizes = { 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 };
-                for (int i = 0; i < sizes.Length; ++i)
+                foreach (int sz in sizes)
                 {
                     var row = new BenchmarkResult();
 
-                    var termsCount = sizes[i]; row.NumberOfTerms = termsCount;
-                    var varsCount = sizes[i]; row.NumberOfVars = varsCount;
+                    var termsCount = sz; row.NumberOfTerms = termsCount;
+                    var varsCount = sz; row.NumberOfVars = varsCount;
+                    var grad = new double[sz];
 
-                    logWriter.WriteLine(String.Format("Benchmark for {0} terms and {1} variables", termsCount, varsCount));
+
+                    logWriter.WriteLine("Benchmark for {0} terms and {1} variables", termsCount, varsCount);
 
                     logWriter.Write("\tConstructing coefficients ...");
                     var coefficients = GenerateCoefficients(termsCount, varsCount);
-                    logWriter.WriteLine(String.Format(" done"));
+                    logWriter.WriteLine(" done");
 
                     // generate variables
                     var vars = new Variable[varsCount];
-                    for (int j = 0; j < sizes[i]; ++j)
+                    for (var j = 0; j < sz; ++j)
                         vars[j] = new Variable();
 
 
                     logWriter.Write("\tGenerating input data ...");
-                    double[][] inputData = new double[1000][];
-                    for (int j = 0; j < inputData.Length; ++j)
+                    var inputData = new double[1000][];
+                    for (var j = 0; j < inputData.Length; ++j)
                         inputData[j] = RandomDoubles(varsCount);
-                    logWriter.WriteLine(String.Format(" done"));
-					
+                    logWriter.WriteLine(" done");
                     GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
 
-                    logWriter.Write("\tConstructing compiled term ...");
-                    var stopWatch = Stopwatch.StartNew();
-                    var compiledTerm = ConstructTerm(coefficients, vars);
-                    stopWatch.Stop();
-                    row.CompileMilliseconds = stopWatch.ElapsedMilliseconds;
-                    logWriter.WriteLine(String.Format(" done in {0} milliseconds", row.CompileMilliseconds));
 
-                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
+                    ICompiledTerm compiledTerm = null;
+                    row.CompileMilliseconds = MeasureMsec("Constructing compiled term", logWriter, 
+                        () => compiledTerm = ConstructTerm(coefficients, vars));
 
-                    logWriter.Write("\tBenchmarking manual evaluation ...");
-                    stopWatch = Stopwatch.StartNew();
-                    double sum = 0;
-                    for (int j = 0; j < inputData.Length; ++j)
-                        sum += NativeEvaluate(coefficients, inputData[j]);
-                    stopWatch.Stop();
-                    row.MillisecondsPerManualEval = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
-                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerManualEval));
+                    row.MillisecondsPerManualEval = MeasureMsecPerOp("manual evaluation", 
+                        logWriter, inputData.Length, () => inputData.Sum(array => NativeEvaluate(coefficients, array)));
 
-                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
+                    row.MillisecondsPerCompiledEval = MeasureMsecPerOp("AutoDiff compiled evaluation",
+                        logWriter, inputData.Length, () => inputData.Sum(array => compiledTerm.Evaluate(array)));
 
-                    logWriter.Write("\tBenchmarking AutoDiff compiled evaluation ...");
-                    stopWatch = Stopwatch.StartNew();
-                    sum = 0;
-                    for (int j = 0; j < inputData.Length; ++j)
-                        sum += compiledTerm.Evaluate(inputData[j]);
-                    stopWatch.Stop();
-                    row.MillisecondsPerCompiledEval = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
-                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerCompiledEval));
-
-                    GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
-
-                    logWriter.Write("\tBenchmarking compiled differentiation ...");
-                    stopWatch = Stopwatch.StartNew();
-                    sum = 0;
-                    for (int j = 0; j < inputData.Length; ++j)
-                    {
-                        var diffResult = compiledTerm.Differentiate(inputData[j]);
-                        sum += diffResult.Item2 + diffResult.Item1.Sum();
-                    }
-                    row.MillisecondsPerCompiledDiff = stopWatch.ElapsedMilliseconds / (double)inputData.Length;
-                    logWriter.WriteLine(String.Format(" sum is {0}, speed is {1} msec/op", sum, row.MillisecondsPerCompiledDiff));
+                    row.MillisecondsPerCompiledDiff = MeasureMsecPerOp("compiled differentiation",
+                        logWriter, inputData.Length, () =>
+                        {
+                            var sum = 0.0;
+                            foreach (var array in inputData)
+                            {
+                                var val = compiledTerm.Differentiate(array, grad);
+                                sum += val + grad.Sum();
+                            }
+                            return sum;
+                        });
 
                     csvWriter.WriteRecord(row);
                 }
             }
+        }
+
+        private static long MeasureMsec(string message, TextWriter logWriter, Action op)
+        {
+            logWriter.Write('\t');
+            logWriter.Write(message);
+            logWriter.Write(" ...");
+
+            var stopWatch = Stopwatch.StartNew();
+            op();
+            var time = stopWatch.ElapsedMilliseconds;
+            logWriter.WriteLine(" done in {0} msec", time);
+            
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
+            return time;
+        }
+
+        private static double MeasureMsecPerOp(string message, TextWriter logWriter, int numOps, Func<double> ops)
+        {
+            logWriter.Write("\tBenchmarking ");
+            logWriter.Write(message);
+            logWriter.Write(" ...");
+
+            var stopWatch = Stopwatch.StartNew();
+            var result = ops();
+            var speed = stopWatch.ElapsedMilliseconds / (double)numOps;
+            logWriter.WriteLine(" sum is {0}, speed is {1} msec/op", result, speed);
+            
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, true);
+            return speed;
         }
 
         private static ICompiledTerm ConstructTerm(Coefficient[][] coefficients, Variable[] variables)
@@ -120,7 +132,7 @@ namespace AutodiffBenchmark
                 from i in Enumerable.Range(0, coefficients.Length)
                 let termCoefficients = coefficients[i]
                 let sumTerms = from j in Enumerable.Range(0, termCoefficients.Length)
-                               select termCoefficients[j].value * variables[termCoefficients[j].index]
+                               select termCoefficients[j].Value * variables[termCoefficients[j].Index]
                 let sum = TermBuilder.Sum(sumTerms)
                 select TermBuilder.Power(sum, 2);
 
@@ -129,36 +141,15 @@ namespace AutodiffBenchmark
             return compiled;
         }
 
-        private static double[] ApproxGradient(Coefficient[][] coefficients, double[] values, double epsilon = 1E-5)
-        {
-            var baseValue = NativeEvaluate(coefficients, values);
-            var result = new double[values.Length];
-            for (int i = 0; i < values.Length; ++i)
-            {
-                // save backup of values[i]. we will change it
-                var backup = values[i];
-                
-                // compute the shifte value and restore backup
-                values[i] = values[i] + epsilon;
-                var shiftedValue = NativeEvaluate(coefficients, values);
-                values[i] = backup;
-
-                // compute gradient at position i
-                result[i] = (shiftedValue - baseValue) / epsilon;
-            }
-            return result;
-        }
-
         private static double NativeEvaluate(Coefficient[][] coefficients, double[] values)
         {
-            double result = 0.0;
-            for (int i = 0; i < coefficients.Length; ++i)
+            var result = 0.0;
+            foreach (var termCoef in coefficients)
             {
-                var term = coefficients[i];
-                var sum = 0.0;
-                for (int j = 0; j < term.Length; ++j)
-                    sum += term[j].value * values[term[j].index];
-                result += (sum * sum);
+                var innerProduct = 0.0;
+                for (var j = 0; j < termCoef.Length; ++j)
+                    innerProduct += termCoef[j].Value * values[termCoef[j].Index];
+                result += innerProduct * innerProduct;
             }
             return result;
         }
@@ -166,15 +157,15 @@ namespace AutodiffBenchmark
         private static Coefficient[][] GenerateCoefficients(int termsCount, int varsCount)
         {
             var result = new Coefficient[termsCount][];
-            for (int i = 0; i < result.Length; ++i)
+            for (var i = 0; i < result.Length; ++i)
             {
                 result[i] = new Coefficient[TERM_SIZE];
                 var indices = RandomInts(TERM_SIZE, varsCount);
                 var values = RandomDoubles(TERM_SIZE);
-                for (int j = 0; j < TERM_SIZE; ++j)
+                for (var j = 0; j < TERM_SIZE; ++j)
                 {
-                    result[i][j].index = indices[j];
-                    result[i][j].value = values[j];
+                    result[i][j].Index = indices[j];
+                    result[i][j].Value = values[j];
                 }
             }
 
@@ -186,7 +177,7 @@ namespace AutodiffBenchmark
         private static int[] RandomInts(int count, int max)
         {
             var result = new int[count];
-            for (int i = 0; i < count; ++i)
+            for (var i = 0; i < count; ++i)
                 result[i] = random.Next(max);
             return result;
         }
@@ -194,7 +185,7 @@ namespace AutodiffBenchmark
         private static double[] RandomDoubles(int count)
         {
             var result = new double[count];
-            for (int i = 0; i < count; ++i)
+            for (var i = 0; i < count; ++i)
                 result[i] = random.NextDouble();
             return result;
         }
@@ -205,8 +196,8 @@ namespace AutodiffBenchmark
         
         private struct Coefficient
         {
-            public int index;
-            public double value;
+            public int Index;
+            public double Value;
         }
 
         #endregion
