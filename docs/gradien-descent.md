@@ -10,12 +10,13 @@ static double[] GradientDescent(ICompiledTerm func, double[] init, double stepSi
 {
     // clone the initial argument
     var x = (double[])init.Clone();
+    var gradient = new double[x.Length];
 
     // perform the iterations
     for (int i = 0; i < iterations; ++i)
     {
-        // compute the gradient
-        var gradient = func.Differentiate(x).Item1;
+        // compute the gradient - fill the gradient array.
+        func.Differentiate(x, gradient);
 
         // perform a descent step
         for (int j = 0; j < x.Length; ++j)
