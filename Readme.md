@@ -1,6 +1,6 @@
 | AppVeyor CI | NuGet Package |
 |-------------|---------------|
-|[![Build Status](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff)](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff) | [![NuGet](https://img.shields.io/nuget/dt/AutoDiff.svg?style=plastic)]() |
+|[![Build Status](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff)](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff) | [![NuGet](https://img.shields.io/nuget/dt/AutoDiff.svg?style=plastic)](https://www.nuget.org/packages/AutoDiff/) |
 
 # Project Description
 A library that provides moderately fast, accurate, and automatic differentiation (computes derivative /  gradient) of mathematical functions.
