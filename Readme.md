@@ -1,15 +1,11 @@
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff)](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff)
+| AppVeyor CI | NuGet Package |
+|-------------|---------------|
+|[![Build Status](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff)](https://ci.appveyor.com/api/projects/status/github/alexshtf/autodiff) | [![NuGet](https://img.shields.io/nuget/dt/AutoDiff.svg?style=plastic)]() |
 
 # Project Description
 A library that provides moderately fast, accurate, and automatic differentiation (computes derivative /  gradient) of mathematical functions.
 
-AutoDiff provides a simple and intuitive API for computing function gradients/derivatives along with a fast algorithm for performing the computation. Such computations are mainly useful in numeric optimization scenarios.
-
-The Library is available via NuGet:
-
-```powershell
-Install-Package AutoDiff
-```
+AutoDiff provides a simple and intuitive API for computing function gradients/derivatives along with a fast algorithm for performing the computation. Such computations are mainly useful in iterative numerical optimization scenarios.
 
 # Code example
 ```c#
