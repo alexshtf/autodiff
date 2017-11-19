@@ -47,7 +47,7 @@ The [Documentation](docs/Readme.md) contains some basic tutorials, we have an [a
 
 # Motivation
 There are many open and commercial .NET libraries that have numeric optimization as one of their features (for example, [Microsoft Solver Foundation](http://msdn.microsoft.com/en-us/devlabs/hh145003.aspx),  [AlgLib](http://www.alglib.net),[Extreme Optimization](http://www.extremeoptimization.com/), [CenterSpace NMath](http://www.centerspace.net/)) . Most of them require the user to be able to evaluate the function and the function's gradient. This library tries to save the work in manually developing the function's gradient and coding it.
-Once the developer defines his/her function, the AutoDiff library can automatically evaluate and differentiate this function at any point. This allows +easy development and prototyping+ of applications based on numeric optimization.
+Once the developer defines his/her function, the AutoDiff library can automatically evaluate and differentiate this function at any point. This allows _easy development and prototyping_ of applications which require numerical optimization.
 
 # Features
 * Moderate execution speeds. We aim computing a _gradient_ within no more than 50 times the duration of _function evaluation_ by manually tuned code.
