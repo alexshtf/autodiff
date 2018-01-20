@@ -1,4 +1,6 @@
-﻿namespace AutoDiff
+﻿using System;
+
+namespace AutoDiff
 {
     /// <summary>
     /// Represents a natural logarithm function

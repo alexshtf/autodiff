@@ -10,9 +10,4 @@
     <Description>High-performance and high-accuracy automatic function-differentiation library suitable for optimization and numeric computing.</Description>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Condition="$(TargetFramework) == 'netstandard1.1'" Include="System.Diagnostics.Contracts" Version="4.0.1" />
-    <PackageReference Condition="$(TargetFramework) == 'netstandard1.4'" Include="System.Diagnostics.Contracts" Version="4.0.1" />
-    <PackageReference Condition="$(TargetFramework) == 'netstandard1.6'" Include="System.Diagnostics.Contracts" Version="4.0.1" />
-  </ItemGroup>
 </Project>

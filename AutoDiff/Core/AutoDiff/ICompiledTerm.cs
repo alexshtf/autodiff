@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {

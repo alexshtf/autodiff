@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static System.Diagnostics.Contracts.Contract;
 using TapeElement = AutoDiff.Compiled.TapeElement;
 using InputEdge = AutoDiff.Compiled.InputEdge;
 

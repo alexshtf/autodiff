@@ -1,4 +1,6 @@
-﻿namespace AutoDiff
+﻿using System;
+
+namespace AutoDiff
 {
     /// <summary>
     /// Represents a product between two terms.

@@ -1,4 +1,6 @@
-﻿namespace AutoDiff
+﻿using System;
+
+namespace AutoDiff
 {
     /// <summary>
     /// Represents a variable term. Variable terms are substituted for real values during evaluation and
@@ -7,6 +9,7 @@
 #if DOTNET
     [Serializable]
 #endif
+
     public class Variable : Term
     {
         /// <inheritdoc />

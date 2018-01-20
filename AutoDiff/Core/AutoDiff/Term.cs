@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-using static System.Diagnostics.Contracts.Contract;
+﻿using System;
 
 namespace AutoDiff
 {

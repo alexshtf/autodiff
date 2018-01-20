@@ -1,4 +1,6 @@
-﻿namespace AutoDiff
+﻿using System;
+
+namespace AutoDiff
 {
     /// <summary>
     /// Represents a constant-power function x^n, where n is constant.

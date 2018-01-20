@@ -1,4 +1,6 @@
-﻿namespace AutoDiff
+﻿using System;
+
+namespace AutoDiff
 {
     /// <summary>
     /// Represents the exponential function <c>e^x</c>
