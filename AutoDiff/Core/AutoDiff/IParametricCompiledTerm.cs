@@ -29,7 +29,6 @@ namespace AutoDiff
     /// Represents a parametric term after it has been compiled for efficient evaluation/differentiation. A parametric
     /// term has some variables that function as "constant parameters" and others that function as actual variables.
     /// </summary>
-    [ContractClass(typeof(ParametricCompiledTermContract))]
     public interface IParametricCompiledTerm
     {
         /// <summary>
@@ -72,51 +71,5 @@ namespace AutoDiff
         /// and <see cref="Evaluate"/>.
         /// </remarks>
         IReadOnlyList<Variable> Parameters { get; }
-    }
-
-    [ContractClassFor(typeof(IParametricCompiledTerm))]
-    abstract class ParametricCompiledTermContract : IParametricCompiledTerm
-    {
-
-        public double Evaluate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
-        {
-            Requires(arg != null);
-            Requires(arg.Count == Variables.Count);
-            Requires(parameters != null);
-            Requires(parameters.Count == Parameters.Count);
-
-            return default(double);
-        }
-
-        public double Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters, IList<double> grad)
-        {
-            Requires(arg != null && arg.Count == Variables.Count);
-            Requires(grad != null && grad.Count == Variables.Count);
-            Requires(parameters != null);
-            Requires(parameters.Count == Parameters.Count);
-
-            Ensures(Result<Tuple<double[], double>>() != null);
-            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Count);
-
-            return default(double);
-        }
-
-        public IReadOnlyList<Variable> Variables
-        {
-            get
-            {
-                Ensures(Result<IReadOnlyList<Variable>>() != null);
-                return null;
-            }
-        }
-
-        public IReadOnlyList<Variable> Parameters
-        {
-            get
-            {
-                Ensures(Result<IReadOnlyList<Variable>>() != null);
-                return null;
-            }
-        }
     }
 }

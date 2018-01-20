@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -21,9 +20,8 @@ namespace AutoDiff
         /// <param name="terms">The vector component terms</param>
         public TVec(IEnumerable<Term> terms)
         {
-            Requires(terms != null);
-            Requires(ForAll(terms, term => term != null));
-            Requires(terms.Any());
+	        Guard.NotNullOrEmpty(terms, nameof(terms));
+            Guard.ItemsNotNull(terms, nameof(terms));
 
             this.terms = terms.ToArray();
         }
@@ -35,9 +33,8 @@ namespace AutoDiff
         public TVec(params Term[] terms)
             : this(terms as IEnumerable<Term>)
         {
-            Requires(terms != null);
-            Requires(ForAll(terms, term => term != null));
-            Requires(terms.Length > 0);
+            Guard.NotNullOrEmpty(terms, nameof(terms));
+            Guard.ItemsNotNull(terms, nameof(terms));
         }
 
         /// <summary>
@@ -48,15 +45,14 @@ namespace AutoDiff
         public TVec(TVec first, params Term[] rest)
             : this(first.terms.Concat(rest ?? Enumerable.Empty<Term>()))
         {
-            Requires(first != null);
-            Requires(ForAll(rest, term => term != null));
+            Guard.ItemsNotNull(rest, nameof(rest));
         }
 
         private TVec(IReadOnlyList<Term> left, IReadOnlyList<Term> right, Func<Term, Term, Term> elemOp)
         {
-            Assume(left.Count == right.Count);
-            terms = new Term[left.Count];
-            for (var i = 0; i < terms.Length; ++i)
+            var n = left.Count;
+            terms = new Term[n];
+            for (var i = 0; i < n; ++i)
                 terms[i] = elemOp(left[i], right[i]);
         }
 
@@ -76,9 +72,7 @@ namespace AutoDiff
         {
             get 
             {
-                Requires(index >= 0 && index < Dimension);
-                Ensures(Result<Term>() != null);
-
+                Guard.InRange(index, nameof(index), 0, Dimension);
                 return terms[index]; 
             }
         }
@@ -90,7 +84,6 @@ namespace AutoDiff
         {
             get 
             {
-                Ensures(Result<Term>() != null);
                 var powers = terms.Select(x => TermBuilder.Power(x, 2));
                 return TermBuilder.Sum(powers);
             }
@@ -103,7 +96,6 @@ namespace AutoDiff
         {
             get 
             {
-                Ensures(Result<int>() > 0);
                 return terms.Length; 
             }
         }
@@ -115,7 +107,6 @@ namespace AutoDiff
         {
             get 
             {
-                Ensures(Result<Term>() != null);
                 return this[0]; 
             }
         }
@@ -127,8 +118,7 @@ namespace AutoDiff
         {
             get 
             { 
-                Requires(Dimension >= 2);
-                Ensures(Result<Term>() != null);
+                Guard.InRange(Dimension, nameof(Dimension), 2, int.MaxValue);
                 return this[1];
             }
         }
@@ -140,8 +130,7 @@ namespace AutoDiff
         {
             get
             {
-                Requires(Dimension >= 3);
-                Ensures(Result<Term>() != null);
+                Guard.InRange(Dimension, nameof(Dimension), 3, int.MaxValue);
                 return this[2];
             }
         }
@@ -153,9 +142,6 @@ namespace AutoDiff
         /// internal structures.</returns>
         public Term[] GetTerms()
         {
-            Ensures(Result<Term[]>() != null);
-            Ensures(Result<Term[]>().Length > 0);
-            Ensures(ForAll(Result<Term[]>(), term => term != null));
             return (Term[])terms.Clone();
         }
 
@@ -167,10 +153,9 @@ namespace AutoDiff
         /// <returns>A vector representing the sum of <paramref name="left"/> and <paramref name="right"/></returns>
         public static TVec operator+(TVec left, TVec right)
         {
-            Requires(left != null);
-            Requires(right != null);
-            Requires(left.Dimension == right.Dimension);
-            Ensures(Result<TVec>().Dimension == left.Dimension);
+            Guard.NotNull(left, nameof(left));
+            Guard.NotNull(right, nameof(right));
+            Guard.MustHold(left.Dimension == right.Dimension, "left and right must be of the same dimension");
             return new TVec(left.terms, right.terms, (x, y) => x + y);
         }
 
@@ -182,10 +167,9 @@ namespace AutoDiff
         /// <returns>A vector representing the difference of <paramref name="left"/> and <paramref name="right"/></returns>
         public static TVec operator-(TVec left, TVec right)
         {
-            Requires(left != null);
-            Requires(right != null);
-            Requires(left.Dimension == right.Dimension);
-            Ensures(Result<TVec>().Dimension == left.Dimension);
+            Guard.NotNull(left, nameof(left));
+            Guard.NotNull(right, nameof(right));
+            Guard.MustHold(left.Dimension == right.Dimension, "left and right must be of the same dimension");
             return new TVec(left.terms, right.terms, (x, y) => x - y);
         }
 
@@ -196,8 +180,7 @@ namespace AutoDiff
         /// <returns>A vector repsesenting the inverse of <paramref name="vector"/></returns>
         public static TVec operator-(TVec vector)
         {
-            Requires(vector != null);
-            Ensures(Result<TVec>().Dimension == vector.Dimension);
+            Guard.NotNull(vector, nameof(vector));
             return vector * -1;
         }
 
@@ -209,9 +192,8 @@ namespace AutoDiff
         /// <returns>A product of the vector <paramref name="vector"/> and the scalar <paramref name="scalar"/>.</returns>
         public static TVec operator*(TVec vector, Term scalar)
         {
-            Requires(vector != null);
-            Requires(scalar != null);
-            Ensures(Result<TVec>().Dimension == vector.Dimension);
+            Guard.NotNull(vector, nameof(vector));
+            Guard.NotNull(scalar, nameof(scalar));
             return new TVec(vector.terms, x => scalar * x);
         }
 
@@ -223,9 +205,8 @@ namespace AutoDiff
         /// <returns>A product of the vector <paramref name="vector"/> and the scalar <paramref name="scalar"/>.</returns>
         public static TVec operator *(Term scalar, TVec vector)
         {
-            Requires(vector != null);
-            Requires(scalar != null);
-            Ensures(Result<TVec>().Dimension == vector.Dimension);
+            Guard.NotNull(vector, nameof(vector));
+            Guard.NotNull(scalar, nameof(scalar));
             return vector * scalar;
         }
 
@@ -237,10 +218,6 @@ namespace AutoDiff
         /// <returns>A term representing the inner product of <paramref name="left"/> and <paramref name="right"/>.</returns>
         public static Term operator*(TVec left, TVec right)
         {
-            Requires(left != null);
-            Requires(right != null);
-            Requires(left.Dimension == right.Dimension);
-            Ensures(Result<Term>() != null);
             return InnerProduct(left, right);
         }
 
@@ -252,10 +229,9 @@ namespace AutoDiff
         /// <returns>A term representing the inner product of <paramref name="left"/> and <paramref name="right"/>.</returns>
         public static Term InnerProduct(TVec left, TVec right)
         {
-            Requires(left != null);
-            Requires(right != null);
-            Requires(left.Dimension == right.Dimension);
-            Ensures(Result<Term>() != null);
+            Guard.NotNull(left, nameof(left));
+            Guard.NotNull(right, nameof(right));
+            Guard.MustHold(left.Dimension == right.Dimension, "left and right must be of the same dimension");
 
             var products = from i in Enumerable.Range(0, left.Dimension)
                            select left.terms[i] * right.terms[i];
@@ -271,11 +247,10 @@ namespace AutoDiff
         /// <returns>A vector representing the cross product of <paramref name="left"/> and <paramref name="right"/></returns>
         public static TVec CrossProduct(TVec left, TVec right)
         {
-            Requires(left != null);
-            Requires(right != null);
-            Requires(left.Dimension == 3);
-            Requires(right.Dimension == 3);
-            Ensures(Result<TVec>().Dimension == 3);
+            Guard.NotNull(left, nameof(left));
+            Guard.NotNull(right, nameof(right));
+            Guard.MustHold(left.Dimension == 3 && right.Dimension == 3,
+                "vectors must be three dimensional");
 
             return new TVec(
                 left.Y * right.Z - left.Z * right.Y,

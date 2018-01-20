@@ -42,12 +42,19 @@ namespace AutoDiff
 
         public double Evaluate(double[] arg)
         {
+            Guard.NotNull(arg, nameof(arg));
+            Guard.MustHold(arg.Length == Variables.Count, ErrorMessages.ArgLength);
             EvaluateTape(arg);
             return tape[tape.Length - 1].Value;
         }
 
         public double Differentiate(IReadOnlyList<double> arg, IList<double> grad) 
         {
+            Guard.NotNull(arg, nameof(arg));
+            Guard.NotNull(grad, nameof(grad));
+            Guard.MustHold(arg.Count == Variables.Count, ErrorMessages.ArgLength);
+            Guard.MustHold(grad.Count == Variables.Count, ErrorMessages.GradLength);
+
             ForwardSweep(arg);
             ReverseSweep();
 

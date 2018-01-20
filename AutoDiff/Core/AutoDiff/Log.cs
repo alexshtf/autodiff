@@ -14,6 +14,7 @@
         /// <param name="arg">The argument of the natural logarithm</param>
         public Log(Term arg)
         {
+            Guard.NotNull(arg, nameof(arg));
             Arg = arg;
         }
 
@@ -25,12 +26,14 @@
         /// <inheritdoc />
         public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
         {
+            Guard.NotNull(visitor, nameof(visitor));
             return visitor.Visit(this);
         }
         
         /// <inheritdoc />
         public override void Accept(ITermVisitor visitor)
         {
+            Guard.NotNull(visitor, nameof(visitor));
             visitor.Visit(this);
         }
     }

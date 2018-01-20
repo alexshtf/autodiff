@@ -21,15 +21,10 @@ namespace AutoDiff
             Func<double, double, Tuple<double, double>> diff,
             Term left, Term right)
         {
-            Requires(eval != null);
-            Requires(diff != null);
-            Requires(left != null);
-            Requires(right != null);
-
-            Ensures(Eval == eval);
-            Ensures(Diff == diff);
-            Ensures(Left == left);
-            Ensures(Right == right);
+            Guard.NotNull(eval, nameof(eval));
+            Guard.NotNull(diff, nameof(diff));
+            Guard.NotNull(left, nameof(left));
+            Guard.NotNull(right, nameof(right));
 
             Eval = eval;
             Diff = diff;
@@ -47,12 +42,10 @@ namespace AutoDiff
             Func<double, double, double> eval, 
             Func<double, double, Tuple<double, double>> diff)
         {
-            Requires(eval != null);
-            Requires(diff != null);
-            Ensures(Result<Func<Term, Term, BinaryFunc>>() != null);
+            Guard.NotNull(eval, nameof(eval));
+            Guard.NotNull(diff, nameof(diff));
 
-            Func<Term, Term, BinaryFunc> result = (left, right) => new BinaryFunc(eval, diff, left, right);
-            return result;
+            return (left, right) => new BinaryFunc(eval, diff, left, right);
         }
 
         /// <summary>
@@ -78,12 +71,14 @@ namespace AutoDiff
         /// <inheritdoc />
         public override void Accept(ITermVisitor visitor)
         {
+            Guard.NotNull(visitor, nameof(visitor));
             visitor.Visit(this);
         }
 
         /// <inheritdoc />
         public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
         {
+            Guard.NotNull(visitor, nameof(visitor));
             return visitor.Visit(this);
         }
     }

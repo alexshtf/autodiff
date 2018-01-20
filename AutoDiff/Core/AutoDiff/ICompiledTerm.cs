@@ -17,12 +17,6 @@ namespace AutoDiff
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
         public static Tuple<double[], double> Differentiate(this ICompiledTerm term, IReadOnlyList<double> arg)
         {
-            Requires(term != null);
-            Requires(arg != null);
-            Requires(arg.Count == term.Variables.Count);
-            Ensures(Result<Tuple<double[], double>>() != null);
-            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Count);
-
             var grad = new double[term.Variables.Count];
             var val = term.Differentiate(arg, grad);
             return Tuple.Create(grad, val);
@@ -38,12 +32,6 @@ namespace AutoDiff
         /// <remarks>The number at <c>arg[i]</c> is the value assigned to the variable <c>Variables[i]</c>.</remarks>
         public static Tuple<double[], double> Differentiate(this ICompiledTerm term, params double[] arg)
         {
-            Requires(term != null);
-            Requires(arg != null);
-            Requires(arg.Length == term.Variables.Count);
-            Ensures(Result<Tuple<double[], double>>() != null);
-            Ensures(Result<Tuple<double[], double>>().Item1.Length == arg.Length);
-            
             return Differentiate(term, (IReadOnlyList<double>) arg);
         }
     }
@@ -51,7 +39,6 @@ namespace AutoDiff
     /// <summary>
     /// Represents a term after it has been compiled for efficient evaluation/differentiation.
     /// </summary>
-    [ContractClass(typeof(CompiledTermContract))]
     public interface ICompiledTerm
     {
         /// <summary>
@@ -81,34 +68,4 @@ namespace AutoDiff
         /// </remarks>
         IReadOnlyList<Variable> Variables { get; }
     }
-
-    [ContractClassFor(typeof(ICompiledTerm))]
-    abstract class CompiledTermContract : ICompiledTerm
-    {
-        public double Evaluate(params double[] arg)
-        {
-            Requires(arg != null);
-            Requires(arg.Length == Variables.Count);
-            return default(double);
-        }
-
-        public double Differentiate(IReadOnlyList<double> arg, IList<double> grad) 
-        {
-            Requires(arg != null);
-            Requires(grad != null);
-            Requires(arg.Count == Variables.Count);
-            Requires(grad.Count == Variables.Count);
-            return 0;
-        }
-
-        public IReadOnlyList<Variable> Variables
-        {
-            get 
-            { 
-                Ensures(Result<IReadOnlyList<Variable>>() != null);
-                return null;
-            }
-        }
-    }
-
 }

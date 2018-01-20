@@ -18,12 +18,24 @@ namespace AutoDiff
 
         public double Evaluate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters)
         {
+            Guard.NotNull(arg, nameof(arg));
+            Guard.MustHold(arg.Count == Variables.Count, ErrorMessages.ArgLength);
+            Guard.NotNull(parameters, nameof(parameters));
+            Guard.MustHold(parameters.Count == Parameters.Count, ErrorMessages.GradLength);
+
             var combinedArg = arg.Concat(parameters).ToArray();
             return compiledTerm.Evaluate(combinedArg);
         }
 
         public double Differentiate(IReadOnlyList<double> arg, IReadOnlyList<double> parameters, IList<double> grad)
         {
+            Guard.NotNull(arg, nameof(arg));
+            Guard.MustHold(arg.Count == Variables.Count, ErrorMessages.ArgLength);
+            Guard.NotNull(grad, nameof(grad));
+            Guard.MustHold(grad.Count == Variables.Count, ErrorMessages.GradLength);
+            Guard.NotNull(parameters, nameof(parameters));
+            Guard.MustHold(parameters.Count == Parameters.Count, ErrorMessages.ParamLength);
+
             var combinedArg = arg.Concat(parameters).ToArray();
             var combinedGrad = new double[combinedArg.Length];
             var val = compiledTerm.Differentiate(combinedArg, combinedGrad);

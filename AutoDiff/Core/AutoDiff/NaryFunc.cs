@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Diagnostics.Contracts.Contract;
 
 namespace AutoDiff
 {
@@ -22,10 +21,10 @@ namespace AutoDiff
             Func<double[], double[]> diff,
             IEnumerable<Term> terms)
         {
-            Requires(eval != null);
-            Requires(diff != null);
-            Requires(terms != null && terms.Any());
-            
+            Guard.NotNull(eval, nameof(eval));
+            Guard.NotNull(diff, nameof(diff));
+            Guard.NotNullOrEmpty(terms, nameof(terms));
+
             Eval = eval;
             Diff = diff;
             Terms = terms.ToList().AsReadOnly();
@@ -39,9 +38,8 @@ namespace AutoDiff
         /// <returns>The described factory delegate</returns>
         public static Func<IEnumerable<Term>, NaryFunc> Factory(Func<double[], double> eval, Func<double[], double[]> diff)
         {
-            Requires(eval != null);
-            Requires(diff != null);
-            Ensures(Result<Func<IEnumerable<Term>, NaryFunc>>() != null);
+            Guard.NotNull(eval, nameof(eval));
+            Guard.NotNull(diff, nameof(diff));
 
             Func<IEnumerable<Term>, NaryFunc> result = (terms) => new NaryFunc(eval, diff, terms);
             return result;
@@ -65,12 +63,14 @@ namespace AutoDiff
         /// <inheritdoc />
         public override void Accept(ITermVisitor visitor)
         {
+            Guard.NotNull(visitor, nameof(visitor));
             visitor.Visit(this);
         }
 
         /// <inheritdoc />
         public override TResult Accept<TResult>(ITermVisitor<TResult> visitor)
         {
+            Guard.NotNull(visitor, nameof(visitor));
             return visitor.Visit(this);
         }
     }
