@@ -5,7 +5,7 @@ namespace AutoDiff
     /// <summary>
     /// A constant zero term. Similar to <see cref="Constant"/> but represents only the value 0.
     /// </summary>
-#if DOTNET
+#if (!NETSTANDARD1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_2 && !NETSTANDARD1_3 && !NETSTANDARD1_4 && !NETSTANDARD1_5 && !NETSTANDARD1_6)
     [Serializable]
 #endif
     public class Zero : Term

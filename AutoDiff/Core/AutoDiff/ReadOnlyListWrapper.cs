@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace AutoDiff
 {
+    #if (!NETSTANDARD1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_2 && !NETSTANDARD1_3 && !NETSTANDARD1_4 && !NETSTANDARD1_5 && !NETSTANDARD1_6)
+    [Serializable]
+    #endif
     internal class ReadOnlyListWrapper<T> : IReadOnlyList<T>
     {
         private readonly IReadOnlyList<T> list;
