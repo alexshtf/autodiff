@@ -42,15 +42,6 @@ namespace AutoDiff
         /// <returns>A term representing the sum of <paramref name="left"/> and <paramref name="right"/>.</returns>
         public static Term operator+(Term left, Term right)
         {
-            Guard.NotNull(left, nameof(left));
-            Guard.NotNull(right, nameof(right));
-
-            if (left is Zero && right is Zero)
-                return new Zero();
-            if (left is Zero)
-                return right;
-            if (right is Zero)
-                return left;
             return TermBuilder.Sum(left, right);
         }
 
@@ -62,9 +53,6 @@ namespace AutoDiff
         /// <returns>A term representing the product of <paramref name="left"/> and <paramref name="right"/>.</returns>
         public static Term operator*(Term left, Term right)
         {
-            Guard.NotNull(left, nameof(left));
-            Guard.NotNull(right, nameof(right));
-
             return TermBuilder.Product(left, right);
         }
 
@@ -76,9 +64,6 @@ namespace AutoDiff
         /// <returns>A term representing the fraction <paramref name="numerator"/> over <paramref name="denominator"/>.</returns>
         public static Term operator/(Term numerator, Term denominator)
         {
-            Guard.NotNull(numerator, nameof(numerator));
-            Guard.NotNull(denominator, nameof(denominator));
-
             return TermBuilder.Product(numerator, TermBuilder.Power(denominator, -1));
         }
 
@@ -90,9 +75,6 @@ namespace AutoDiff
         /// <returns>A term representing <paramref name="left"/> - <paramref name="right"/>.</returns>
         public static Term operator-(Term left, Term right)
         {
-            Guard.NotNull(left, nameof(left));
-            Guard.NotNull(right, nameof(right));
-
             return left + -1 * right;
         }
 
@@ -103,7 +85,6 @@ namespace AutoDiff
         /// <returns>A term representing <c>-term</c>.</returns>
         public static Term operator-(Term term)
         {
-            Guard.NotNull(term, nameof(term));
             return -1 * term;
         }
     }
