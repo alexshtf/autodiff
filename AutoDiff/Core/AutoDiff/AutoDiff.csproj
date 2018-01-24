@@ -3,11 +3,12 @@
   <PropertyGroup>
     <OutputType>library</OutputType>
     <TargetFrameworks>netstandard1.1;netstandard1.4;netstandard1.6;netstandard2.0;net45;net46;net461;net462;net47</TargetFrameworks>
-    <Version>1.2</Version>
+    <Version>1.2.1</Version>
     <Authors>Alex Shtof</Authors>
     <Product>AutoDiff</Product>
-    <AssemblyVersion>1.2</AssemblyVersion>
     <Description>High-performance and high-accuracy automatic function-differentiation library suitable for optimization and numeric computing.</Description>
+    <PackageProjectUrl>https://github.com/alexshtf/autodiff</PackageProjectUrl>
+    <PackageTags>math numeric optimization</PackageTags>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
 </Project>
