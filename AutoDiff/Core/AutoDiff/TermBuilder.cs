@@ -30,9 +30,7 @@ namespace AutoDiff
         public static Sum Sum(IEnumerable<Term> terms)
         {
             Guard.CollectionAndItemsNotNull(terms, nameof(terms));
-
-            terms = terms.Where(term => !(term is Zero));
-            return new Sum(terms);
+            return SumCore(terms);
         }
 
         /// <summary>
@@ -46,10 +44,16 @@ namespace AutoDiff
         {
             Guard.NotNull(v1, nameof(v1));
             Guard.NotNull(v2, nameof(v2));
-            Guard.ItemsNotNull(rest, nameof(rest));
+            Guard.CollectionAndItemsNotNull(rest, nameof(rest));
 
             var allTerms = new[] { v1, v2 }.Concat(rest);
-            return Sum(allTerms);
+            return SumCore(allTerms);
+        }
+
+        private static Sum SumCore(IEnumerable<Term> terms)
+        {
+            terms = terms.Where(term => !(term is Zero));
+            return new Sum(terms);
         }
 
         /// <summary>
