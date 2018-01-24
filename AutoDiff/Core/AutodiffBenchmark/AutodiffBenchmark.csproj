@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
 	  <OutputType>exe</OutputType>
 	  <Authors>Alex Shtof</Authors>
-    <SkipBuildPackage>true</SkipBuildPackage>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   
   <ItemGroup>
