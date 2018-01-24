@@ -3,8 +3,9 @@
   
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-	<OutputType>exe</OutputType>
-	<Authors>Alex Shtof</Authors>
+    <OutputType>exe</OutputType>
+    <Authors>Alex Shtof</Authors>
+    <SkipBuildPackage>true</SkipBuildPackage>
   </PropertyGroup>
   
   <ItemGroup>
