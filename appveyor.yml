@@ -1,7 +1,13 @@
 version: 1.0.{build}
 image: Visual Studio 2017
+configuration:
+  - Debug
+  - Release
 before_build:
   - cd AutoDiff
   - nuget restore
 build:
+  project: AutoDiff/AutoDiff.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
   verbosity: minimal
