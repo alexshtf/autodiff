@@ -54,7 +54,6 @@ Once the developer defines his/her function, the AutoDiff library can automatica
 * Composition of functions using arithmetic operators, Exp, Log, Power and user-defined unary and binary functions.
 * Function gradient evaluation at specified points
 * Function value evaluation at specified points
-* Uses [Code Contracts](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.contracts.contract) for specifying valid parameters and return values
 * Computes gradients using Reverse-Mode AD algorithm in **linear time**, which is substantially faster than numerical gradient approximation for multivariate functions.
 
 # **Using in research papers**
